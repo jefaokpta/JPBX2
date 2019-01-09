@@ -5,7 +5,7 @@
  */
 package br.com.jpbx.servlet;
 
-import br.com.jpbx.model.MohDAO;
+import br.com.jpbx.model.CompanyDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -25,10 +25,8 @@ public class MusicClassServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        
-        
-        
-        out.print(new MohDAO().getCompanyMoh(Integer.parseInt(request.getParameter("company"))).getMoh());
+      
+        out.print(new CompanyDAO().getSingleCompany(Integer.parseInt(request.getParameter("company"))).getMoh());
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

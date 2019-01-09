@@ -36,13 +36,6 @@ public class MohDAO {
             return query.getResultList();
         }finally{em.close();}
     }
-    public Moh getCompanyMoh(int company){   
-        try{
-            String sql="select m from Moh as m WHERE m.company = "+company;
-            TypedQuery <Moh> query=em.createQuery(sql,Moh.class);
-            return query.getSingleResult();
-        }finally{em.close();}
-    }
     public String persistNewMoh(Moh m){
         EntityTransaction tx=em.getTransaction();
         String ret="ok";
