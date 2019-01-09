@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Relatório de ASR</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="10">
+                    <h1>Relatório de ASR</h1>
+                </b:column>     
+
+            </b:row>              
+            <p:separator/>
+            <b:panel title="Taxa de Completamento dos Troncos" look="info" >      
+            <h:form>
+                <p:commandLink onclick="exportChart();">
+                    Exportar
+                    <b:iconAwesome name="file-image-o" />
+                </p:commandLink>                 
+                <p:chart type="bar" model="#{relArsBean.barModel}" id="grafico"  responsive="true" widgetVar="chart" />
+            </h:form>
+            <p:dialog widgetVar="dlg"  modal="true" header="Gráfico como Imagem" resizable="false">
+                <p:outputPanel id="output" layout="block" style="width: 80%"/>
+            </p:dialog>
+            <script>
+            function exportChart() {
+                //export image
+                $('#output').empty().append(PF('chart').exportAsImage());
+
+                //show the dialog
+                PF('dlg').show();
+            }
+            </script>
+            </b:panel>
+            
+            <h:form>
+                <b:row>
+                    <b:column span="2"/>
+                    <b:column span="8" />
+                    <b:column span="1">
+                        <h:commandLink id="excel" title="Extrair Excel">
+                            <p:graphicImage name="/img/xls.png" width="50"/>
+                            <p:dataExporter type="xls" target="relCal" fileName="relatorio_de_asr"  />
+                        </h:commandLink>  
+                    </b:column>
+                    <b:column span="1">
+                        <h:commandLink id="csv" title="Extrair CSV">
+                            <p:graphicImage name="/img/csv.png" width="50"/>
+                            <p:dataExporter type="csv" target="relCal" fileName="relatorio_de_asr"  />
+                        </h:commandLink>
+                    </b:column>
+                </b:row>         
+                <p:dataTable var="r" id="relCal" value="#{relArsBean.asrs}" class="textCenter" reflow="true" emptyMessage="Não há Ligações">
+                    <f:facet name="header">
+                        Periodo de 
+                        <h:outputText value="#{relArsBean.filter.start}" >
+                            <f:convertDateTime dateStyle="default" />
+                        </h:outputText>
+                         a 
+                         <h:outputText value="#{relArsBean.filter.end}" >
+                            <f:convertDateTime dateStyle="default" />
+                        </h:outputText>
+                    </f:facet>                 
+                    <p:column headerText="Tronco"  filterBy="#{r.trunkName}" sortBy="#{r.trunkName}">
+                        <h:outputText value="#{r.trunkName}" />
+                    </p:column>
+                    <p:column headerText="Atendidas" sortBy="#{r.answer}">
+                        <h:outputText value="#{r.answer} (#{relArsBean.showAverage(r.answer, r.total)})" />
+                    </p:column>
+                    <p:column headerText="Não Atendidas / Canceladas" sortBy="#{r.noAnswer}" >
+                        <h:outputText value="#{r.noAnswer} (#{relArsBean.showAverage(r.noAnswer, r.total)})" />
+                    </p:column>
+                    <p:column headerText="Ocupadas / Falhadas" sortBy="#{r.fail}" >
+                        <h:outputText value="#{r.fail} (#{relArsBean.showAverage(r.fail, r.total)})" />
+                    </p:column>
+                    <p:column headerText="Total" sortBy="#{r.total}">
+                        <h:outputText value="#{r.total}" />
+                    </p:column>                 
+                </p:dataTable>               
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

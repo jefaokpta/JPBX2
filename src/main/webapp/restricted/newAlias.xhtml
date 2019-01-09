@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Novo Alias de Discagem</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="10">
+                    <h1>Novo Alias de Discagem</h1>
+                </b:column>              
+            </b:row>
+            <p:separator/>
+            <h:form>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Nome:" />
+                    </b:column>
+                    <b:column span="2">
+                        <p:inputText value="#{newAliasBean.alias.name}" required="true" label="Nome" />
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="1" class="bButtonSpace">
+                        <b:commandButton value="Salvar" action="#{newAliasBean.persistNewAlias()}" look="primary" iconAwesome="check" />
+                    </b:column>
+                    <b:column span="1" class="bButtonSpace">
+                        <b:button value="Voltar" outcome="aliases" iconAwesome="undo" look="danger" />
+                    </b:column>
+                </b:row>
+
+            </h:form>
+            <h:form>
+                <b:panel title="Expressões" look="info" collapsible="false">
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Expressão:" />
+                        </b:column>
+                        <b:column span="2">
+                            <p:inputText value="#{newAliasBean.expression.expression}" />
+                        </b:column>
+                        <b:column span="2">
+                            <b:commandButton value="Adicionar" actionListener="#{newAliasBean.addExpression()}"
+                                             ajax="true" update="@form growl" look="success" iconAwesome="plus" />
+                        </b:column>
+                    </b:row>
+                    <p:dataTable class="textCenter" value="#{newAliasBean.expressions}" var="a"
+                                paginator="true" rows="30" paginatorPosition="bottom" emptyMessage="Não há Expressões.">
+                        <p:column headerText="Expressões" sortBy="#{a.expression}">
+                            <h:outputText value="#{a.expression}" />
+                        </p:column>
+                        <p:column headerText="Ações">
+                            <b:commandButton value="Apagar" look="danger" iconAwesome="trash-o" actionListener="#{newAliasBean.removeExpression(a)}"
+                                             ajax="true" update="@form" />
+                        </p:column>
+                    </p:dataTable>
+                </b:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

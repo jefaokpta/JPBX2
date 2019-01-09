@@ -1,0 +1,204 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>JPBX - WebPhone</title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['img/favicon.ico']}" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <h:outputStylesheet library="css" name="cssJefao.css" />
+        
+    </h:head>
+    <h:body>
+        
+        <p:growl id="growl" life="30000" /> 
+        <b:container>
+            <b:panel class="backPanel">
+                <b:row>
+                    <b:column span="10">
+                        <h1>JPBX Ramal WEB</h1>
+                    </b:column> 
+                </b:row>
+            <p:separator/>           
+            <h:form rendered="#{webphoneBean.authView}" prependId="false" id="form1">
+                <b:row>
+                    <b:column span="6">
+                        <b:panel look="info" title="Autenticação" collapsible="false">
+                            <b:inputText type="number" placeholder="Ramal" required="true" id="peer" 
+                                             requiredMessage="Informe um Ramal."
+                                             value="#{webphoneBean.peer}">
+                                    <f:facet name="append">
+                                        <b:iconAwesome name="phone" />
+                                    </f:facet>
+                                </b:inputText>
+                                <b:inputSecret placeholder="Senha" required="true" id="pass" 
+                                               requiredMessage="Informe uma Senha."
+                                               value="#{webphoneBean.pass}">
+                                    <f:facet name="append">
+                                        <b:iconAwesome name="key" />
+                                    </f:facet>
+                                </b:inputSecret>
+                            <b:commandButton value="Entrar" onclick="authentication();" iconAwesome="check" action="#{webphoneBean.loginWebPhone()}" look="primary" title="Acessar Ramal."/>
+                        </b:panel>
+                    </b:column>
+                </b:row>                    
+            </h:form>
+
+            <b:row>
+                <b:column span="6">
+                    <b:panel id="phone" look="primary" style="background-color: #333" title="Ramal #{webphoneBean.peer} #{webphoneBean.peerWeb.callerid}" 
+                             collapsible="false" rendered="#{webphoneBean.phoneView}" >
+                        <b:row>
+                            <div style="width: 500px; position: relative; top:0px; left:0px;" >
+                                <video width="500px" id="remoteVideo" controls="true" hidden="true"></video>
+                                <div id="localVideoDiv" style="width: 300px; bottom:0px; left:0px;">
+                                    <video width="300" height="300" id="localVideo" hidden="true"></video>
+                                </div>
+                            </div>
+                        </b:row>
+                        <b:row>
+                            <b:column span="6">
+                                <div id="status" style="color: gray" >Iniciando...</div> 
+                            </b:column>
+                            <div id="showVideoDiv" hidden="true" >
+                                <b:column span="1">
+                                    <input type="checkbox" id="showVideo" />
+                                </b:column>
+                                <b:column span="1">
+                                    <label for="showVideo" style="color: gray">Video </label>
+                                </b:column>
+                            </div>
+                            <b:column span="1">
+                                <input type="checkbox" id="autoAnswer" />
+                            </b:column>
+                            <b:column span="1">
+                                <label for="autoAnswer" style="color: gray">AA</label>
+                            </b:column>                          
+                        </b:row>                      
+                        <b:row>
+                            <b:column span="9">
+                                <input type="tel" class="form-control text-center" id="tel" placeholder="Número de telefone" />                               
+                            </b:column>
+                            <b:column span="3">
+                                <button class="btn btn-success" onclick="call();" title="Ligar" ><i class="fa fa-phone"></i></button>
+                                <button class="btn btn-success" onclick="callVideo();" title="Video Chamada" ><i class="fa fa-microphone"></i></button>
+                            </b:column>
+                        </b:row>
+                                               
+                        <div id="keyBoard" hidden="">                               
+                            <div hidden="" id="timeCall" class="text-center" style="color: greenyellow" />
+                            <b:row>
+                                <b:column span="8">
+                                    <input type="range" id="volume" min="0" max="100" />
+                                </b:column>
+                                <b:column span="1">
+                                    <input type="checkbox" id="muteAudio" />
+                                </b:column>
+                                <b:column span="1">
+                                    <label for="muteAudio" style="color: gray">Mudo</label>
+                                </b:column>
+                            </b:row> 
+                            <div class="btn-group btn-group-justified" role="group">
+                                <div class="btn-group" role="group">
+                                    <button id="endCall" class="btn btn-danger" ><i class="fa fa-remove" /> Desligar</button> 
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button id="transfer" class="btn btn-info"><i class="fa fa-random" /> Transferir</button>
+                                </div>
+                            </div>                                              
+                            <br />
+                            <div class="btn-group btn-group-justified" role="group">
+                                <div class="btn-group" role="group">
+                                    <button id="d1" class="btn btn-default" >1</button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button id="d2" class="btn btn-default" >2</button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button id="d3" class="btn btn-default" >3</button>
+                                </div>
+                            </div>
+                            <div class="btn-group btn-group-justified" role="group">
+                                <div class="btn-group" role="group">
+                                    <button id="d4" class="btn btn-default" >4</button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button id="d5" class="btn btn-default" >5</button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button id="d6" class="btn btn-default" >6</button>
+                                </div>
+                            </div>
+                            <div class="btn-group btn-group-justified" role="group">
+                                <div class="btn-group" role="group">
+                                    <button id="d7" class="btn btn-default" >7</button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button id="d8" class="btn btn-default" >8</button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button id="d9" class="btn btn-default" >9</button>
+                                </div>
+                            </div>
+                            <div class="btn-group btn-group-justified" role="group">
+                                <div class="btn-group" role="group">
+                                    <button id="ast" class="btn btn-default" >*</button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button id="d0" class="btn btn-default" >0</button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button id="squ" class="btn btn-default" >#</button>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="panel panel-primary" style="background-color: azure">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        Últimas Ligações
+                                    </div>
+                                    <div class="col-md-5" style="text-align: right">
+                                        <i onclick="clearCallList();" title="Limpar Últimas Ligações" class="fa fa-trash" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="callsLogPanel">
+                                <ul id="lastCalls" style="list-style: none;margin-top: 2px" >
+                                    
+                                </ul>
+                            </div>                             
+                        </div>
+                    </b:panel>
+                </b:column>
+            </b:row>
+                
+                 
+                
+                <f:facet name="footer" >
+                    <b:row>
+<!--                        <b:column offset="9" span="1">
+                            <h:graphicImage library="img" width="25px" name="firefox.png" title="Navegador indicado" />
+                        </b:column>-->
+                        <b:column offset="10"  span="1">
+                            <b:label text="JPBX versão 2.0" />
+                        </b:column>
+                    </b:row>
+                </f:facet>
+            </b:panel>
+        </b:container>  
+        <h:outputScript library="js" name="jsJefao.js" />
+        <script>
+            $('#form1').submit(function(){
+                $('#pass').val(hashMD5($('#peer').val()+":"+$('#pass').val()));
+            });             
+        </script>
+        <h:outputScript library="js" name="sip-0.7.5.min.js" />
+        <h:outputScript library="js" name="ua.js" />       
+    </h:body>
+</html>
+

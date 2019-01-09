@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui">
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title" >JPBX - Valores Dos Troncos</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="10">
+                    <h1>Valores Dos Troncos</h1>
+                </b:column>
+                <b:column span="2">
+                    <h:form>
+                        <p:selectOneMenu value="#{trunkCostsBean.trunkId}">
+                            <f:selectItem itemLabel="Selecione" itemValue="0" />
+                            <f:selectItems value="#{trunkCostsBean.trunkMap}" />
+                            <p:ajax update="form" />
+                        </p:selectOneMenu>
+                    </h:form>
+                </b:column>
+            </b:row>
+            <p:separator/>
+            <h:form id="form">
+                <p:dataTable var="tc" value="#{trunkCostsBean.trunkCostsView}" reflow="true" 
+                             selectionMode="single" rowKey="#{tc.id}" class="textCenter" emptyMessage="Selecione um tronco" >
+                    <p:ajax event="rowSelect" listener="#{trunkCostsBean.trunkCostSelected}" update="editDialog"/>
+                    
+                    <p:column headerText="Código" >
+                        <h:outputText value="#{tc.ccost}" >
+                            <f:convertNumber pattern="0.00" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Tarifa">
+                        <h:outputText value="#{tc.fare}" >
+                            <f:convertNumber pattern="R$ 0.00" />
+                        </h:outputText>
+                    </p:column>                  
+                    <p:column headerText="Ciclo">
+                        <h:outputText value="#{tc.cicle}" />
+                    </p:column>
+                    <p:column headerText="Fração">
+                        <h:outputText value="#{tc.fraction}" />
+                    </p:column>
+                    <p:column headerText="Carência">
+                        <h:outputText value="#{tc.shortage}" />
+                    </p:column>         
+                    <p:column headerText="Taxa Serviço">
+                        <h:outputText value="#{tc.txService}" >
+                            <f:convertNumber pattern="0.00" />
+                        </h:outputText>
+                    </p:column>   
+                </p:dataTable>
+            </h:form>
+            <p:dialog id="editDialog" header="Editar Custo" widgetVar="editCostDialog"
+                      showEffect="blind" hideEffect="blind" modal="true" >
+                <h:form>                   
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="Código" />
+                        <p:outputLabel value="#{trunkCostsBean.trunkCost.ccost}" >
+                            <f:convertNumber pattern="0.00" />
+                        </p:outputLabel>
+                        <h:inputHidden /><h:inputHidden />
+                        <p:outputLabel value="Tarifa:" />
+                        <p:inputText label="Tarifa" value="#{trunkCostsBean.trunkCost.fare}">
+                            <f:convertNumber pattern="0.00" />
+                        </p:inputText>
+                        <h:inputHidden /><h:inputHidden />
+                        <p:outputLabel value="Ciclo:" />
+                        <p:inputText type="number" value="#{trunkCostsBean.trunkCost.cicle}"/>
+                        <h:inputHidden /><h:inputHidden />
+                        <p:outputLabel value="Fração:" />
+                        <p:inputText type="number" value="#{trunkCostsBean.trunkCost.fraction}"/>
+                        <h:inputHidden /><h:inputHidden />
+                        <p:outputLabel value="Carência:" />
+                        <p:inputText type="number" value="#{trunkCostsBean.trunkCost.shortage}"/>
+                        <h:inputHidden /><h:inputHidden />
+                        <p:outputLabel value="Taxa Serviço:" />
+                        <p:inputText value="#{trunkCostsBean.trunkCost.txService}">
+                            <f:convertNumber pattern="0.00" />
+                        </p:inputText>
+                        <h:inputHidden /><h:inputHidden />
+                        <b:commandButton value="Salvar" ajax="false" action="#{trunkCostsBean.updateTrunkCost()}"
+                                         look="primary" iconAwesome="check" update="growl form"/>
+                    </h:panelGrid>
+                </h:form>           
+            </p:dialog>
+            <p:ajaxStatus>
+                <f:facet name="default">
+                    <h:outputText value="" />
+                </f:facet>
+                <f:facet name="start">
+                    <p:graphicImage style="position: fixed; bottom: 5px; right: 5px" library="img" name="loading.gif" />
+                </f:facet>
+                <f:facet name="complete">
+                    <h:outputText value="" />
+                </f:facet>
+            </p:ajaxStatus> 
+        </ui:define>
+    </ui:composition>
+</html>
+

@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Novo Servidor de Consulta BDO</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <h1>Novo Servidor de Consulta BDO</h1>
+            <p:separator/>
+            <h:form class="formStrong">
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Nome:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:inputText required="true" label="Nome" value="#{newWebServBdoBean.webServ.name}" />
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="URL:" title="Endereço do servidor de consulta" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:inputText required="true" label="URL" value="#{newWebServBdoBean.webServ.url}" placeholder="http://jpbx.com.br" />
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Parâmetros de Consulta:" title="Dados exigidos pelo servidor de consulta" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:inputText required="true" label="Parâmetros" value="#{newWebServBdoBean.webServ.params}" title="Separe os parâmetros com '&amp;', o último parâmetros será preenchido automáticamente."
+                                     placeholder="u=123&amp;s=123&amp;tel=" />
+                    </b:column>
+                </b:row>
+               
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Método:" />
+                    </b:column>
+                    <b:column span="4">
+                        <p:selectOneButton value="#{newWebServBdoBean.webServ.method}">
+                            <f:selectItem itemLabel="GET" itemValue="0" />
+                            <f:selectItem itemLabel="POST" itemValue="1" />
+                        </p:selectOneButton>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Retorno:" />
+                    </b:column>
+                    <b:column span="4">
+                        <p:selectOneButton value="#{newWebServBdoBean.webServ.csp}">
+                            <f:selectItem itemLabel="Número Completo" itemValue="0" />
+                            <f:selectItem itemLabel="Apenas CSP" itemValue="1" />
+                        </p:selectOneButton>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Usar Autenticação:" />
+                        </b:column>
+                        <b:column span="2">
+                            <p:selectBooleanButton offLabel="Não" onLabel="Sim" value="#{newWebServBdoBean.auth}" onIcon="ui-icon-check" offIcon="ui-icon-close" >
+                                <p:ajax update="auth" />
+                            </p:selectBooleanButton>
+                        </b:column>
+                    </b:row>
+                    <h:panelGroup id="auth">
+                        <b:row class="bRowsSpace">
+                            <b:column span="2">
+                                <h:outputText value="Usuário:"  rendered="#{newWebServBdoBean.auth}" />
+                            </b:column>
+                            <b:column span="3">
+                                <p:inputText value="#{newWebServBdoBean.webServ.authUser}" label="Usuário" required="true"  rendered="#{newWebServBdoBean.auth}" />
+                            </b:column>
+                        </b:row>
+                        <b:row class="bRowsSpace">
+                            <b:column span="2">
+                                <h:outputText value="Senha:" rendered="#{newWebServBdoBean.auth}" />
+                            </b:column>
+                            <b:column span="3">
+                                <p:inputText value="#{newWebServBdoBean.webServ.authPass}" label="Senha" required="true" rendered="#{newWebServBdoBean.auth}" />
+                            </b:column>
+                        </b:row>
+                    </h:panelGroup>
+                
+                <b:row class="bRowsSpace">
+                    <b:column span="1" class="bButtonSpace">
+                        <b:commandButton value="Salvar" iconAwesome="check" look="primary"
+                                         action="#{newWebServBdoBean.createWebServBdo()}"/>
+                    </b:column>
+                    <b:column span="1" class="bButtonSpace">
+                        <b:button value="Voltar" outcome="webServBdos" iconAwesome="undo" look="danger" />
+                    </b:column>
+                </b:row>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

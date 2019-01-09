@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Nome:" />
+            </b:column>
+            <b:column span="3">
+                <p:inputText value="#{newTrunkBean.trunk.name}"
+                             style="border-color: #{newTrunkBean.borderColor}"
+                             required="true" label="Nome">
+                    <p:ajax event="blur" listener="#{newTrunkBean.verifyTrunkName()}"
+                            update="@this growl" />
+                </p:inputText>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Descrição do Canal:" />
+            </b:column>
+            <b:column span="3">
+                <p:inputText value="#{newTrunkBean.trunk.canal}" placeholder="Tecnology/Username"
+                             title="Ex: Khomp/B0/C0-8 ou DAHDI/12" required="true" label="Canal"/>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Idioma dos Audios:" />
+            </b:column>
+            <b:column span="4">
+                <p:selectOneButton value="#{newTrunkBean.trunk.language}">
+                    <f:selectItem itemLabel="Português" itemValue="pt_BR" />
+                    <f:selectItem itemLabel="Inglês" itemValue="en" />
+                    <f:selectItem itemLabel="Francês" itemValue="fr" />
+                    <f:selectItem itemLabel="Espanhol" itemValue="es" />
+                </p:selectOneButton>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Ativa Gravação:" title="Apenas em caso de Transferência tronco a tronco" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneButton value="#{newTrunkBean.trunk.record}">
+                    <f:selectItem itemLabel="Não" itemValue="0" />
+                    <f:selectItem itemLabel="Sim" itemValue="1" />
+                </p:selectOneButton>
+            </b:column>
+        </b:row>
+        <b:panel title="Configurações Avançadas" collapsed="true" look="info">
+            <b:row class="bRowsSpace">
+                <b:column span="3">
+                    <h:outputText  value="Tech-Prefix" /><br />
+                    <p:inputText  value="#{newTrunkBean.trunk.techPrefix}" />
+                </b:column>
+                <b:column span="3">
+                    <h:outputText  value="Dial Flags" rendered="false" /><br />
+                    <p:inputText  value="#{newTrunkBean.trunk.flag}" rendered="false" />
+                </b:column>
+            </b:row>
+        </b:panel>
+        <b:row class="bRowsSpace">
+            <b:column span="1" class="bButtonSpace">
+                <b:commandButton value="Salvar" iconAwesome="check" look="primary"
+                                 action="#{newTrunkBean.submitNewTrunkMANUAL()}" />
+            </b:column>
+            <b:column span="1" class="bButtonSpace">
+                <b:button value="Voltar" outcome="trunks" iconAwesome="undo" look="danger" />
+            </b:column>
+        </b:row>
+    </ui:composition>
+</html>
+

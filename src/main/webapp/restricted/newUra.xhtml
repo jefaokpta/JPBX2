@@ -1,0 +1,243 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Nova URA</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <h1>Nova URA</h1>
+            <p:separator/>
+            <h:form>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Nome:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:inputText value="#{newUraBean.ura.webName}" label="Nome"
+                                     required="true"/>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Áudio de Saudação:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:selectOneMenu value="#{newUraBean.ura.background}">
+                            <f:selectItem itemLabel="---" itemValue="empty" />
+                            <f:selectItems value="#{newUraBean.mohs}" />
+                        </p:selectOneMenu>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Idioma dos Audios:" />
+                    </b:column>
+                    <b:column span="4">
+                        <p:selectOneButton value="#{newUraBean.ura.language}">
+                            <f:selectItem itemLabel="Português" itemValue="pt_BR" />
+                            <f:selectItem itemLabel="Inglês" itemValue="en" />
+                            <f:selectItem itemLabel="Francês" itemValue="fr" />
+                            <f:selectItem itemLabel="Espanhol" itemValue="es" />
+                        </p:selectOneButton>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Tempo de Interação:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:selectOneMenu value="#{newUraBean.ura.interactTimeout}">
+                            <f:selectItem itemLabel="1 segundo" itemValue="1" />
+                            <f:selectItem itemLabel="2 segundos" itemValue="2" />
+                            <f:selectItem itemLabel="3 segundos" itemValue="3" />
+                            <f:selectItem itemLabel="4 segundos" itemValue="4" />
+                            <f:selectItem itemLabel="5 segundos" itemValue="5" />
+                            <f:selectItem itemLabel="6 segundos" itemValue="6" />
+                            <f:selectItem itemLabel="7 segundos" itemValue="7" />
+                            <f:selectItem itemLabel="8 segundos" itemValue="8" />
+                            <f:selectItem itemLabel="9 segundos" itemValue="9" />
+                        </p:selectOneMenu>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Tempo Entre Dígitos:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:selectOneMenu value="#{newUraBean.ura.digitTimeout}">
+                            <f:selectItem itemLabel="1 segundo" itemValue="1" />
+                            <f:selectItem itemLabel="2 segundos" itemValue="2" />
+                            <f:selectItem itemLabel="3 segundos" itemValue="3" />
+                            <f:selectItem itemLabel="4 segundos" itemValue="4" />
+                            <f:selectItem itemLabel="5 segundos" itemValue="5" />
+                            <f:selectItem itemLabel="6 segundos" itemValue="6" />
+                            <f:selectItem itemLabel="7 segundos" itemValue="7" />
+                            <f:selectItem itemLabel="8 segundos" itemValue="8" />
+                            <f:selectItem itemLabel="9 segundos" itemValue="9" />
+                        </p:selectOneMenu>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Tempo de Interação Excedido:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:selectOneMenu value="#{newUraBean.ura.timeoutAction}" >
+                            <p:ajax update="tParam" listener="#{newUraBean.changeTimeoutAction()}" />
+                            <f:selectItem itemLabel="Desligar" itemValue="hangup" />
+                            <f:selectItem itemLabel="Voltar ao Início" itemValue="begin" />
+                            <f:selectItem itemLabel="Discar para Ramal" itemValue="peer" />
+                            <f:selectItem itemLabel="Grupo de Chamada" itemValue="callGrp" />
+                            <f:selectItem itemLabel="Sub URA" itemValue="subUra" />
+                            <f:selectItem itemLabel="Fila de Atendimento" itemValue="queue" />
+                            <f:selectItem itemLabel="Regra Especial" itemValue="rule" />
+                        </p:selectOneMenu>
+                    </b:column>
+                    <b:column span="3">
+                        <h:panelGroup id="tParam">
+                            <p:selectOneMenu value="#{newUraBean.ura.timeoutParam}" rendered="#{newUraBean.timeoutPeer}"
+                                             var="peer" filter="true" filterMatchMode="contains">
+                                <f:selectItems value="#{newUraBean.peers}" />
+                            </p:selectOneMenu>
+                            <p:selectOneMenu value="#{newUraBean.ura.timeoutParam}" rendered="#{newUraBean.timeoutQueue}">
+                                <f:selectItems value="#{newUraBean.queues}"  />
+                            </p:selectOneMenu>
+                            <p:selectOneMenu value="#{newUraBean.ura.timeoutParam}" rendered="#{newUraBean.timeoutSubUra}">
+                                <f:selectItems value="#{newUraBean.subUras}" />
+                            </p:selectOneMenu>
+                            <p:selectOneMenu value="#{newUraBean.ura.timeoutParam}" rendered="#{newUraBean.timeoutCallGrp}">
+                                <f:selectItems value="#{newUraBean.callGrps}" />
+                            </p:selectOneMenu>
+                            <p:inputText value="#{newUraBean.ura.timeoutParam}" rendered="#{newUraBean.timeoutRule}"/>
+                        </h:panelGroup>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Número Inválido:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:selectOneMenu value="#{newUraBean.ura.invalidAction}">
+                            <p:ajax listener="#{newUraBean.changeInvalidAction()}" update="iParam" />
+                            <f:selectItem itemLabel="Desligar" itemValue="hangup" />
+                            <f:selectItem itemLabel="Voltar ao Início" itemValue="begin" />
+                            <f:selectItem itemLabel="Discar para Ramal" itemValue="peer" />
+                            <f:selectItem itemLabel="Grupo de Chamada" itemValue="callGrp" />
+                            <f:selectItem itemLabel="Sub URA" itemValue="subUra" />
+                            <f:selectItem itemLabel="Fila de Atendimento" itemValue="queue" />
+                            <f:selectItem itemLabel="Regra Especial" itemValue="rule" />
+                        </p:selectOneMenu>
+                    </b:column>
+                    <b:column span="3">
+                        <h:panelGroup id="iParam">
+                            <p:selectOneMenu value="#{newUraBean.ura.invalidParam}" rendered="#{newUraBean.invalidPeer}"
+                                             var="peer" filter="true" filterMatchMode="contains">
+                                <f:selectItems value="#{newUraBean.peers}" />
+                            </p:selectOneMenu>
+                            <p:selectOneMenu value="#{newUraBean.ura.invalidParam}" rendered="#{newUraBean.invalidQueue}">
+                                <f:selectItems value="#{newUraBean.queues}"  />
+                            </p:selectOneMenu>
+                            <p:selectOneMenu value="#{newUraBean.ura.invalidParam}" rendered="#{newUraBean.invalidSubUra}">
+                                <f:selectItems value="#{newUraBean.subUras}" />
+                            </p:selectOneMenu>
+                            <p:selectOneMenu value="#{newUraBean.ura.invalidParam}" rendered="#{newUraBean.invalidCallGrp}">
+                                <f:selectItems value="#{newUraBean.callGrps}" />
+                            </p:selectOneMenu>
+                            <p:inputText value="#{newUraBean.ura.invalidParam}" rendered="#{newUraBean.invalidRule}"/>
+                        </h:panelGroup>
+                    </b:column>                   
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Habilita Discar Ramal Desejado:" />
+                    </b:column>
+                    <b:column span="2">
+                        <p:inputSwitch value="#{newUraBean.habPeers}" offLabel="Não" onLabel="Sim" />
+                    </b:column>
+                </b:row>
+                
+                <b:row class="bRowsSpace">
+                    <b:column span="1" class="bButtonSpace">
+                        <b:commandButton value="Salvar" iconAwesome="check" look="primary"
+                                         action="#{newUraBean.submitNewUra()}"/>
+                    </b:column>
+                    <b:column span="1" class="bButtonSpace">
+                        <b:button value="Voltar" outcome="uras" iconAwesome="undo" look="danger" />
+                    </b:column>
+                </b:row>
+            </h:form>
+            <b:panel look="info" title="Opções da URA" collapsible="false">
+                <h:form>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Opção" />
+                            <p:inputText value="#{newUraBean.uraOption.option}" type="number" required="true"
+                                         label="Opção"/>
+                        </b:column>
+                        <b:column span="2">
+                            <h:outputText value="Ação" />
+                            <p:selectOneMenu value="#{newUraBean.uraOption.action}">
+                                <p:ajax listener="#{newUraBean.changeOptionAction()}" update="oParam" />
+                                <f:selectItem itemLabel="Desligar" itemValue="hangup" />
+                                <f:selectItem itemLabel="Voltar ao Início" itemValue="begin" />
+                                <f:selectItem itemLabel="Discar para Ramal" itemValue="peer" />
+                                <f:selectItem itemLabel="Grupo de Chamada" itemValue="callGrp" />
+                                <f:selectItem itemLabel="Sub URA" itemValue="subUra" />
+                                <f:selectItem itemLabel="Fila de Atendimento" itemValue="queue" />
+                                <f:selectItem itemLabel="Regra Especial" itemValue="rule" />
+                            </p:selectOneMenu>
+                        </b:column>    
+                        <b:column span="2">                          
+                            <h:panelGroup id="oParam">
+                                <h:outputText value="Parâmetro" /><br />
+                                <p:selectOneMenu value="#{newUraBean.uraOption.param}" rendered="#{newUraBean.optionPeer}"
+                                                 var="peer" filter="true" filterMatchMode="contains">
+                                    <f:selectItems value="#{newUraBean.peers}" />
+                                </p:selectOneMenu>
+                                <p:selectOneMenu value="#{newUraBean.uraOption.param}" rendered="#{newUraBean.optionQueue}">
+                                    <f:selectItems value="#{newUraBean.queues}" />
+                                </p:selectOneMenu>
+                                <p:selectOneMenu value="#{newUraBean.uraOption.param}" rendered="#{newUraBean.optionSubUra}">
+                                    <f:selectItems value="#{newUraBean.subUras}" />
+                                </p:selectOneMenu>
+                                <p:selectOneMenu value="#{newUraBean.uraOption.param}" rendered="#{newUraBean.optionCallGrp}">
+                                    <f:selectItems value="#{newUraBean.callGrps}" />
+                                </p:selectOneMenu>
+                                <p:inputText value="#{newUraBean.uraOption.param}" rendered="#{newUraBean.optionRule}"/>
+                            </h:panelGroup>
+                        </b:column>
+                        <b:column span="1">
+                            <b:commandButton value="Adicionar" look="success" actionListener="#{newUraBean.addOption()}"
+                                             ajax="true" update="@form growl" iconAwesome="plus-circle"
+                                             style="margin: 15px 0"/>
+                        </b:column>
+                    </b:row>               
+                    <p:dataTable var="op" value="#{newUraBean.uraOptions}" class="textCenter" paginator="true"
+                             rows="30" paginatorPosition="bottom" reflow="true" emptyMessage="Sem Opções.">
+                        <p:column headerText="Dígito" sortBy="#{op.option}">
+                            <h:outputText value="#{op.option}" />
+                        </p:column>
+                        <p:column headerText="Ação">
+                            <h:outputText value="#{newUraBean.translateAction(op.action)}" />
+                        </p:column>
+                        <p:column headerText="Parâmetro">
+                            <h:outputText value="#{newUraBean.translateParam(op.action, op.param)}" />
+                        </p:column>
+                        <p:column headerText="Ações">
+                            <b:commandButton value="Apagar" look="danger" iconAwesome="trash-o"
+                                             actionListener="#{newUraBean.removeOption(op)}"
+                                             update="@form" ajax="true" />
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </b:panel>
+        </ui:define>
+    </ui:composition>
+</html>
+

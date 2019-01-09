@@ -1,0 +1,47 @@
+body{
+    background-image: url(img/bgbody.png);
+}
+.formStrong{
+    font-weight: bold;
+}
+.ui-growl{
+    margin-top: 50px;
+}
+.backPanel{
+    background-color: whitesmoke;
+}
+.contentDown{
+    margin-top: 50px;
+}
+.textCenter{
+    text-align: center;
+}
+.bRowsSpace{
+    padding: 5px;
+}
+.bButtonSpace{
+    /* padding: 2px; */
+    margin: 0 5px;
+}
+.imgCircular {
+    /* padding-left: 3px; */
+    width: 100px;
+    height: 80px;
+    border-radius: 150px;
+    -webkit-border-radius: 150px;
+    -moz-border-radius: 150px;             
+}
+.borderRedonda{
+    border: 2px #337ab7 solid;
+    width: 95%;
+    -webkit-border-radius: 10px ;
+    -moz-border-radius: 10px ;
+    border-radius: 10px ;
+}
+.borderRedonda:hover{
+    background-color: #fef7e3;
+}      
+.callsLogPanel{
+    height: 350px;
+    overflow: auto;
+}

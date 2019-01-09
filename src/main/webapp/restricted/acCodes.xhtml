@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+   
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Códigos de Conta</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="10">
+                    <h1>Códigos de Conta</h1>
+                </b:column>              
+                <b:column span="2">
+                    <h:form>
+                        <b:button style="float: right;margin: 22px 0" outcome="newAcCode"
+                                  value="Código de Conta" look="primary" iconAwesome="plus" disabled="#{acCodesBean.validNewButton}" />
+                    </h:form>
+                </b:column>
+            </b:row>
+            <p:separator/>
+            <h:form>
+                <p:dataTable var="ac" value="#{acCodesBean.accodes}" class="textCenter" paginator="true"
+                             rows="15" paginatorPosition="bottom" reflow="true" emptyMessage="Não há Códigos de Conta.">
+                    <p:column headerText="Id" sortBy="#{ac.id}">
+                        <h:outputText value="#{ac.id}" />
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{ac.name}">
+                        <h:outputText value="#{ac.name}" />
+                    </p:column>                   
+                    <p:column headerText="Empresa" sortBy="#{ac.company}">
+                        <h:outputText value="#{userSession.translateCompany(ac.company)}" />
+                    </p:column>
+                    <p:column headerText="Códigos">
+                        <b:commandButton value="#{ac.acCodePins.size()}" actionListener="#{acCodesBean.showPins(ac)}"
+                                         iconAwesome="search" ajax="true" update="showPins" look="info" title="Códigos"/>
+                    </p:column>
+                    <p:column headerText="Ações">
+                        <b:commandButton value="Editar" iconAwesome="edit" title="Editar" look="primary" action="#{acCodesBean.editAcCode(ac)}" >
+                            
+                        </b:commandButton>
+                        <b:commandButton class="bButtonSpace" value="Apagar"
+                                       actionListener="#{acCodesBean.alertDelete(ac)}"
+                                       update="alertAcCode growl" iconAwesome="trash-o" look="danger" title="Apagar" />                           
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+ 
+            <p:dialog id="alertAcCode" widgetVar="alertAcCode" modal="true" header="Apagar #{acCodesBean.accode.name}?" showEffect="blind">
+                <h:form>
+                    <h:panelGrid columns="1">
+                        <h:outputText style="color: red"  value="Deseja realmente apagar este Código de Conta?" />
+                        <p:separator />
+                        <b:commandButton value="Apagar" look="danger"
+                                         iconAwesome="trash" action="#{acCodesBean.deleteAcCode()}" />
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+            <p:dialog id="showPins" widgetVar="showPins" header="Pins de #{acCodesBean.accode.name}" showEffect="blind">
+                <p:dataTable class="textCenter" style="width: 300px" value="#{acCodesBean.accode.acCodePins}" var="pin"
+                            paginator="true" rows="5" paginatorPosition="bottom" emptyMessage="Não há pins.">
+                    <p:column headerText="Nome" sortBy="#{pin.name}">
+                        <h:outputText value="#{pin.name}" />
+                    </p:column>
+                    <p:column headerText="PIN">
+                        <h:outputText value="#{pin.pin}" />
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>
+

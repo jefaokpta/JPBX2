@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Membros da Fila</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <h1>Membros de  #{queueMembersBean.queue.webName}</h1>
+            <p:separator/>
+            <h:form>                           
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Membros:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:pickList value="#{queueMembersBean.agentSelection}" var="ag"
+                                itemValue="#{ag}" itemLabel=" #{ag}" showCheckbox="true" 
+                                showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains">
+                            <f:facet name="sourceCaption">Agentes Disponíveis</f:facet>
+                            <f:facet name="targetCaption">Selecionados</f:facet>         
+                            <p:ajax event="transfer" listener="#{queueMembersBean.onTransfer}"/>
+                        </p:pickList>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="1" class="bButtonSpace">
+                        <b:commandButton value="Salvar" iconAwesome="check" look="primary"
+                                         action="#{queueMembersBean.updateMembers()}"/>
+                    </b:column>
+                    <b:column span="1" class="bButtonSpace">
+                        <b:button value="Voltar" outcome="queues" iconAwesome="undo" look="danger" />
+                    </b:column>
+                </b:row>
+            </h:form>
+            <p:ajaxStatus>
+                <f:facet name="default">
+                    <h:outputText value="" />
+                </f:facet>
+                <f:facet name="start">
+                    <p:graphicImage style="position: fixed; bottom: 5px; right: 5px" library="img" name="loading.gif" />
+                </f:facet>
+                <f:facet name="complete">
+                    <h:outputText value="" />
+                </f:facet>
+            </p:ajaxStatus> 
+        </ui:define>
+    </ui:composition>
+</html>
+
+
+

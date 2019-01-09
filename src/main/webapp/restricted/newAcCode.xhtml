@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Novo Código de Conta</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <h1>Novo Código de Conta</h1>
+            <p:separator/>
+            <h:form>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Nome:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:inputText id="name" value="#{newAcCode.accode.name}"
+                                     required="true" label="Nome" />
+                    </b:column>
+                </b:row>
+                
+                <b:row class="bRowsSpace">
+                    <b:column span="1" class="bButtonSpace">
+                        <b:commandButton value="Salvar" iconAwesome="check" look="primary"
+                                         action="#{newAcCode.submitNewAcCode()}"/>
+                    </b:column>
+                    <b:column span="1" class="bButtonSpace">
+                        <b:button value="Voltar" outcome="acCodes" iconAwesome="undo" look="danger" />
+                    </b:column>
+                </b:row>
+            </h:form>
+                <b:panel title="Nomes e PINs" collapsible="false" look="info">
+                    <h:form>
+                        <b:row class="bRowsSpace">
+                            <b:column span="3">
+                                <h:panelGrid>
+                                    <h:outputText value="Nome" />
+                                    <p:inputText value="#{newAcCode.pin.name}" label="Nome" />
+                                </h:panelGrid>                           
+                            </b:column>   
+                            <b:column span="3">
+                                <h:panelGrid>
+                                    <h:outputText value="PIN" />
+                                    <p:inputText type="number" value="#{newAcCode.pin.pin}" label="PIN"
+                                                 placeholder="De 3 a 4 Digitos" >
+                                        <f:validateLongRange minimum="100" maximum="9999"/>
+                                    </p:inputText>
+                                </h:panelGrid>                           
+                            </b:column>   
+                            <b:column span="2">
+                                <h:panelGrid>
+                                    <b:commandButton value="Adicionar" actionListener="#{newAcCode.addPIN()}"
+                                                 update="@form growl" ajax="true" look="success" iconAwesome="plus-circle"
+                                                 style="margin: 15px 0"/>
+                                </h:panelGrid>
+                            </b:column>
+                        </b:row>
+                        <p:dataTable var="pin" value="#{newAcCode.pins}" class="textCenter" paginator="true"
+                                 rows="30" paginatorPosition="bottom" reflow="true" emptyMessage="Não há PINs">
+                            <p:column headerText="Nome" sortBy="#{pin.name}">
+                                <h:outputText value="#{pin.name}" />
+                            </p:column>
+                            <p:column headerText="PIN">
+                                <h:outputText value="#{pin.pin}" />
+                            </p:column>
+                            <p:column headerText="Ações">                               
+                                <b:commandButton value="Apagar" look="danger" iconAwesome="trash-o"
+                                                 actionListener="#{newAcCode.removePIN(pin)}"
+                                             update="@form" ajax="true" />
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </b:panel>
+                
+        </ui:define>
+    </ui:composition>
+</html>
+

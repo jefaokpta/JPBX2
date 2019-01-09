@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+   
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Grupos de Chamada</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="10">
+                    <h1>Grupos de Chamada</h1>
+                </b:column>              
+                <b:column span="2">
+                    <h:form>
+                        <b:button style="float: right;margin: 22px 0" outcome="newCallGrp"
+                            value="Grupo de Chamada" look="primary" iconAwesome="plus" />
+                    </h:form>
+                </b:column>
+            </b:row>
+            <p:separator/>
+            <h:form>
+                <p:dataTable var="grp" value="#{callGrpsBean.callGrps}" class="textCenter" paginator="true"
+                             rows="15" paginatorPosition="bottom" reflow="true" emptyMessage="Não há Grupos de Chamada.">
+                    <p:column headerText="Id" sortBy="#{grp.id}">
+                        <h:outputText value="#{grp.id}" />
+                    </p:column>
+                    <p:column headerText="Nome" filterBy="#{grp.webName}" filterMatchMode="contains" sortBy="#{grp.webName}">
+                        <h:outputText value="#{grp.webName}" />
+                    </p:column>                   
+                    <p:column headerText="Empresa" sortBy="#{grp.company}">
+                        <h:outputText value="#{userSession.translateCompany(grp.company)}" />
+                    </p:column>
+                    <p:column headerText="Integrantes">
+                        <b:commandButton value="#{grp.queueMembers.size()}" actionListener="#{callGrpsBean.showMembers(grp)}"
+                                         iconAwesome="search" ajax="true" update="showMembers" look="info" title="Membros" />
+                    </p:column>
+                    <p:column headerText="Ações">
+                        <b:commandButton value="Editar" iconAwesome="edit" title="Editar" look="primary" action="#{callGrpsBean.editCallGrp(grp)}" >
+                            
+                        </b:commandButton>
+                        <b:commandButton class="bButtonSpace" value="Apagar"
+                                       actionListener="#{callGrpsBean.alertDelete(grp)}"
+                                       update="alertCallGrp growl" iconAwesome="trash-o" look="danger" title="Apagar" />                           
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+ 
+            <p:dialog id="alertCallGrp" widgetVar="alertCallGrp" modal="true" header="Apagar #{callGrpsBean.callGrp.webName}?" showEffect="blind">
+                <h:form>
+                    <h:panelGrid columns="1">
+                        <h:outputText style="color: red"  value="Deseja realmente apagar este Grupo de Chamada?" />
+                        <p:separator />
+                        <b:commandButton value="Apagar" look="danger"
+                                         iconAwesome="trash" action="#{callGrpsBean.deleteCallGrp()}" />
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+            <p:dialog id="showMembers" widgetVar="showMembers" header="Membros de #{callGrpsBean.callGrp.webName}" showEffect="blind">
+                <p:dataTable class="textCenter" style="width: 300px" value="#{callGrpsBean.callGrp.queueMembers}" var="member"
+                            paginator="true" rows="5" paginatorPosition="bottom" emptyMessage="Não há membros.">
+                    <p:column headerText="Ramais" sortBy="#{member.membername}">
+                        <h:outputText value="#{member.membername}" />
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>
+

@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Central de Comando Aterisk</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="10">
+                    <h1>Central de Comando Asterisk</h1>
+                </b:column>              
+            </b:row>
+            <p:separator/>
+            <h:form prependId="false">
+                <b:row>
+                    <b:column>
+                        <p:inputTextarea id="logs" value="#{cliBean.logs}" rows="15" autoResize="false" readonly="true"  style="width: 90%" />
+                    </b:column>
+                </b:row>
+            </h:form>
+            <h:form>                            
+                <b:row>
+                    <b:column span="2">
+                        <h4><h:outputText value="Filtrar Log:" /></h4>
+                    </b:column>
+                    <b:column span="4">
+                        <p:inputText placeholder="SIP/1234" style="width: 300px" value="#{cliBean.filter}" />
+                    </b:column>
+                    <b:column span="2">
+                        <b:commandButton look="warning" value="Atualizar Log" actionListener="#{cliBean.filterLogs()}" update="growl logs" ajax="true" />
+                    </b:column>
+                </b:row>
+            </h:form>
+            <b:panel look="primary" title="Console de Comando" style="background-color: gray" collapsed="true">
+                <h:form>
+                    <p:terminal id="cli" widgetVar="cli" commandHandler="#{cliBean.handleCommand}"
+                                welcomeMessage="Execute comandos no Asterisk. Ex: sip show peers" prompt="CLI ->" />
+ 
+                <p:commandButton type="button" value="Limpar" icon="ui-icon-trash" onclick="PF('cli').clear()" style="margin-top:10px"/>
+                </h:form>
+            </b:panel>
+            <p:ajaxStatus>
+                <f:facet name="default">
+                    <h:outputText value="" />
+                </f:facet>
+                <f:facet name="start">
+                    <p:graphicImage style="position: fixed; bottom: 5px; right: 5px" library="img" name="loading.gif" />
+                </f:facet>
+                <f:facet name="complete">
+                    <h:outputText value="" />
+                </f:facet>
+            </p:ajaxStatus> 
+            <script>
+                $(function(){
+                    $('#logs').focus();
+                });
+            </script>
+        </ui:define>
+    </ui:composition>
+</html>
+

@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Telefonista Online</title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['img/favicon.ico']}" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <h:outputStylesheet library="css" name="cssJefao.css" />
+        
+        <style>
+            .spaceTop{
+                margin-top: 5px;
+            }
+            .spaceLeft{
+                margin-left: 25px;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <b:container>
+            <b:panel class="backPanel">
+                <b:row>
+                    <b:column span="10">
+                        <h1>Telefonista Online</h1>
+                    </b:column>              
+                    <b:column span="2">
+                        <b:inputText placeholder="Seu Ramal" id="peer" type="number">
+                            <f:facet name="append">
+                                <b:iconAwesome name="phone-square" />
+                            </f:facet>
+                        </b:inputText>
+                    </b:column>
+                </b:row>
+                <p:separator />
+                <div class="row" id="screen">
+                    
+                </div>             
+                <p:separator />
+                <f:facet name="footer" >
+                    <b:row>
+                        <b:column span="10" >
+                        </b:column>
+                        <b:column span="1">
+                            <a href="https://br.linkedin.com/in/jefferson-alves-reis-00007361"
+                               title="by jefaokpta" target="_blank">
+                                <b:label text="JPBX versão 2.0" />
+                            </a>
+                        </b:column>
+                    </b:row>
+                </f:facet>
+            </b:panel>
+        </b:container>     
+        <div id="call" />
+        <h:outputScript library="js" name="notificationPermition.js" />
+        <h:outputScript library="js" name="updateMTO.js" />
+        <script>
+            var company=#{userSession.currentCompanyId};                
+        </script>
+    </h:body>
+</html>
+

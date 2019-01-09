@@ -1,0 +1,251 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Nome:" />
+            </b:column>
+            <b:column span="3">
+                <p:inputText value="#{editTrunkBean.trunk.name}"
+                             style="border-color: #{editTrunkBean.borderColor}"
+                             required="true" label="Nome">
+                    <p:ajax event="blur" listener="#{editTrunkBean.verifyTrunkName()}"
+                            update="@this growl" />
+                </p:inputText>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Usuário:" />
+            </b:column>
+            <b:column span="3">
+                <p:inputText value="#{editTrunkBean.trunk.username}"
+                             title="Username" required="true" label="Usuário"/>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Senha:" />
+            </b:column>
+            <b:column span="3">
+                <p:inputText value="#{editTrunkBean.trunk.secret}"
+                             title="Secret" required="true" label="Senha"/>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Servidor Remoto:" />
+            </b:column>
+            <b:column span="3">
+                <p:inputText value="#{editTrunkBean.trunk.host}" title="Host" required="true"
+                             label="Servidor Remoto">
+                    <p:ajax event="blur" listener="#{editTrunkBean.doPing()}"
+                        update="growl" />
+                </p:inputText>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Codecs de Áudio:" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneMenu  value="#{editTrunkBean.audioCodec1}">
+                    <f:selectItem itemLabel="ULAW" itemValue="ulaw" />
+                    <f:selectItem itemLabel="ALAW" itemValue="alaw" />
+                    <f:selectItem itemLabel="G729" itemValue="g729" />
+                    <f:selectItem itemLabel="GSM" itemValue="gsm" />
+                    <f:selectItem itemLabel="G722" itemValue="g722" />
+                    <f:selectItem itemLabel="G726" itemValue="g726" />
+                </p:selectOneMenu>
+                <p:selectOneMenu  value="#{editTrunkBean.audioCodec2}">
+                    <f:selectItem itemLabel="---" itemValue="" />
+                    <f:selectItem itemLabel="ULAW" itemValue="ulaw" />
+                    <f:selectItem itemLabel="ALAW" itemValue="alaw" />
+                    <f:selectItem itemLabel="G729" itemValue="g729" />
+                    <f:selectItem itemLabel="GSM" itemValue="gsm" />
+                    <f:selectItem itemLabel="G722" itemValue="g722" />
+                    <f:selectItem itemLabel="G726" itemValue="g726" />
+                </p:selectOneMenu>
+                <p:selectOneMenu  value="#{editTrunkBean.audioCodec3}">
+                    <f:selectItem itemLabel="---" itemValue="" />
+                    <f:selectItem itemLabel="ULAW" itemValue="ulaw" />
+                    <f:selectItem itemLabel="ALAW" itemValue="alaw" />
+                    <f:selectItem itemLabel="G729" itemValue="g729" />
+                    <f:selectItem itemLabel="GSM" itemValue="gsm" />
+                    <f:selectItem itemLabel="G722" itemValue="g722" />
+                    <f:selectItem itemLabel="G726" itemValue="g726" />
+                </p:selectOneMenu>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Codecs de Vídeo:" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneMenu  value="#{editTrunkBean.videoCodec1}">
+                    <f:selectItem itemLabel="---" itemValue="" />                           
+                    <f:selectItem itemLabel="H261" itemValue="h261" />
+                    <f:selectItem itemLabel="H263" itemValue="h263" />
+                    <f:selectItem itemLabel="H263p" itemValue="h263p" />
+                    <f:selectItem itemLabel="H264" itemValue="h264" />
+                    <f:selectItem itemLabel="MPEG4" itemValue="mpeg4" />
+                    <f:selectItem itemLabel="VP8" itemValue="vp8" />
+                </p:selectOneMenu>
+                <p:selectOneMenu  value="#{editTrunkBean.videoCodec2}">
+                    <f:selectItem itemLabel="---" itemValue="" />
+                    <f:selectItem itemLabel="H261" itemValue="h261" />
+                    <f:selectItem itemLabel="H263" itemValue="h263" />
+                    <f:selectItem itemLabel="H263p" itemValue="h263p" />
+                    <f:selectItem itemLabel="H264" itemValue="h264" />
+                    <f:selectItem itemLabel="MPEG4" itemValue="mpeg4" />
+                    <f:selectItem itemLabel="VP8" itemValue="vp8" />
+                </p:selectOneMenu>
+                <p:selectOneMenu  value="#{editTrunkBean.videoCodec3}">
+                    <f:selectItem itemLabel="---" itemValue="" />
+                    <f:selectItem itemLabel="H261" itemValue="h261" />
+                    <f:selectItem itemLabel="H263" itemValue="h263" />
+                    <f:selectItem itemLabel="H263p" itemValue="h263p" />
+                    <f:selectItem itemLabel="H264" itemValue="h264" />
+                    <f:selectItem itemLabel="MPEG4" itemValue="mpeg4" />
+                    <f:selectItem itemLabel="VP8" itemValue="vp8" />
+                </p:selectOneMenu>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Idioma dos Audios:" />
+            </b:column>
+            <b:column span="4">
+                <p:selectOneButton value="#{editTrunkBean.trunk.language}">
+                    <f:selectItem itemLabel="Português" itemValue="pt_BR" />
+                    <f:selectItem itemLabel="Inglês" itemValue="en" />
+                    <f:selectItem itemLabel="Francês" itemValue="fr" />
+                    <f:selectItem itemLabel="Espanhol" itemValue="es" />
+                </p:selectOneButton>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Tipo de Discagem:" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneButton value="#{editTrunkBean.trunk.dtmfMode}">
+                    <f:selectItem itemLabel="RFC2833" itemValue="rfc2833" />
+                    <f:selectItem itemLabel="Info" itemValue="info" />
+                    <f:selectItem itemLabel="Inband" itemValue="inband" />
+                    <f:selectItem itemLabel="Auto" itemValue="auto" />
+                </p:selectOneButton>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Ativa NAT:" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneButton value="#{editTrunkBean.trunk.nat}">
+                    <f:selectItem itemLabel="Não" itemValue="no" />
+                    <f:selectItem itemLabel="Sim" itemValue="force_rport,comedia" />
+                </p:selectOneButton>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Ativa Qualidade:" title="Qualify" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneButton value="#{editTrunkBean.trunk.qualify}">
+                    <f:selectItem itemLabel="Não" itemValue="no" />
+                    <f:selectItem itemLabel="Sim" itemValue="yes" />
+                </p:selectOneButton>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Ativa Gravação:" title="Apenas em caso de Transferência tronco a tronco" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneButton value="#{editTrunkBean.trunk.record}">
+                    <f:selectItem itemLabel="Não" itemValue="0" />
+                    <f:selectItem itemLabel="Sim" itemValue="1" />
+                </p:selectOneButton>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Registrar" title="Caso esta conta tenha número de recebimento." />
+            </b:column>
+            <b:column span="3">
+                <p:inputSwitch value="#{editTrunkBean.register}" onLabel="Sim" offLabel="Não" >
+                    <p:ajax update="exten" />
+                </p:inputSwitch>
+            </b:column>
+            <b:column span="3">
+                <h:panelGroup id="exten" >
+                    <h:outputText value="Número de Recebimento" rendered="#{editTrunkBean.register}" />
+                    <p:inputText value="#{editTrunkBean.trunk.register}" rendered="#{editTrunkBean.register}"
+                                 placeholder="EXTEN" title="Caso sua operadora não envie número de destino nas ligações recebidas."/>
+                </h:panelGroup>
+            </b:column>
+        </b:row>
+        
+        <b:panel title="Configurações Avançadas" collapsed="true" look="info">
+            <b:row class="bRowsSpace">
+                <b:column span="2">
+                    <h:outputText  value="Reinvite" /><br />
+                    <p:selectOneMenu style="width: 80px" value="#{editTrunkBean.trunk.reinvite}">
+                        <f:selectItem itemLabel="Não" itemValue="no" />
+                        <f:selectItem itemLabel="Sim" itemValue="yes" />                  
+                    </p:selectOneMenu>
+                </b:column>
+                <b:column span="2">
+                    <h:outputText  value="Canreinvite" /><br />
+                    <p:selectOneMenu style="width: 80px" value="#{editTrunkBean.trunk.canReinvite}">
+                        <f:selectItem itemLabel="Não" itemValue="no" />
+                        <f:selectItem itemLabel="Sim" itemValue="yes" />                  
+                    </p:selectOneMenu>
+                </b:column>
+                
+            </b:row>
+            <b:row class="bRowsSpace">
+                <b:column span="3">
+                    <h:outputText value="From User" /><br />
+                    <p:inputText  value="#{editTrunkBean.trunk.fromUser}" />
+                </b:column>
+                <b:column span="3">
+                    <h:outputText  value="From Domain" /><br />
+                    <p:inputText  value="#{editTrunkBean.trunk.fromDomain}" />
+                </b:column>
+            </b:row>
+            <b:row class="bRowsSpace">
+                <b:column span="3">
+                    <h:outputText  value="Tech-Prefix" /><br />
+                    <p:inputText  value="#{editTrunkBean.trunk.techPrefix}" />
+                </b:column>
+                <b:column span="3">
+                    <h:outputText  value="Dial Flags" rendered="false" /><br />
+                    <p:inputText  value="#{editTrunkBean.trunk.flag}" rendered="false" />
+                </b:column>
+            </b:row>
+            <h:outputText  value="Configurações Extras" /><br />
+            <p:inputTextarea cols="30" rows="6" value="#{editTrunkBean.trunk.advancedText}"
+                             title="Atenção!!! Devem ser escritos parâmetros válidos corretamente."/>
+        </b:panel>
+        <b:row class="bRowsSpace">
+            <b:column span="1" class="bButtonSpace">
+                <b:commandButton value="Salvar" iconAwesome="check" look="primary"
+                                 action="#{editTrunkBean.updateTrunkSIP()}" />
+            </b:column>
+            <b:column span="1" class="bButtonSpace">
+                <b:button value="Voltar" outcome="trunks" iconAwesome="undo" look="danger" />
+            </b:column>
+        </b:row>
+    </ui:composition>
+</html>
+

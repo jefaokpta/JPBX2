@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Anti Invasão</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <p:growl id="growlDesc" life="30000" showDetail="true" />
+            <b:row>
+                <b:column span="8">
+                    <h1>Redes Bloqueadas</h1>
+                </b:column>   
+                <b:column span="2">
+                    <h:form>
+                        <p:inputSwitch value="#{invasionsBean.autoInvasion}"  style="float: right;margin: 22px 0" label="Modo Automático" offLabel="Desativado" onLabel="Ativado">
+                            <p:ajax listener="#{invasionsBean.switchInvasion()}" update="growlDesc" />
+                        </p:inputSwitch>
+                    </h:form>
+                </b:column>
+                <b:column span="2">
+                    <h:form>
+                        <b:commandButton style="float: right;margin: 22px 0"  update="newInvasion"
+                                         value="IP/Rede" look="primary" iconAwesome="plus" actionListener="#{invasionsBean.addInvasion()}" />
+                    </h:form>
+                </b:column>
+            </b:row>
+            <p:separator/>
+            <h:form>
+                <p:dataTable var="i" value="#{invasionsBean.invasions}" class="textCenter" paginator="true"
+                             rows="15" paginatorPosition="bottom" reflow="true" emptyMessage="Não há Redes Bloqueadas">
+                    <f:facet name="header">
+                        Atualmente constam #{invasionsBean.invasions.size()} IP's / Rede's bloqueadas
+                    </f:facet>
+                    <p:column headerText="Data Hora" sortBy="#{i.datetime}">                      
+                        <h:outputText value="#{i.datetime}" >
+                            <f:convertDateTime dateStyle="default" timeZone="GMT-03:00"/>
+                        </h:outputText>    
+                        <h:outputText value="#{i.datetime}" >
+                            <f:convertDateTime timeZone="GMT-03:00"  pattern=" HH:mm:ss" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="IP/Rede" sortBy="#{i.ip}" filterBy="#{i.ip}">
+                        <h:outputText value="#{i.ip}" /><br />
+                        <a href="http://whois.domaintools.com/#{i.ip}" target="_blank"><i class="fa fa-link"></i> Consultar IP </a>
+                    </p:column>
+                    <p:column headerText="Mascara" sortBy="#{i.mask}">
+                        <h:outputText value="#{i.mask}" />
+                    </p:column>
+                    <p:column headerText="Ações">
+                        <b:commandButton class="bButtonSpace" value="Apagar" look="danger" iconAwesome="trash-o"
+                                         actionListener="#{invasionsBean.deleteInvasion(i)}"
+                                         update="@form growl" />
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog id="newInvasion" widgetVar="newInvasion" modal="true" header="Adicionar Rede ao Bloqueio" showEffect="blind">
+                <h:form>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="IP/Rede:" />
+                        </b:column>
+                        <b:column span="1">
+                            <p:inputText value="#{invasionsBean.invasion.ip}" required="true" label="IP ou Rede" />
+                        </b:column>
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Máscara:" />
+                        </b:column>
+                        <b:column span="1">
+                            <p:inputText value="#{invasionsBean.invasion.mask}" />
+                        </b:column>
+                    </b:row>
+                        <b:commandButton value="Salvar" look="primary"
+                                         iconAwesome="check" action="#{invasionsBean.persistInvasion()}" />
+                </h:form>
+            </p:dialog>
+            <p:ajaxStatus>
+                <f:facet name="default">
+                    <h:outputText value="" />
+                </f:facet>
+                <f:facet name="start">
+                    <p:graphicImage style="position: fixed; bottom: 5px; right: 5px" library="img" name="loading.gif" />
+                </f:facet>
+                <f:facet name="complete">
+                    <h:outputText value="" />
+                </f:facet>
+            </p:ajaxStatus> 
+        </ui:define>
+    </ui:composition>
+</html>
+
+
+

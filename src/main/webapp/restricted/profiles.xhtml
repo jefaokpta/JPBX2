@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Autorizações</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="10">
+                    <h1>Autorizações</h1>
+                </b:column>              
+                <b:column span="2">
+                    <h:form>
+                        <b:button style="float: right;margin: 22px 0" outcome="newProfile"
+                            value="Autorização" look="primary" iconAwesome="plus" />
+                    </h:form>
+                </b:column>
+            </b:row>
+            <p:separator/>
+            <h:form>
+                <p:dataTable var="prof" value="#{profilesBean.profiles}" class="textCenter" paginator="true"
+                             rows="15" paginatorPosition="bottom" reflow="true" emptyMessage="Não há Autorizações">
+                    <p:column headerText="Id" sortBy="#{prof.id}">
+                        <h:outputText value="#{prof.id}" />
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{prof.name}">
+                        <h:outputText value="#{prof.name}" />
+                    </p:column>
+                    <p:column headerText="Ilimitado" sortBy="#{prof.limited}">
+                        <b:button value="#{prof.limited>0?'Não':'Sim'}" look="#{prof.limited>0?'warning':'success'}"
+                                  iconAwesome="#{prof.limited>0?'lock':'unlock'}"
+                                  title="#{prof.limited>0?'Não':'Sim'}" disabled="true"  />
+                    </p:column>
+                    <p:column headerText="Saldo / Limite" sortBy="#{prof.currentValue}">
+                        <h:outputText value="#{prof.currentValue}">
+                            <f:convertNumber pattern="0.00" />
+                        </h:outputText> / 
+                        <h:outputText value="#{prof.secureValue}">
+                            <f:convertNumber pattern="0.00" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Permissões">
+                        <b:commandButton value="#{prof.acls.size()}"
+                                         look="info" iconAwesome="search"
+                                         actionListener="#{profilesBean.showAcl(prof)}"
+                                         update="showAcl" />
+                    </p:column>
+                    <p:column headerText="Ações">                        
+                        <b:commandButton class="bButtonSpace" value="Editar" look="primary" iconAwesome="edit"
+                                         action="#{profilesBean.editProfile(prof)}" />
+                        <b:commandButton value="Apagar" look="danger" iconAwesome="trash-o"
+                                         actionListener="#{profilesBean.alertDelete(prof)}"
+                                       update="alertProfile" />
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog id="alertProfile" widgetVar="alertProfile" modal="true" header="Apagar #{profilesBean.profile.name}" showEffect="blind">
+                <h:form>
+                    <h:panelGrid columns="1">
+                        <h:outputText style="color: red"  value="Deseja realmente apagar esta Autorização?" />
+                        <p:separator />
+                        <b:commandButton value="Apagar" look="danger"
+                                         iconAwesome="trash" action="#{profilesBean.deleteProfile()}" />
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog id="showAcl" widgetVar="showAcl" header="IP's Autorizados de #{profilesBean.profile.name}" showEffect="blind" width="80%">
+                <h:form>
+                    <p:dataTable var="acl" value="#{profilesBean.profile.acls}" class="textCenter" paginator="true"
+                                 rows="5" paginatorPosition="bottom" reflow="true" emptyMessage="Não há Autorizações">
+                        <p:column headerText="IP" filterBy="#{acl.ip}" filterMatchMode="contains">
+                            <h:outputText value="#{acl.ip}" />
+                        </p:column>
+                        <p:column headerText="Máscara">
+                            <h:outputText value="#{acl.mask}" />
+                        </p:column>
+                        <p:column headerText="DDNS">
+                            <h:outputText value="#{acl.dns}" />
+                        </p:column>
+                        <p:column headerText="Última Atualização">                      
+                            <h:outputText value="#{acl.datetime}" >
+                            <f:convertDateTime dateStyle="default" />
+                        </h:outputText>    
+                            <h:outputText value="#{acl.datetime}" >
+                            <f:convertDateTime timeZone="GMT-03:00"  pattern=" HH:mm:ss" />
+                        </h:outputText>
+                    </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>
+

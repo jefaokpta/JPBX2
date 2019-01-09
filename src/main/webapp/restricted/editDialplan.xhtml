@@ -1,0 +1,499 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Editar Regra de Discagem</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <h1>Editar Regra de Discagem</h1>
+            <p:separator/>
+            <h:form><strong>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Nome:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:inputText value="#{editDialPlanBean.dialplan.name}" label="Nome"
+                                     required="true"/>
+                    </b:column>
+                </b:row>
+                <p:separator />
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Origem:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:selectOneMenu value="#{editDialPlanBean.dialplan.src}" >
+                            <p:ajax update="srcParam" listener="#{editDialPlanBean.changeSrcAction()}" />
+                            <f:selectItem itemLabel="Ramal" itemValue="peer" />
+                            <f:selectItem itemLabel="Grupo de Captura" itemValue="pickupgrp" />
+                            <f:selectItem itemLabel="Tronco" itemValue="trunk" />
+                            <f:selectItem itemLabel="Expressão Regular" itemValue="regex" />
+                            <f:selectItem itemLabel="Qualquer" itemValue="qlqr" />
+                            <f:selectItem itemLabel="Fax Virtual" itemValue="fax" />
+                            <f:selectItem itemLabel="Alias" itemValue="alias" />
+                        </p:selectOneMenu>
+                    </b:column>
+                    <b:column span="3">
+                        <h:panelGroup id="srcParam">
+                            <p:selectOneMenu value="#{editDialPlanBean.dialplan.srcAction}" rendered="#{editDialPlanBean.srcPeer}"
+                                             filter="true" filterMatchMode="contains">
+                                <f:selectItem itemLabel="Qualquer" itemValue="all" />
+                                <f:selectItems var="p" value="#{editDialPlanBean.peers}" itemLabel="#{p.name} - #{p.callerid}" itemValue="#{p.name}" />
+                            </p:selectOneMenu>
+                            <p:selectOneMenu value="#{editDialPlanBean.dialplan.srcAction}" rendered="#{editDialPlanBean.srcPick}">
+                                <f:selectItems value="#{editDialPlanBean.pickupgrps}" var="c" itemLabel="#{c.name}" itemValue="#{c.id}" />
+                            </p:selectOneMenu>
+                            <p:selectOneMenu value="#{editDialPlanBean.dialplan.srcAction}" rendered="#{editDialPlanBean.srcTrunk}">
+                                <f:selectItem itemLabel="Qualquer" itemValue="all" />
+                                <f:selectItems var="t" value="#{editDialPlanBean.trunks}" itemLabel="#{t.name}" itemValue="#{t.id}" />
+                            </p:selectOneMenu>
+                            <p:selectOneMenu value="#{editDialPlanBean.dialplan.srcAction}" rendered="#{editDialPlanBean.srcAlias}">
+                                <f:selectItems value="#{editDialPlanBean.aliases}" var="a" itemLabel="#{a.name}" itemValue="#{a.id}" />
+                            </p:selectOneMenu>
+                            <p:inputText value="#{editDialPlanBean.dialplan.srcAction}" placeholder="Expressão" rendered="#{editDialPlanBean.srcRegex}"/>
+                            
+                        </h:panelGroup>
+                    </b:column>
+                </b:row>
+                <p:separator />
+                
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Destino:" />
+                    </b:column>
+                    <b:column span="3">
+                        <h:panelGroup id="dstParam">
+                            <p:inputText placeholder="Expressão" label="Destino" readonly="true" value="#{editDialPlanBean.dialplan.dst}" rendered="#{!editDialPlanBean.dstAlias}" />
+                            <p:selectOneMenu value="#{editDialPlanBean.dialplan.dstAlias}" rendered="#{editDialPlanBean.dstAlias}">
+                                <f:selectItems value="#{editDialPlanBean.aliases}" var="a" itemLabel="#{a.name}" itemValue="#{a.id}" />
+                            </p:selectOneMenu>
+                        </h:panelGroup>
+                    </b:column> 
+                </b:row>
+                <p:separator />    
+                <b:row>
+                    <b:column span="2">
+                        <h:outputText value="Regra Válida 24hrs:" />
+                    </b:column>
+                    <b:column span="2">
+                        <p:inputSwitch value="#{editDialPlanBean.valid24}" offLabel="Não" onLabel="Sim" >
+                            <p:ajax update="valid" />
+                        </p:inputSwitch>
+                    </b:column>
+                    <b:column span="4">
+                        <h:panelGroup id="valid" >
+                            <p:selectManyButton value="#{editDialPlanBean.week}" required="true" rendered="#{!editDialPlanBean.valid24}"
+                                                label="Dias da Semana">
+                                <f:selectItem itemLabel="Seg" itemValue="seg" />
+                                <f:selectItem itemLabel="Ter" itemValue="ter" />
+                                <f:selectItem itemLabel="Qua" itemValue="qua" />
+                                <f:selectItem itemLabel="Qui" itemValue="qui" />
+                                <f:selectItem itemLabel="Sex" itemValue="sex" />
+                                <f:selectItem itemLabel="Sab" itemValue="sab" />
+                                <f:selectItem itemLabel="Dom" itemValue="dom" />
+                            </p:selectManyButton>
+                            <p:calendar value="#{editDialPlanBean.timeStart}" label="Hora Início" required="true" pattern="HH:mm" timeOnly="true"
+                                        rendered="#{!editDialPlanBean.valid24}" placeholder="00:00" title="Hora Início"/>
+                            <p:calendar value="#{editDialPlanBean.timeEnd}" required="true" pattern="HH:mm" timeOnly="true"
+                                        rendered="#{!editDialPlanBean.valid24}" label="Hora Fim" placeholder="23:59" title="Hora Fim"/>
+                        </h:panelGroup>
+                    </b:column>
+                </b:row>
+                
+                <b:row class="bRowsSpace">
+                    <b:column span="1" class="bButtonSpace">
+                        <b:commandButton value="Salvar" iconAwesome="check" look="primary"
+                                         action="#{editDialPlanBean.updateDialplan()}" />
+                    </b:column>
+                    <b:column span="1" class="bButtonSpace">
+                        <b:button value="Voltar" outcome="dialplans" iconAwesome="undo" look="danger" />
+                    </b:column>
+                </b:row>
+            </strong></h:form>
+            <b:panel look="info" title="Configurar Ações" collapsible="false">
+                <h:form prependId="false">
+                    <b:row>
+                        <b:column span="2">
+                            <strong>Selecione Ação:</strong>
+                        </b:column>
+                        <b:column span="2">
+                            <p:selectOneMenu value="#{editDialPlanBean.action}" filter="true" filterMatchMode="contains" > 
+                                <p:ajax update="actions" listener="#{editDialPlanBean.showHideActions()}" />
+                                <f:selectItem itemLabel="Desligar" itemValue="hangup" />
+                                <f:selectItem itemLabel="Atender" itemValue="answer" />
+                                <f:selectItem itemLabel="Tocar Audio" itemValue="playbacks" />                               
+                                <f:selectItem itemLabel="Discar Ramal" itemValue="dialPeer" />
+                                <f:selectItem itemLabel="Discar Agente" itemValue="dialAgent" />                               
+                                <f:selectItem itemLabel="Editar Destino" itemValue="editDst" />
+                                <f:selectItem itemLabel="Editar Origem" itemValue="editSrc" />
+                                <f:selectItem itemLabel="Restaurar Destino" itemValue="rollbackDst" />
+                                <f:selectItem itemLabel="Restaurar Origem" itemValue="rollbackSrc" />
+                                <f:selectItem itemLabel="Comando Livre" itemValue="command" />
+                                <f:selectItem itemLabel="Definir Custo" itemValue="ccost" />
+                                <f:selectItem itemLabel="Enviar para Rota" itemValue="trunkRoute" />
+                                <f:selectItem itemLabel="Enviar para Grupo" itemValue="callgrp" />
+                                <f:selectItem itemLabel="Enviar para Fila" itemValue="queue" />
+                                <f:selectItem itemLabel="Enviar para URA" itemValue="ura" />
+                                <f:selectItem itemLabel="Enviar para Voicemail" itemValue="voicemail" />
+                                <f:selectItem itemLabel="Enviar para Empresa" itemValue="company" />
+                                <f:selectItem itemLabel="Enviar Fax" itemValue="sendFax" />
+                                <f:selectItem itemLabel="Receber Fax" itemValue="receiveFax" />
+                                <f:selectItem itemLabel="Código de Conta" itemValue="accode" />
+                                <f:selectItem itemLabel="Definir Captura" itemValue="pickupGrp" />
+                                <f:selectItem itemLabel="Ignorar Voicemail" itemValue="ignoreVM" />
+                                <f:selectItem itemLabel="Consulta BDO" itemValue="bdo" />
+                            </p:selectOneMenu>
+                        </b:column>
+                        <b:column span="2">
+                            <b:commandButton value="Adicionar" look="success" iconAwesome="plus"
+                                             actionListener="#{editDialPlanBean.addAction()}" ajax="true" update="actTable growl" />
+                        </b:column>
+                    </b:row>                   
+                    <h:panelGroup id="actions">
+                        <b:well>
+                            <!--  NAO IMPLEMENTADO -->
+                            <b:alert severity="danger" rendered="#{editDialPlanBean.notImpl}">
+                                <strong>Não Implementado!</strong>
+                            </b:alert>
+                            <!--  HANGUP -->
+                            <b:alert severity="info" title="Envia sinal de desligamento à ligação em andamento"
+                                     rendered="#{editDialPlanBean.hangup}">
+                                Sem parâmetros
+                            </b:alert>      
+                            <!--  ANSWER -->
+                            <b:alert severity="info" title="Envia sinal de atendimento à ligação em andamento"
+                                     rendered="#{editDialPlanBean.answer}">
+                                Sem parâmetros
+                            </b:alert>   
+                                     <!--  PLAYBACKS -->
+                            <b:row>
+                                <b:alert severity="info" title="Toca áudio selecionado" rendered="#{editDialPlanBean.playbacks}" />
+                                <b:column span="2">
+                                    <p:selectOneMenu style="width: 150px" value="#{editDialPlanBean.actionItem.arg1}" rendered="#{editDialPlanBean.playbacks}" >
+                                        <f:selectItems var="moh" value="#{editDialPlanBean.mohs}" itemLabel="#{moh.name}" itemValue="#{moh.id}" />
+                                    </p:selectOneMenu>
+                                    <h:outputText value="Escolha o Áudio" rendered="#{editDialPlanBean.playbacks}" />
+                                </b:column>                               
+                            </b:row>                           
+                                     <!--  DIAL PEER -->
+                            <b:row>
+                                <b:alert severity="info" title="Envia ligação para o ramal definido ou discado" rendered="#{editDialPlanBean.dialPeer}" >
+                                    Deixe em branco para chamar o ramal discado
+                                </b:alert>
+                                <b:column span="2">
+                                    <p:inputText value="#{editDialPlanBean.actionItem.arg1}" placeholder="Ramal" title="Deixe em branco para chamar o ramal discado"
+                                                 rendered="#{editDialPlanBean.dialPeer}" />
+                                </b:column>
+                                <b:column span="2">
+                                    <p:inputText type="number" value="#{editDialPlanBean.actionItem.arg2}" rendered="#{editDialPlanBean.dialPeer}" />
+                                    <h:outputText value="Tempo limite para atendimento (segundos)" rendered="#{editDialPlanBean.dialPeer}"/>                                   
+                                </b:column>
+                                <b:column span="2">
+                                    <p:selectOneButton value="#{editDialPlanBean.actionItem.arg3}" rendered="#{editDialPlanBean.dialPeer}" >
+                                        <f:selectItem itemLabel="Sim" itemValue="1" />
+                                        <f:selectItem itemLabel="Não" itemValue="0" />
+                                    </p:selectOneButton>
+                                    <h:outputText value="Habilitar Rechamada" rendered="#{editDialPlanBean.dialPeer}"/>                                   
+                                </b:column>
+                                <b:column span="2">
+                                    <p:inputText value="#{editDialPlanBean.actionItem.arg4}" rendered="#{editDialPlanBean.dialPeer}" />
+                                    <h:outputText value="Parâmetros especiais (flags)" rendered="#{editDialPlanBean.dialPeer}"/>                         
+                                </b:column>
+                            </b:row>
+                            <!--  DIAL AGENT -->
+                            <b:row>
+                                <b:alert severity="info" title="Envia ligação para o ramal baseado no Agente" rendered="#{editDialPlanBean.dialAgent}" >
+                                    Deixe em branco para chamar o agente discado
+                                </b:alert>
+                                <b:column span="2">
+                                    <p:inputText value="#{editDialPlanBean.actionItem.arg1}" placeholder="Agente" 
+                                                 title="Deixe em branco para chamar o agente discado" rendered="#{editDialPlanBean.dialAgent}" />
+                                </b:column>
+                                <b:column span="2">
+                                    <p:inputText type="number" value="#{editDialPlanBean.actionItem.arg2}" rendered="#{editDialPlanBean.dialAgent}" />
+                                    <h:outputText value="Tempo limite para atendimento (segundos)" rendered="#{editDialPlanBean.dialAgent}"/>                                   
+                                </b:column>
+                                <b:column span="2">
+                                    <p:selectOneButton value="#{editDialPlanBean.actionItem.arg3}" rendered="#{editDialPlanBean.dialAgent}" >
+                                        <f:selectItem itemLabel="Sim" itemValue="1" />
+                                        <f:selectItem itemLabel="Não" itemValue="0" />
+                                    </p:selectOneButton>
+                                    <h:outputText value="Habilitar Rechamada" rendered="#{editDialPlanBean.dialAgent}"/>                                   
+                                </b:column>
+                                <b:column span="2">
+                                    <p:inputText value="#{editDialPlanBean.actionItem.arg4}" rendered="#{editDialPlanBean.dialAgent}" />
+                                    <h:outputText value="Parâmetros especiais (flags)" rendered="#{editDialPlanBean.dialAgent}"/>                         
+                                </b:column>
+                            </b:row>
+                                     <!--  EDIT DST -->
+                            <b:row>
+                                <b:alert severity="info" title="Edita o número de Destino" rendered="#{editDialPlanBean.editDst}" >
+                                    Os números serão adicionados no início do Destino
+                                </b:alert>
+                                <b:column span="2">
+                                    <p:inputText value="#{editDialPlanBean.actionItem.arg1}" placeholder="Número a ser add" 
+                                                 rendered="#{editDialPlanBean.editDst}" />
+                                </b:column>
+                                <b:column span="2">
+                                    <p:selectOneButton style="width: 150px" value="#{editDialPlanBean.actionItem.arg2}" rendered="#{editDialPlanBean.editDst}" >
+                                        <f:selectItem itemLabel="Sim" itemValue="1" />
+                                        <f:selectItem itemLabel="Não" itemValue="0" />
+                                    </p:selectOneButton>
+                                    <h:outputText value="Substituir todo o Destino" rendered="#{editDialPlanBean.editDst}"/>                                   
+                                </b:column>
+                                <b:column span="2">
+                                    <p:inputText type="number" value="#{editDialPlanBean.actionItem.arg3}" rendered="#{editDialPlanBean.editDst}" />
+                                    <h:outputText value="Quantidade de números a serem cortados" rendered="#{editDialPlanBean.editDst}"/>                         
+                                </b:column>
+                                <b:column span="2">
+                                    <p:selectOneButton style="width: 150px" value="#{editDialPlanBean.actionItem.arg4}" rendered="#{editDialPlanBean.editDst}" >
+                                        <f:selectItem itemLabel="Sim" itemValue="1" />
+                                        <f:selectItem itemLabel="Não" itemValue="0" />
+                                    </p:selectOneButton>
+                                    <h:outputText value="Cortar no PIPE ('|' apenas usando alias)" rendered="#{editDialPlanBean.editDst}"/>                                   
+                                </b:column>                               
+                            </b:row>
+                                     <!--  EDIT SRC -->
+                            <b:row>
+                                <b:alert severity="info" title="Edita o número de Origem" rendered="#{editDialPlanBean.editSrc}" >
+                                    Os números serão adicionados no início de Origem
+                                </b:alert>
+                                <b:column span="2">
+                                    <p:inputText value="#{editDialPlanBean.actionItem.arg1}" placeholder="Número a ser add" 
+                                                 rendered="#{editDialPlanBean.editSrc}" />
+                                </b:column>
+                                <b:column span="2">
+                                    <p:selectOneButton style="width: 150px" value="#{editDialPlanBean.actionItem.arg2}" rendered="#{editDialPlanBean.editSrc}" >
+                                        <f:selectItem itemLabel="Sim" itemValue="1" />
+                                        <f:selectItem itemLabel="Não" itemValue="0" />
+                                    </p:selectOneButton>
+                                    <h:outputText value="Substituir toda a Origem" rendered="#{editDialPlanBean.editSrc}"/>                                   
+                                </b:column>
+                                <b:column span="2">
+                                    <p:inputText type="number" value="#{editDialPlanBean.actionItem.arg3}" rendered="#{editDialPlanBean.editSrc}" />
+                                    <h:outputText value="Quantidade de números a serem cortados" rendered="#{editDialPlanBean.editSrc}"/>                         
+                                </b:column>                            
+                            </b:row>
+                                              <!--  COMMAND -->
+                            <b:row>
+                                <b:alert severity="info" title="Executa comando descrito" rendered="#{editDialPlanBean.command}" />
+                                <b:column span="2">
+                                    <p:inputText value="#{editDialPlanBean.actionItem.arg1}" label="Aplicação" required="true" rendered="#{editDialPlanBean.command}" />
+                                    <h:outputText value="Aplicação" rendered="#{editDialPlanBean.command}" />
+                                </b:column>
+                                <b:column span="2">
+                                    <p:inputText value="#{editDialPlanBean.actionItem.arg2}" rendered="#{editDialPlanBean.command}" />
+                                    <h:outputText value="Parâmetro" rendered="#{editDialPlanBean.command}" />
+                                </b:column>
+                            </b:row>
+                                                       <!--  CENTER COST -->
+                            <b:row>
+                                <b:alert severity="info" title="Aplica Custo na ligação" rendered="#{editDialPlanBean.ccost}" >
+                                    Obrigatório para ligações externas
+                                </b:alert>
+                                <b:column span="2">
+                                    <p:selectOneMenu style="width: 150px" value="#{editDialPlanBean.actionItem.arg1}" rendered="#{editDialPlanBean.ccost}" >
+                                        <f:selectItems var="center" value="#{editDialPlanBean.centerCosts}" itemLabel="#{center.name}" itemValue="#{center.id}" />
+                                    </p:selectOneMenu>
+                                    <h:outputText value="Centro de Custo" rendered="#{editDialPlanBean.ccost}" />
+                                </b:column>
+                            </b:row>
+                                                                <!--  TRUNK ROUTE -->
+                            <b:row>
+                                <b:alert severity="info" title="Envia para Rota de saída" rendered="#{editDialPlanBean.trunkRoute}" >
+                                    Obrigatório definir Centro de Custo
+                                </b:alert>
+                                <b:column span="2">
+                                    <p:selectOneMenu style="width: 150px" value="#{editDialPlanBean.actionItem.arg1}" rendered="#{editDialPlanBean.trunkRoute}" >
+                                        <f:selectItems var="route" value="#{editDialPlanBean.routes}" itemLabel="#{route.name}" itemValue="#{route.id}" />
+                                    </p:selectOneMenu>
+                                    <h:outputText value="Escolha a Rota" rendered="#{editDialPlanBean.trunkRoute}" />
+                                </b:column>
+                            </b:row>
+                                                        <!--  CALLGRP -->
+                            <b:row>
+                                <b:alert severity="info" title="Envia para Grupo de Chamada" rendered="#{editDialPlanBean.callgrp}" />
+                                <b:column span="2">
+                                    <p:selectOneMenu style="width: 150px" value="#{editDialPlanBean.actionItem.arg1}" rendered="#{editDialPlanBean.callgrp}" >
+                                        <f:selectItems var="call" value="#{editDialPlanBean.callGrps}" itemLabel="#{call.webName}" itemValue="#{call.id}" />
+                                    </p:selectOneMenu>
+                                    <h:outputText value="Grupo de Chamada" rendered="#{editDialPlanBean.callgrp}" />
+                                </b:column>
+                                <b:column span="2">
+                                    <p:inputText type="number" value="#{editDialPlanBean.actionItem.arg2}" rendered="#{editDialPlanBean.callgrp}" />
+                                    <h:outputText value="Timeout para atendimento (segundos)" rendered="#{editDialPlanBean.callgrp}" />
+                                </b:column>
+                            </b:row>
+                                                     <!--  QUEUE -->
+                            <b:row>
+                                <b:alert severity="info" title="Envia para Fila de Atendimento" rendered="#{editDialPlanBean.queue}" />
+                                <b:column span="2">
+                                    <p:selectOneMenu style="width: 150px" value="#{editDialPlanBean.actionItem.arg1}" rendered="#{editDialPlanBean.queue}" >
+                                        <f:selectItems var="queue" value="#{editDialPlanBean.callQueues}" itemLabel="#{queue.webName}" itemValue="#{queue.id}" />
+                                    </p:selectOneMenu>
+                                    <h:outputText value="Fila de Atendimento" rendered="#{editDialPlanBean.queue}" />
+                                </b:column>
+                                <b:column span="2">
+                                    <p:inputText type="number" value="#{editDialPlanBean.actionItem.arg2}" rendered="#{editDialPlanBean.queue}" />
+                                    <h:outputText value="Timeout total para atendimento (segundos)" rendered="#{editDialPlanBean.queue}" />
+                                </b:column>
+                            </b:row>
+                                                        <!--  RECEIVE FAX -->
+                            <b:row>
+                                <b:alert severity="info" title="Envia sinalização para recepção de FAX" rendered="#{editDialPlanBean.receiveFax}" >
+                                    O FAX estará disponível em Relatórios -> Faxes
+                                </b:alert>
+                                <b:column span="2">
+                                    <p:selectOneButton style="width: 150px" value="#{editDialPlanBean.actionItem.arg1}" rendered="#{editDialPlanBean.receiveFax}" >
+                                        <f:selectItem itemLabel="Sim" itemValue="1" />
+                                        <f:selectItem itemLabel="Não" itemValue="0" />
+                                    </p:selectOneButton>
+                                    <h:outputText value="Enviar FAX para Email?" rendered="#{editDialPlanBean.receiveFax}" />
+                                </b:column>
+                                <b:column span="2">
+                                    <p:inputText value="#{editDialPlanBean.actionItem.arg2}" placeholder="Email1,Email2,Email3" rendered="#{editDialPlanBean.receiveFax}" />
+                                    <h:outputText value="Email" rendered="#{editDialPlanBean.receiveFax}" />
+                                </b:column>
+                            </b:row>
+                                    <!--  SEND FAX -->
+                            <b:alert severity="info" title="Ajusta parâmetros para envio de Fax"
+                                     rendered="#{editDialPlanBean.sendFax}">
+                                Sem parâmetros
+                            </b:alert> 
+                            <!--  URA -->
+                            <b:row>
+                                <b:alert severity="info" title="Envia para URA" rendered="#{editDialPlanBean.ura}" >
+                                    Atendimento Automático
+                                </b:alert>
+                                <b:column span="2">
+                                    <p:selectOneMenu style="width: 150px" value="#{editDialPlanBean.actionItem.arg1}" rendered="#{editDialPlanBean.ura}" >
+                                        <f:selectItems var="ura" value="#{editDialPlanBean.uras}" itemLabel="#{ura.webName}" itemValue="#{ura.id}" />
+                                    </p:selectOneMenu>
+                                    <h:outputText value="Escolha a URA" rendered="#{editDialPlanBean.ura}" />
+                                </b:column>
+                            </b:row>
+                            <!--  AC CODE -->
+                            <b:row>
+                                <b:alert severity="info" title="Exige autenticação para continuar" rendered="#{editDialPlanBean.accode}" >
+                                    <strong>Atenção!</strong> Esta ação deve ficar acima de <strong>Define Custo</strong>!
+                                </b:alert>
+                                <b:column span="2">
+                                    <p:selectOneMenu style="width: 150px" value="#{editDialPlanBean.actionItem.arg1}" rendered="#{editDialPlanBean.accode}" required="true" label="Código de Conta" >
+                                        <f:selectItems var="ac" value="#{editDialPlanBean.accodes}" itemLabel="#{ac.name}" itemValue="#{ac.id}" />
+                                    </p:selectOneMenu>
+                                    <h:outputText value="Código de Conta" rendered="#{editDialPlanBean.accode}" />
+                                </b:column>
+                                <b:column span="2">
+                                    <p:inputText type="number" required="true" value="#{editDialPlanBean.actionItem.arg2}" rendered="#{editDialPlanBean.accode}"
+                                                 label="Tentativas"/>
+                                    <h:outputText value="Quantidade de Tentativas" rendered="#{editDialPlanBean.accode}" />
+                                </b:column>
+                            </b:row>
+                            <!--  PICKUPGRP -->
+                            <b:row>
+                                <b:alert severity="info" title="Indica grupo de captura" rendered="#{editDialPlanBean.pickupGrp}" />
+                                <b:column span="2">
+                                    <p:selectOneMenu style="width: 150px" value="#{editDialPlanBean.actionItem.arg1}" rendered="#{editDialPlanBean.pickupGrp}" >
+                                        <f:selectItems var="p" value="#{editDialPlanBean.pickupgrps}" itemLabel="#{p.name}" itemValue="#{p.id}" />
+                                    </p:selectOneMenu>
+                                    <h:outputText value="Grupo de Captura" rendered="#{editDialPlanBean.pickupGrp}" />
+                                </b:column>
+                            </b:row>
+                            <!--  IGNORE VM -->
+                            <b:alert severity="info" title="Ignora o Voicemail" rendered="#{editDialPlanBean.ignoreVM}">
+                                Somente da próxima ação <strong>Disca Ramal</strong> ou <strong>Disca Agente</strong>
+                            </b:alert> 
+                            <!--  ROLL BACK DST -->
+                            <b:alert severity="info" title="Restaura Destino Inicial" rendered="#{editDialPlanBean.rollbackDst}">
+                                Sem Parâmetros
+                            </b:alert>
+                            <!--  ROLL BACK SRC -->
+                            <b:alert severity="info" title="Restaura Origem Inicial" rendered="#{editDialPlanBean.rollbackSrc}">
+                                Sem Parâmetros
+                            </b:alert>
+                            <!--  VOICEMAIL -->
+                            <b:row>
+                                <b:alert severity="info" title="Envia para Voicemail" rendered="#{editDialPlanBean.voicemail}" >
+                                    Envia diretamente para o Voicemail do Ramal
+                                </b:alert>
+                                <b:column span="2">
+                                    <p:selectOneMenu style="width: 150px" value="#{editDialPlanBean.actionItem.arg1}" rendered="#{editDialPlanBean.voicemail}" 
+                                                     filter="true" filterMatchMode="contains">
+                                        <f:selectItems var="p" value="#{editDialPlanBean.peers}" itemLabel="#{p.name} - #{p.callerid}" itemValue="#{p.name}" />
+                                    </p:selectOneMenu>
+                                    <h:outputText value="Ramal para Voicemail" rendered="#{editDialPlanBean.voicemail}" />
+                                </b:column>
+                            </b:row>
+                            <!--  COMPANY -->
+                            <b:row>
+                                <b:alert severity="info" title="Envia para Empresa" rendered="#{editDialPlanBean.company}" >
+                                    Direciona ligação para outra Empresa
+                                </b:alert>
+                                <b:column span="2">
+                                    <p:selectOneMenu style="width: 150px" value="#{editDialPlanBean.actionItem.arg1}" rendered="#{editDialPlanBean.company}">
+                                        <f:selectItems var="comp" value="#{editDialPlanBean.companys}" itemLabel="#{comp.name}" itemValue="#{comp.id}" />
+                                    </p:selectOneMenu>
+                                    <h:outputText value="Empresa" rendered="#{editDialPlanBean.company}" />
+                                </b:column>
+                            </b:row>
+                            <!--  BDO -->
+                            <b:row>
+                                <b:alert severity="info" title="Consulta Banco de Dados Operadoras" rendered="#{editDialPlanBean.bdo}" />
+                                <b:column span="2">
+                                    <p:selectOneMenu style="width: 150px" value="#{editDialPlanBean.actionItem.arg1}" rendered="#{editDialPlanBean.bdo}" >
+                                        <f:selectItems var="w" value="#{editDialPlanBean.bdos}" itemLabel="#{w.name}" itemValue="#{w.id}" />
+                                    </p:selectOneMenu>
+                                    <h:outputText value="Servidor BDO" rendered="#{editDialPlanBean.bdo}" />
+                                </b:column>
+                            </b:row>
+                            
+                                                           <!--  BOTAO EDIÇÂO -->     
+                            <b:commandButton ajax="true" update="growl actTable" value="Salvar Edição" actionListener="#{editDialPlanBean.saveEdiction()}"
+                                                 rendered="#{editDialPlanBean.ediction}" look="warning" iconAwesome="check" />                                  
+                        </b:well>
+                    </h:panelGroup>
+                </h:form>   
+                <h:form prependId="false">
+                    <p:dataTable id="actTable" var="act" value="#{editDialPlanBean.actions}" class="textCenter" 
+                                 reflow="true" emptyMessage="Não há Ações." draggableRows="true">
+                        <p:ajax event="rowReorder" update="@form" />
+                        <p:column headerText="Execução">
+                            <h:outputText value="#{editDialPlanBean.actions.indexOf(act)}" />
+                        </p:column>
+                        <p:column headerText="Ação">
+                            <h:outputText value="#{editDialPlanBean.translateActions(act.act)}" />
+                        </p:column>
+                        <p:column headerText="Parâmetro">
+                            <h:outputText value="#{editDialPlanBean.translateActionsParam(act.act, act.arg1)}" />
+                        </p:column>
+                        <p:column headerText="Ações">
+                            <b:commandButton class="bButtonSpace" value="Editar" ajax="true" update="actions"
+                                             actionListener="#{editDialPlanBean.editAction(act)}" look="primary" iconAwesome="edit" />
+                            <b:commandButton actionListener="#{editDialPlanBean.deleteAction(act)}" ajax="true"
+                                             update="@form actions" look="danger" value="Apagar" iconAwesome="trash-o" />
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </b:panel>
+            <p:ajaxStatus>
+                <f:facet name="default">
+                    <h:outputText value="" />
+                </f:facet>
+                <f:facet name="start">
+                    <p:graphicImage style="position: fixed; bottom: 5px; right: 5px" library="img" name="loading.gif" />
+                </f:facet>
+                <f:facet name="complete">
+                    <h:outputText value="" />
+                </f:facet>
+            </p:ajaxStatus>       
+        </ui:define>
+    </ui:composition>
+</html>
+

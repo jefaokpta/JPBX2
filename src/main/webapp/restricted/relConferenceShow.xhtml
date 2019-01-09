@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Relatório de Conferências</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <h1>Relatório de Conferências</h1>
+            <p:separator/>
+            <h:form>
+                <p:dataTable var="c"  value="#{relConferenceShowBean.conferences}" class="textCenter" reflow="true" emptyMessage="Não há Conferências"
+                                 paginator="true" rows="15" paginatorPosition="bottom" lazy="true">
+                        <f:facet name="header">
+                            Periodo de 
+                            <h:outputText value="#{relConferenceShowBean.form.startDate}" >
+                                <f:convertDateTime dateStyle="default" />
+                            </h:outputText>
+                             a 
+                             <h:outputText value="#{relConferenceShowBean.form.endDate}" >
+                                <f:convertDateTime dateStyle="default" />
+                            </h:outputText>
+                        </f:facet>
+                        <p:column headerText="Data Hora" sortBy="#{c.datetime}" >                      
+                            <h:outputText value="#{c.datetime}" >
+                                <f:convertDateTime dateStyle="default" />
+                            </h:outputText>    
+                            <h:outputText value="#{c.datetime}" >
+                                <f:convertDateTime timeZone="GMT-03:00"  pattern=" HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Sala"  filterBy="#{c.room}" sortBy="#{c.room}">
+                            <h:outputText value="#{c.room}" />
+                        </p:column>
+                        <p:column headerText="Responsável" filterBy="#{c.responsible}" sortBy="#{c.responsible}">
+                            <h:outputText value="#{c.responsible}" />
+                        </p:column>    
+                        <p:column headerText="Gravação" colspan="2">
+                            <audio controls="true">
+                                <source  src="/jpbx/AudioServlet?rec=#{c.record}" type="audio/wav" />
+                                Seu navegador não suporta áudio.
+                            </audio>
+                        </p:column>    
+                        <p:column colspan="2" headerText="Ações">
+                            <b:commandButton actionListener="#{relConferenceShowBean.deleteConference(c)}" update="@form growl" value="Apagar"
+                                             iconAwesome="trash-o" look="danger" title="Apagar Conferência" ajax="true" />
+                        </p:column>
+                    </p:dataTable> 
+                </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

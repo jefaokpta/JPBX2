@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Estatísticas dos Ramais</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="10">
+                    <h1>Estatísticas dos Ramais</h1>
+                </b:column>              
+            </b:row>
+            <p:separator/>
+            <h:form>
+                <b:row class="bRowsSpace">
+                    <b:column span="1">
+                        <h:outputText value="Início:" />
+                    </b:column>
+                    <b:column span="2">
+                        <p:calendar  pattern="dd/MM/yyyy" value="#{estatisticPeerBean.start}"  />
+                    </b:column>
+                    <b:column span="1">
+                        <h:outputText value="Fim:" />
+                    </b:column>
+                    <b:column span="2">
+                        <p:calendar pattern="dd/MM/yyyy" value="#{estatisticPeerBean.end}" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:selectOneMenu  value="#{estatisticPeerBean.peerId}" style="width: 125px" filter="true" filterMatchMode="contains">
+                            <f:selectItems value="#{estatisticPeerBean.peers}" var="per" itemLabel="#{per.name} - #{per.callerid}" itemValue="#{per.id}"  />
+                        </p:selectOneMenu>
+                    </b:column>
+                    <b:column span="1">
+                        <b:commandButton value="Exibir" look="primary" iconAwesome="search" ajax="true" actionListener="#{estatisticPeerBean.showEstatistic()}" update="@form"/>
+                    </b:column>
+                </b:row>
+                <p:separator/>             
+                <h:panelGroup id="statistcs" >
+                    <b:panel title="Gráfico Estatístico do Ramal #{estatisticPeerBean.peer.name}" look="info" rendered="#{estatisticPeerBean.showStatistcs}">              
+                            <ui:include src="/WEB-INF/includes/statistcPeerGraf.xhtml" />
+                    </b:panel>
+                    <p:dataTable var="s" id="statistc" value="#{estatisticPeerBean.statistcs}" class="textCenter" reflow="true" emptyMessage="Não há dados do ramal" sortBy="#{s.day}"
+                                 rendered="#{estatisticPeerBean.showStatistcs}" stickyHeader="true" >
+                        <p:columnGroup type="header">
+                            <p:row>                         
+                                <h1><p:column colspan="12" headerText="Estatísticas do Ramal #{estatisticPeerBean.peer.name}" /></h1>                   
+                            </p:row>
+                            <p:row>
+                                <p:column rowspan="2" headerText="Data" />
+                                <p:column colspan="5" headerText="Chamadas" />
+                                <p:column colspan="3" headerText=" Tempo Total" />
+                                <p:column colspan="3" headerText="Tempo Médio" />
+                            </p:row>
+                            <p:row>
+                                <p:column headerText="Tipo" />
+                                <p:column headerText="Total" />
+                                <p:column headerText="Atendida" />
+                                <p:column headerText="Não Atendida" />
+                                <p:column headerText="Ocupado" />
+                                <p:column headerText="Ligação" />
+                                <p:column headerText="Conversação" />
+                                <p:column headerText="Espera" />
+                                <p:column headerText="Ligação" />
+                                <p:column headerText="Conversação" />
+                                <p:column headerText="Espera" />
+                            </p:row>
+                        </p:columnGroup>               
+
+
+                                <p:column groupRow="true" >
+                                    <h:outputText value="#{s.day}" >
+                                        <f:convertDateTime dateStyle="default" />
+                                    </h:outputText>
+                                </p:column>
+
+                        <p:column  >
+                            <h:outputText value="#{s.type}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{s.callTotal}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{s.answered}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{s.notAnswered}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{s.busy}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{estatisticPeerBean.formatTime(s.callTimeTotal)}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{estatisticPeerBean.formatTime(s.callTimeSpeak)}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{estatisticPeerBean.formatTime(s.callTimeWait)}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{estatisticPeerBean.formatTime(s.meddleCall)}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{estatisticPeerBean.formatTime(s.meddleSpeak)}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{estatisticPeerBean.formatTime(s.meddleWait)}" />
+                        </p:column>
+                        
+                        <f:facet name="footer">
+                            <p:dataTable var="tt" value="#{estatisticPeerBean.statistcsTotals}" sortBy="#{tt.label}" class="textCenter" reflow="true" emptyMessage="Sem Totais">
+                                <p:column groupRow="true" >
+                                    <h:outputText value="#{tt.label}" />
+                                </p:column>
+                        <p:column  >
+                            <h:outputText value="#{tt.type}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{tt.callTotal}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{tt.answered}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{tt.notAnswered}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{tt.busy}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{estatisticPeerBean.formatTime(tt.callTimeTotal)}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{estatisticPeerBean.formatTime(tt.callTimeSpeak)}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{estatisticPeerBean.formatTime(tt.callTimeWait)}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{estatisticPeerBean.formatTime(tt.meddleCall)}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{estatisticPeerBean.formatTime(tt.meddleSpeak)}" />
+                        </p:column>
+                        <p:column >
+                            <h:outputText value="#{estatisticPeerBean.formatTime(tt.meddleWait)}" />
+                        </p:column>
+                            </p:dataTable>
+                            <h:commandLink id="excel" title="Extrair Excel">
+                                <p:graphicImage name="/img/xls.png" width="50"/>
+                                <p:dataExporter type="xls" target="statistc" fileName="Estatistica_Ramal_#{estatisticPeerBean.peer.name}"  />
+                            </h:commandLink>  
+                            <h:commandLink id="csv" title="Extrair CSV">
+                                <p:graphicImage name="/img/csv.png" width="50"/>
+                                <p:dataExporter type="csv" target="statistc" fileName="Estatistica_Ramal_#{estatisticPeerBean.peer.name}"  />
+                            </h:commandLink>
+                        </f:facet>
+                    </p:dataTable>
+                </h:panelGroup>
+            </h:form>
+            <h:outputScript name="locale_ptBR.js" library="js" />
+            <h:outputScript library="js" name="clock.js" />
+            <p:ajaxStatus>
+                <f:facet name="default">
+                    <h:outputText value="" />
+                </f:facet>
+                <f:facet name="start">
+                    <p:graphicImage style="position: fixed; bottom: 5px; right: 5px" library="img" name="loading.gif" />
+                </f:facet>
+                <f:facet name="complete">
+                    <h:outputText value="" />
+                </f:facet>
+            </p:ajaxStatus> 
+        </ui:define>
+    </ui:composition>
+</html>
+

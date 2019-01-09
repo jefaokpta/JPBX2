@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Grupos de Captura</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="10">
+                    <h1>Grupos de Captura</h1>
+                </b:column>              
+                <b:column span="2">
+                    <h:form>
+                        <b:button style="float: right;margin: 22px 0" outcome="newPickupGrp"
+                            value="Grupo" look="primary" iconAwesome="plus" />
+                    </h:form>
+                </b:column>
+            </b:row>
+            <p:separator/>
+            <h:form>
+                <p:dataTable var="grp" value="#{pickupGrpsBean.grps}" class="textCenter" paginator="true"
+                             rows="30" paginatorPosition="bottom" reflow="true" emptyMessage="Não há Grupos de Captura">
+                    <p:column headerText="Id" sortBy="#{grp.id}">
+                        <h:outputText value="#{grp.id}" />
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{grp.name}" filterBy="#{grp.name}" filterMatchMode="contains" >
+                        <h:outputText value="#{grp.name}" />
+                    </p:column>
+                    <p:column headerText="Empresa" sortBy="#{grp.company}">
+                        <h:outputText value="#{userSession.translateCompany(grp.company)}" />
+                    </p:column>
+                    <p:column headerText="Ações">
+                        <b:commandButton value="Editar" look="primary" iconAwesome="edit"
+                                         action="#{pickupGrpsBean.editGrp(grp)}" />
+                        <b:commandButton class="bButtonSpace" value="Apagar" look="danger" iconAwesome="trash-o"
+                                         actionListener="#{pickupGrpsBean.alertDelete(grp)}"
+                                         update="alertPickupGrp growl" />
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog id="alertPickupGrp" widgetVar="alertPickupGrp" modal="true" header="Apagar #{pickupGrpsBean.grp.name}?" showEffect="blind">
+                <h:form>
+                    <h:panelGrid columns="1">
+                        <h:outputText style="color: red"  value="Deseja realmente apagar este Grupo de Captura?" />
+                        <p:separator />
+                        <b:commandButton value="Apagar" look="danger"
+                                         iconAwesome="trash" action="#{pickupGrpsBean.deleteGrp()}" />
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>
+

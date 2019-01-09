@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+        
+        <ui:composition template="/WEB-INF/templates/templateAgent.xhtml">
+            <ui:define name="title">JPBX - Agente #{agentLoggedBean.log.agent.agent}</ui:define>
+            <ui:define name="content">
+                    <p:growl id="growl" life="30000" />
+                    <b:row>
+                        <b:column span="9">
+                            <h1>Olá #{agentLoggedBean.log.agent.name}</h1>
+                        </b:column>              
+                        <b:column span="3">
+                            <h3>Agente: #{agentLoggedBean.log.agent.agent} <br /> Ramal:  #{agentLoggedBean.log.peer}</h3>
+                        </b:column>
+                    </b:row>
+                    <p:separator/>
+                    
+                    <b:row>
+                <!-- <b:column span="2">
+                            Escolha a Fila:
+                        </b:column>-->
+                        <h:form>
+                            <b:column span="3">
+                                <p:selectOneMenu style="width: 225px" value="#{agentLoggedBean.queueId}">
+                                    <f:selectItem itemLabel="Selecione uma Fila" itemValue="" />
+                                    <f:selectItems value="#{agentLoggedBean.queues}" />
+                                </p:selectOneMenu>
+                            </b:column>
+                            <b:column span="1">
+                                <b:commandButton value="Entrar" actionListener="#{agentLoggedBean.enterQueue()}" ajax="true" update="queues growl" iconAwesome="sign-in" look="success" />
+                            </b:column>
+                            <b:column span="4" >
+
+                            </b:column>
+                        </h:form>
+                        <b:column span="2">
+                            <input type="number" class="form-control text-center" id="tel" placeholder="Telefone" />
+                        </b:column>
+                        <b:column span="1">
+                            <div id="callBtn"  class="btn btn-primary" onclick="dial(src,$('#tel').val(),chan);" ><i class="fa fa-phone"></i> Discar</div>
+                        </b:column>
+                    <b:column span="1">
+                        <h:form>
+                            <b:commandButton value="" iconAwesome="book" title="Histórico" ajax="true" actionListener="#{agentLoggedBean.showHistory()}" update="showHistory" />
+                        </h:form>
+                    </b:column>
+                    </b:row>
+                    <br />
+                    <h:form prependId="false" id="queues">
+                        <p:dataTable var="q" value="#{agentLoggedBean.loggedQueues}" class="textCenter" 
+                                     reflow="true" emptyMessage="No momento o Agente #{agentLoggedBean.log.agent.agent} não participa de nenhuma fila para receber ligações.">
+                            <p:column headerText="Data Hora" >                      
+                                <h:outputText value="#{q.created}" >
+                                    <f:convertDateTime dateStyle="default" />
+                                </h:outputText>    
+                                <h:outputText value="#{q.created}" >
+                                    <f:convertDateTime timeZone="GMT-03:00"  pattern=" HH:mm:ss" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Fila" sortBy="#{q.queueName}">
+                                <h:outputText value="#{q.queueName}" />
+                            </p:column>
+                            <p:column headerText="Status" style="background-color: #{agentLoggedBean.statusBackColor(q.pause)}" >
+                                #{q.pause.equals("")?"Disponivel":q.pause}
+                                <h:panelGroup rendered="#{agentLoggedBean.pauseClockr(q.pause)}">
+                                    <div id="clock#{q.id}" />
+                                    <script>
+                                        function count#{q.id}(){
+                                            $('#clock#{q.id}').html(countTime(Math.floor((new Date().getTime()/1000-#{agentLoggedBean.pauseTime(q.updated)}))));
+                                            setTimeout('count#{q.id}();', 1000);
+                                        }
+                                        count#{q.id}();
+                                    </script>
+                                </h:panelGroup>
+                            </p:column>
+                            <p:column headerText="Pausas" >
+                                <p:selectOneMenu  value="#{q.pause}">
+                                    <f:selectItem itemLabel="Disponível" itemValue="Disponível"  />
+                                    <f:selectItem itemLabel="Pausa" itemValue="Pausa"  />
+                                    <f:selectItems value="#{agentLoggedBean.pauses}" />
+                                    <p:ajax listener="#{agentLoggedBean.pauseUnpause(q)}" update="queues growl" />
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column headerText="Ações">
+                                <b:commandButton class="bButtonSpace" value="Sair" look="danger" iconAwesome="sign-out"
+                                                 actionListener="#{agentLoggedBean.outQueue(q.id)}" ajax="true"
+                                                 update="queues growl" />
+                            </p:column>
+                        </p:dataTable>
+                        <p:poll interval="60" listener="#{agentLoggedBean.verifyAutoPause()}" update="@form growl" />
+                    </h:form>
+                    <p:dialog id="showHistory" widgetVar="showHistory" header="Histórico de Chamadas Efetuadas" showEffect="blind">
+                        <div class="callsLogPanel">
+                            <ul id="lastCalls" style="list-style: none;margin-top: 2px"></ul>
+                        </div>
+                        <div style="text-align: right">
+                            <i onclick="clearCallList();" title="Limpar Últimas Ligações" class="fa fa-trash" />
+                        </div>
+                        <script>
+                            buildListCalls();
+                        </script>
+                    </p:dialog>
+                    <p:ajaxStatus>
+                        <f:facet name="default">
+                            <h:outputText value="" />
+                        </f:facet>
+                        <f:facet name="start">
+                            <p:graphicImage style="position: fixed; bottom: 5px; right: 5px" library="img" name="loading.gif" />
+                        </f:facet>
+                        <f:facet name="complete">
+                            <h:outputText value="" />
+                        </f:facet>
+                    </p:ajaxStatus>            
+                    <h:outputScript target="head" library="js" name="clock.js" />
+                    <h:outputScript library="js" name="notificationPermition.js" />
+                    <h:outputScript library="js" name="notifications.js" />
+                    <h:outputScript library="js" name="agentDial.js" />
+                    <script>
+                        var agent=#{agentLoggedBean.log.agent.agent};
+                        var company=#{agentLoggedBean.log.agent.company};
+                        var agentName='#{agentLoggedBean.log.agent.name}';
+                        var src=#{agentLoggedBean.log.peer};
+                        var chan='#{agentLoggedBean.log.canal}';
+                    </script>
+            </ui:define>
+        </ui:composition>
+</html>
+

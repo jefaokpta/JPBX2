@@ -1,0 +1,262 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition>
+   
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Ramal:" />
+            </b:column>
+            <b:column span="3">
+                <p:inputText id="peer" value="#{newPeerBean.peer.name}"
+                             style="border-color: #{newPeerBean.borderColor}"
+                             required="true" label="Ramal"
+                             type="number">
+                    <p:ajax event="blur" listener="#{newPeerBean.verifyPeer()}"
+                            update="@this growl" />
+                </p:inputText>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Senha de Registro:" />
+            </b:column>
+            <b:column span="3">
+                <p:password value="#{newPeerBean.peer.secret}"
+                            feedback="true" inline="true" weakLabel="Fraca"
+                            goodLabel="Boa" strongLabel="Ai Sim!"
+                            promptLabel="Verificando Senha" label="Senha de Registro"
+                            required="true">
+                    <p:ajax event="blur" listener="#{newPeerBean.verifyPassword()}" update="growl" />
+                </p:password>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Nome do Ramal:" />
+            </b:column>
+            <b:column span="3">
+                <p:inputText value="#{newPeerBean.peer.callerid}" />
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Senha de Facilidades:" />
+            </b:column>
+            <b:column span="3">
+                <p:inputText value="#{newPeerBean.peer.facilityPass}"
+                             label="Senha de Facilidades" type="number">
+                    <p:ajax event="blur" listener="#{newPeerBean.verifyFacilityPass()}" update="growl" />
+                </p:inputText>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Chamadas Simultâneas:" />
+            </b:column>
+            <b:column span="1">
+                <p:inputText type="number" value="#{newPeerBean.peer.callLimit}" />
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Idioma dos Audios:" />
+            </b:column>
+            <b:column span="4">
+                <p:selectOneButton value="#{newPeerBean.peer.language}">
+                    <f:selectItem itemLabel="Português" itemValue="pt_BR" />
+                    <f:selectItem itemLabel="Inglês" itemValue="en" />
+                    <f:selectItem itemLabel="Francês" itemValue="fr" />
+                    <f:selectItem itemLabel="Espanhol" itemValue="es" />
+                </p:selectOneButton>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Tipo de Discagem:" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneButton value="#{newPeerBean.peer.dtmfmode}">
+                    <f:selectItem itemLabel="RFC2833" itemValue="rfc2833" />
+                    <f:selectItem itemLabel="Info" itemValue="info" />
+                    <f:selectItem itemLabel="Inband" itemValue="inband" />
+                    <f:selectItem itemLabel="Auto" itemValue="auto" />
+                </p:selectOneButton>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Ramal Externo:" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneButton value="#{newPeerBean.peer.nat}">
+                    <f:selectItem itemLabel="Não" itemValue="no" />
+                    <f:selectItem itemLabel="Sim" itemValue="force_rport,comedia" />
+                </p:selectOneButton>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Ativa Qualidade:" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneButton value="#{newPeerBean.peer.qualify}">
+                    <f:selectItem itemLabel="Não" itemValue="no" />
+                    <f:selectItem itemLabel="Sim" itemValue="yes" />
+                </p:selectOneButton>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Ativa Gravação:" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneButton value="#{newPeerBean.peer.record}">
+                    <f:selectItem itemLabel="Não" itemValue="0" />
+                    <f:selectItem itemLabel="Sim" itemValue="1" />
+                </p:selectOneButton>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Codecs de Áudio:" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneMenu style="width: 80px" value="#{newPeerBean.audioCodec1}">
+                    <f:selectItem itemLabel="ULAW" itemValue="ulaw" />
+                    <f:selectItem itemLabel="ALAW" itemValue="alaw" />
+                    <f:selectItem itemLabel="G729" itemValue="g729" />
+                    <f:selectItem itemLabel="GSM" itemValue="gsm" />
+                    <f:selectItem itemLabel="G722" itemValue="g722" />
+                    <f:selectItem itemLabel="G726" itemValue="g726" />
+                </p:selectOneMenu>
+                <p:selectOneMenu style="width: 80px" value="#{newPeerBean.audioCodec2}">
+                    <f:selectItem itemLabel="---" itemValue="" />
+                    <f:selectItem itemLabel="ULAW" itemValue="ulaw" />
+                    <f:selectItem itemLabel="ALAW" itemValue="alaw" />
+                    <f:selectItem itemLabel="G729" itemValue="g729" />
+                    <f:selectItem itemLabel="GSM" itemValue="gsm" />
+                    <f:selectItem itemLabel="G722" itemValue="g722" />
+                    <f:selectItem itemLabel="G726" itemValue="g726" />
+                </p:selectOneMenu>
+                <p:selectOneMenu style="width: 80px" value="#{newPeerBean.audioCodec3}">
+                    <f:selectItem itemLabel="---" itemValue="" />
+                    <f:selectItem itemLabel="ULAW" itemValue="ulaw" />
+                    <f:selectItem itemLabel="ALAW" itemValue="alaw" />
+                    <f:selectItem itemLabel="G729" itemValue="g729" />
+                    <f:selectItem itemLabel="GSM" itemValue="gsm" />
+                    <f:selectItem itemLabel="G722" itemValue="g722" />
+                    <f:selectItem itemLabel="G726" itemValue="g726" />
+                </p:selectOneMenu>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Codecs de Vídeo:" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneMenu style="width: 80px" value="#{newPeerBean.videoCodec1}">
+                    <f:selectItem itemLabel="---" itemValue="" />                           
+                    <f:selectItem itemLabel="H261" itemValue="h261" />
+                    <f:selectItem itemLabel="H263" itemValue="h263" />
+                    <f:selectItem itemLabel="H263p" itemValue="h263p" />
+                    <f:selectItem itemLabel="H264" itemValue="h264" />
+                    <f:selectItem itemLabel="MPEG4" itemValue="mpeg4" />
+                    <f:selectItem itemLabel="VP8" itemValue="vp8" />
+                </p:selectOneMenu>
+                <p:selectOneMenu style="width: 80px" value="#{newPeerBean.videoCodec2}">
+                    <f:selectItem itemLabel="---" itemValue="" />
+                    <f:selectItem itemLabel="H261" itemValue="h261" />
+                    <f:selectItem itemLabel="H263" itemValue="h263" />
+                    <f:selectItem itemLabel="H263p" itemValue="h263p" />
+                    <f:selectItem itemLabel="H264" itemValue="h264" />
+                    <f:selectItem itemLabel="MPEG4" itemValue="mpeg4" />
+                    <f:selectItem itemLabel="VP8" itemValue="vp8" />
+                </p:selectOneMenu>
+                <p:selectOneMenu style="width: 80px" value="#{newPeerBean.videoCodec3}">
+                    <f:selectItem itemLabel="---" itemValue="" />
+                    <f:selectItem itemLabel="H261" itemValue="h261" />
+                    <f:selectItem itemLabel="H263" itemValue="h263" />
+                    <f:selectItem itemLabel="H263p" itemValue="h263p" />
+                    <f:selectItem itemLabel="H264" itemValue="h264" />
+                    <f:selectItem itemLabel="MPEG4" itemValue="mpeg4" />
+                    <f:selectItem itemLabel="VP8" itemValue="vp8" />
+                </p:selectOneMenu>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Grupo de Captura:" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneMenu value="#{newPeerBean.peer.pickupgroup}" >
+                    <f:selectItem itemLabel="---" itemValue="0" />
+                    <f:selectItems value="#{newPeerBean.selectGrp}" />
+                </p:selectOneMenu>
+            </b:column>
+        </b:row>
+
+        <b:panel title="Voicemail" look="info" collapsed="true" style="width: 70%">
+            <b:row class="bRowsSpace">
+                <b:column span="3">
+                    <h:outputText value="Senha do Voicemail:" />
+                </b:column>
+                <b:column span="3">
+                    <p:inputText value="#{newPeerBean.peer.mailbox}" type="number"
+                                 label="Senha do Voicemail" >
+                        <p:ajax event="blur" listener="#{newPeerBean.verifyVoicemailPass()}" update="growl" />
+                    </p:inputText>
+                </b:column>
+            </b:row>
+            <b:row class="bRowsSpace">
+                <b:column span="3">
+                    <h:outputText value="Email de Contato:" />
+                </b:column>
+                <b:column span="3">
+                    <p:inputText value="#{newPeerBean.peer.email}" placeholder="Email1,Email2,Email3..."/>
+                </b:column>
+            </b:row>                        
+        </b:panel>  
+        <b:panel title="Configurações Avançadas" look="info" style="width: 70%" collapsed="true">
+            <b:row class="bRowsSpace">
+                <b:column span="3">
+                    <h:outputText value="Canreinvite:" />
+                </b:column>
+                <b:column span="3">
+                    <p:selectOneButton value="#{newPeerBean.peer.canreinvite}" >
+                        <f:selectItem itemLabel="Não" itemValue="0" />
+                        <f:selectItem itemLabel="Sim" itemValue="1" />
+                    </p:selectOneButton>
+                </b:column>
+            </b:row> 
+            <b:row class="bRowsSpace">
+                <b:column span="3">
+                    <h:outputText value="Perfil de Autorização:" />
+                </b:column>
+                <b:column span="3">
+                    <p:selectOneMenu value="#{newPeerBean.peer.authorization}" style="width: 150px" >
+                        <f:selectItem itemLabel="Selecione" itemValue="0" />
+                        <f:selectItems value="#{newPeerBean.selectProfile}" />
+                    </p:selectOneMenu>
+                </b:column>
+            </b:row> 
+        </b:panel>
+        <b:row class="bRowsSpace">
+            <b:column span="1" class="bButtonSpace">
+                <b:commandButton value="Salvar" iconAwesome="check" look="primary"
+                                 action="#{newPeerBean.submitNewPeer()}"/>
+            </b:column>
+            <b:column span="1" class="bButtonSpace">
+                <b:button value="Voltar" outcome="peers" iconAwesome="undo" look="danger" />
+            </b:column>
+        </b:row>
+ 
+    </ui:composition>
+</html>
+

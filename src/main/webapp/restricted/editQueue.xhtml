@@ -1,0 +1,305 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Editar Fila de Atendimento</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <h1>Editar Fila de Atendimento</h1>
+            <p:separator/>
+            <h:form>               
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Nome:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:inputText value="#{editQueueBean.queue.webName}" 
+                                     required="true" label="Nome" />
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Música de Espera:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:selectOneMenu value="#{editQueueBean.queue.moh}">
+                            <f:selectItem itemLabel="Padrão" itemValue="JPBX" />
+                            <f:selectItems value="#{editQueueBean.mohs}" />
+                        </p:selectOneMenu>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Anúncio:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:selectOneMenu value="#{editQueueBean.queue.announce}" title="Anúncio é um áudio passado para o agente assim que atende uma chamada">
+                            <f:selectItem itemLabel="---" itemValue="select" />
+                            <f:selectItems value="#{editQueueBean.songs}" />
+                        </p:selectOneMenu>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Grupo de Captura:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:selectOneMenu value="#{editQueueBean.queue.pickupGroup}">
+                            <f:selectItem itemLabel="---" itemValue="0" />
+                            <f:selectItems value="#{editQueueBean.pickupGrps}" />
+                        </p:selectOneMenu>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Gravar Chamadas:" />
+                    </b:column>
+                    <b:column span="4">
+                        <p:selectOneButton value="#{editQueueBean.queue.record}">
+                            <f:selectItem itemLabel="Não" itemValue="0" />
+                            <f:selectItem itemLabel="Sim" itemValue="1" />
+                        </p:selectOneButton>
+                    </b:column>
+                </b:row>
+                
+                <b:panel title="Comportamentos" look="info" collapsed="true">
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Tempo de Toque:" />
+                        </b:column>                   
+                        <b:column span="3">
+                            <p:inputText type="number" required="true" value="#{editQueueBean.queue.timeout}" 
+                                         title="Tempo que a chamada tocará no agente." />
+                        </b:column>                     
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Tempo entre Tentativa:" />
+                        </b:column>                   
+                        <b:column span="3">
+                            <p:inputText type="number" required="true" value="#{editQueueBean.queue.retry}" 
+                                         title="Intervalo para chamar outro agente" />
+                        </b:column>                     
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Anotação do Agente:" />
+                        </b:column>                   
+                        <b:column span="3">
+                            <p:inputText type="number" required="true" value="#{editQueueBean.queue.wrapuptime}" 
+                                         title="Intervalo após o agente concluir uma chamada" />
+                        </b:column>                     
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Atrasar Entrega:" />
+                        </b:column>                   
+                        <b:column span="3">
+                            <p:inputText type="number" required="true" value="#{editQueueBean.queue.memberdelay}" 
+                                         title="Tempo de atraso para a chamada ser entregue ao agente que a atendeu" />
+                        </b:column>                     
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Limite de Chamadas:" />
+                        </b:column>                   
+                        <b:column span="3">
+                            <p:inputText type="number" required="true" value="#{editQueueBean.queue.maxlen}" 
+                                         title="Limite de ligações aguardando nesta fila" />
+                        </b:column>                     
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Entrar sem Agentes:" title="Aceitar ligações mesmo sem agentes logados " />
+                        </b:column>
+                        <b:column span="3">
+                            <p:selectOneMenu value="#{editQueueBean.queue.joinempty}" style="width: 150px">
+                                <f:selectItem itemLabel="Sim" itemValue="yes" />
+                                <f:selectItem itemLabel="Não" itemValue="no" />
+                                <f:selectItem itemLabel="Não (Agentes pausados)" itemValue="penalty,invalid,paused" />
+                            </p:selectOneMenu>
+                        </b:column>
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Sair sem Agentes:" title="Expulsar ligações caso não tenha agentes logados" />
+                        </b:column>
+                        <b:column span="3">
+                            <p:selectOneMenu value="#{editQueueBean.queue.leavewhenempty}" style="width: 150px">
+                                <f:selectItem itemLabel="Não" itemValue="no" />
+                                <f:selectItem itemLabel="Sim" itemValue="yes" />                            
+                                <f:selectItem itemLabel="Sim (Agentes pausados)" itemValue="penalty,invalid,paused" />
+                            </p:selectOneMenu>
+                        </b:column>
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Pausa Automática:" title="Se o agente não atender uma chamada será pausado" />
+                        </b:column>
+                        <b:column span="4">
+                            <p:selectOneButton value="#{editQueueBean.queue.autopause}" >
+                                <f:selectItem itemLabel="Não" itemValue="no" />
+                                <f:selectItem itemLabel="Sim" itemValue="yes" />
+                            </p:selectOneButton>
+                        </b:column>
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Estratégia de Toque:" />
+                        </b:column>                   
+                        <b:column span="3">
+                            <p:selectOneMenu value="#{editQueueBean.queue.strategy}" style="width: 150px">
+                                <f:selectItem itemLabel="Todos" itemValue="ringall" />
+                                <f:selectItem itemLabel="Aleatóriamente" itemValue="random" />
+                                <f:selectItem itemLabel="Mais Oscioso" itemValue="fewestcalls" />
+                                <f:selectItem itemLabel="Igualmente" itemValue="rrmemory" />
+                            </p:selectOneMenu>
+                        </b:column>                     
+                    </b:row>
+                </b:panel>
+                
+                <b:panel title="Áudios" look="info" collapsed="true">
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Anúncios:" />
+                        </b:column>                   
+                        <b:column span="3">
+                            <p:selectOneMenu value="#{editQueueBean.queue.announceFrequency}" style="width: 150px" title="Os anúncios abaixo posicionam as chamadas que estão nesta fila">
+                                <f:selectItem itemLabel="Desativado" itemValue="0" />
+                                <f:selectItem itemLabel="15 Segundos" itemValue="15" />
+                                <f:selectItem itemLabel="30 Segundos" itemValue="30" />
+                                <f:selectItem itemLabel="60 Segundos" itemValue="60" />
+                            </p:selectOneMenu>
+                        </b:column>                     
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Próximo da Fila:" />
+                        </b:column>                   
+                        <b:column span="3">
+                            <p:selectOneMenu value="#{editQueueBean.queue.queueYouAreNext}" style="width: 150px" title="Ativa quando a chamada for a próxima a ser atendida">
+                                <f:selectItem itemLabel="---" itemValue="Selecione" />
+                                <f:selectItem itemLabel="Padrão" itemValue="pattern" />
+                                <f:selectItems value="#{editQueueBean.songs}" />
+                            </p:selectOneMenu>
+                        </b:column>                     
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Posição na Fila:" />
+                        </b:column>                   
+                        <b:column span="3">
+                            <p:selectOneMenu value="#{editQueueBean.queue.queueThereAre}" style="width: 150px" title="Informa posição periodicamente (de acordo com Anúncios)">
+                                <f:selectItem itemLabel="---" itemValue="Selecione" />
+                                <f:selectItem itemLabel="Padrão" itemValue="pattern" />
+                                <f:selectItems value="#{editQueueBean.songs}" />
+                            </p:selectOneMenu>
+                        </b:column>                     
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Pedido de Espera:" />
+                        </b:column>                   
+                        <b:column span="3">
+                            <p:selectOneMenu value="#{editQueueBean.queue.queueCallsWaiting}" style="width: 150px" title="Pedido para que aguarde (de acordo com Anúncios)">
+                                <f:selectItem itemLabel="---" itemValue="Selecione" />
+                                <f:selectItem itemLabel="Padrão" itemValue="pattern" />
+                                <f:selectItems value="#{editQueueBean.songs}" />
+                            </p:selectOneMenu>
+                        </b:column>                     
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Tempo Estimado:" />
+                        </b:column>                   
+                        <b:column span="3">
+                            <p:selectOneMenu value="#{editQueueBean.queue.queueHoldTime}" style="width: 150px" title="Ativado antes do cálculo de tempo para atendimento">
+                                <f:selectItem itemLabel="---" itemValue="Selecione" />
+                                <f:selectItem itemLabel="Padrão" itemValue="pattern" />
+                                <f:selectItems value="#{editQueueBean.songs}" />
+                            </p:selectOneMenu>
+                        </b:column>                     
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Agradecimento:" />
+                        </b:column>                   
+                        <b:column span="3">
+                            <p:selectOneMenu value="#{editQueueBean.queue.queueThankYou}" style="width: 150px" title="Ativa antes da chamada ser entregue ao agente que a atendeu">
+                                <f:selectItem itemLabel="---" itemValue="Selecione" />
+                                <f:selectItem itemLabel="Padrão" itemValue="pattern" />
+                                <f:selectItems value="#{editQueueBean.songs}" />
+                            </p:selectOneMenu>
+                        </b:column>                     
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Avisar Espera:" title="Ao atender, avisa ao agente o tempo que a chamada esperou" />
+                        </b:column>
+                        <b:column span="4">
+                            <p:selectOneButton value="#{editQueueBean.queue.reportholdtime}" >
+                                <f:selectItem itemLabel="Não" itemValue="0" />
+                                <f:selectItem itemLabel="Sim" itemValue="1" />
+                            </p:selectOneButton>
+                        </b:column>
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Aviso:" />
+                        </b:column>                   
+                        <b:column span="3">
+                            <p:selectOneMenu value="#{editQueueBean.queue.queueReportHold}" style="width: 150px" title="Áudio do aviso ao agente">
+                                <f:selectItem itemLabel="---" itemValue="Selecione" />
+                                <f:selectItem itemLabel="Padrão" itemValue="pattern" />
+                                <f:selectItems value="#{editQueueBean.songs}" />
+                            </p:selectOneMenu>
+                        </b:column>                     
+                    </b:row>
+                </b:panel>
+                <b:panel title="Configurações Avançadas" look="info" collapsed="true">
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Contexo de Saída:" />
+                        </b:column>
+                        <b:column span="3">
+                            <p:inputText value="#{editQueueBean.queue.context}" title="Um contexto pode ser criado para tratar ligações que desejam sair da fila"  />
+                        </b:column>
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Prioridade da Fila:" />
+                        </b:column>
+                        <b:column span="3">
+                            <p:inputText type="number" value="#{editQueueBean.queue.weight}" title="Um mesmo agente em 2 filas. A fila de maior prioridade terá preferência"  />
+                        </b:column>
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Nível de Serviço:" />
+                        </b:column>
+                        <b:column span="3">
+                            <p:inputText type="number" value="#{editQueueBean.queue.servicelevel}" placeholder="Segundos" title="Técnica usada para medir rapidez dos agentes no atendimento " />
+                        </b:column>
+                    </b:row>
+                </b:panel>
+                
+                <b:row class="bRowsSpace">
+                    <b:column span="1" class="bButtonSpace">
+                        <b:commandButton value="Salvar" iconAwesome="check" look="primary"
+                                         action="#{editQueueBean.updateQueue()}"/>
+                    </b:column>
+                    <b:column span="1" class="bButtonSpace">
+                        <b:button value="Voltar" outcome="queues" iconAwesome="undo" look="danger" />
+                    </b:column>
+                </b:row>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

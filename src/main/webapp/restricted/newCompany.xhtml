@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Nova Empresa</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <h1>Nova Empresa</h1>
+            <p:separator/>
+            <h:form>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Nome:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:inputText id="user" value="#{newCompanyBean.company.name}"
+                                     style="border-color: #{newCompanyBean.borderColor}"
+                                     required="true" label="Empresa">
+                            <p:ajax event="blur" listener="#{newCompanyBean.verifyCompanyName()}"
+                                    update="@this growl" />
+                        </p:inputText>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Responsável:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:inputText value="#{newCompanyBean.company.responsible}"/>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Email:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:inputText type="email" value="#{newCompanyBean.company.email}"/>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Observações:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:inputTextarea rows="10" cols="40" value="#{newCompanyBean.company.obs}"/>
+                    </b:column>
+                </b:row>
+                
+                <b:row class="bRowsSpace">
+                    <b:column span="1" class="bButtonSpace">
+                        <b:commandButton value="Salvar" iconAwesome="check" look="primary"
+                                         action="#{newCompanyBean.submitNewCompany()}"/>
+                    </b:column>
+                    <b:column span="1" class="bButtonSpace">
+                        <b:button value="Voltar" outcome="companys" iconAwesome="undo" look="danger" />
+                    </b:column>
+                </b:row>
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</html>
+

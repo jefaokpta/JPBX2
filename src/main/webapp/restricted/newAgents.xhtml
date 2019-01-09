@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Novos Agentes</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <h1>Agentes em Lote</h1>
+            <p:separator/>
+            <h:form class="formStrong">
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Agentes:" />
+                    </b:column>
+                    <b:column span="2">
+                        De:
+                        <p:inputText type="number" placeholder="Início" value="#{newAgentBean.agentStart}" required="true" label="Agente início" />
+                    </b:column>
+                    <b:column span="2">
+                        Até:
+                        <p:inputText type="number" placeholder="Fim" value="#{newAgentBean.agentEnd}" required="true" label="Agente fim" />
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Nome:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:inputText value="#{newAgentBean.agent.name}" required="true" label="Nome" />
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Senha:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:inputText type="password" value="#{newAgentBean.agent.password}" required="true" label="Senha" />
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="1" class="bButtonSpace">
+                        <b:commandButton value="Salvar" iconAwesome="check" look="primary"
+                                         action="#{newAgentBean.persistNewManyAgents()}"/>
+                    </b:column>
+                    <b:column span="1" class="bButtonSpace">
+                        <b:button value="Voltar" outcome="agents" iconAwesome="undo" look="danger" />
+                    </b:column>
+                </b:row>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

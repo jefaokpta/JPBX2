@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui">
+    <h:head>
+        <title>JPBX - Licenciamento</title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['img/favicon.ico']}" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <h:outputStylesheet library="css" name="cssJefao.css" />
+    </h:head>
+    <h:body>
+        <p:messages id="msgs" />
+        <!--<p:growl id="gro"   />-->
+        
+        <b:container class="contentDown">     
+            <b:row>
+                <b:column span="6">
+                    <b:panel look="info" title="Licenciamento JPBX" collapsible="false" class="">
+                        <h:form prependId="false" id="form1">
+                            <b:inputText placeholder="Chave do sistema" required="true"
+                                         requiredMessage="Informe uma chave válida."
+                                         value="#{licencingBean.key}">
+                                <f:facet name="append">
+                                    <b:iconAwesome name="key" />
+                                </f:facet>
+                            </b:inputText>
+                            <b:commandButton value="Licenciar" iconAwesome="check" action="#{licencingBean.doLicencing()}" look="primary" title="Licenciar."/>
+                        </h:form>
+                    </b:panel>
+                </b:column>
+            </b:row>           
+        </b:container>
+    </h:body>
+</html>
+

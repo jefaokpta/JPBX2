@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Ramal:" />
+            </b:column>
+            <b:column span="3">
+                <p:inputText id="peer" value="#{newPeerBean.peer.name}"
+                             style="border-color: #{newPeerBean.borderColor}"
+                             required="true" label="Ramal"
+                             type="number">
+                    <p:ajax event="blur" listener="#{newPeerBean.verifyPeer()}"
+                            update="@this growl" />
+                </p:inputText>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Senha de Acesso WEB" />
+            </b:column>
+            <b:column span="3">
+                <p:password value="#{newPeerBean.peer.username}"
+                            feedback="true" inline="true" weakLabel="Fraca"
+                            goodLabel="Boa" strongLabel="Ai Sim!"
+                            promptLabel="Verificando Senha" label="Senha de Registro"
+                            required="true">
+                    <p:ajax event="blur" listener="#{newPeerBean.verifyPasswordWEB()}" update="growl" />
+                </p:password>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Nome do Ramal:" />
+            </b:column>
+            <b:column span="3">
+                <p:inputText value="#{newPeerBean.peer.callerid}" />
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Senha de Facilidades:" />
+            </b:column>
+            <b:column span="3">
+                <p:inputText value="#{newPeerBean.peer.facilityPass}"
+                             label="Senha de Facilidades" type="number">
+                    <p:ajax event="blur" listener="#{newPeerBean.verifyFacilityPass()}" update="growl" />
+                </p:inputText>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Chamadas Simultâneas:" />
+            </b:column>
+            <b:column span="1">
+                <p:inputText type="number" value="#{newPeerBean.peer.callLimit}" />
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Idioma dos Audios:" />
+            </b:column>
+            <b:column span="4">
+                <p:selectOneButton value="#{newPeerBean.peer.language}">
+                    <f:selectItem itemLabel="Português" itemValue="pt_BR" />
+                    <f:selectItem itemLabel="Inglês" itemValue="en" />
+                    <f:selectItem itemLabel="Francês" itemValue="fr" />
+                    <f:selectItem itemLabel="Espanhol" itemValue="es" />
+                </p:selectOneButton>
+            </b:column>
+        </b:row>
+        
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Ativa Qualidade:" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneButton value="#{newPeerBean.peer.qualify}">
+                    <f:selectItem itemLabel="Não" itemValue="no" />
+                    <f:selectItem itemLabel="Sim" itemValue="yes" />
+                </p:selectOneButton>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Ativa Gravação:" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneButton value="#{newPeerBean.peer.record}">
+                    <f:selectItem itemLabel="Não" itemValue="0" />
+                    <f:selectItem itemLabel="Sim" itemValue="1" />
+                </p:selectOneButton>
+            </b:column>
+        </b:row>
+              
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Grupo de Captura:" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneMenu value="#{newPeerBean.peer.pickupgroup}" >
+                    <f:selectItem itemLabel="---" itemValue="0" />
+                    <f:selectItems value="#{newPeerBean.selectGrp}" />
+                </p:selectOneMenu>
+            </b:column>
+        </b:row>
+
+        <b:panel title="Voicemail" look="info" collapsed="true" style="width: 70%">
+            <b:row class="bRowsSpace">
+                <b:column span="3">
+                    <h:outputText value="Senha do Voicemail:" />
+                </b:column>
+                <b:column span="3">
+                    <p:inputText value="#{newPeerBean.peer.mailbox}" type="number"
+                                 label="Senha do Voicemail" >
+                        <p:ajax event="blur" listener="#{newPeerBean.verifyVoicemailPass()}" update="growl" />
+                    </p:inputText>
+                </b:column>
+            </b:row>
+            <b:row class="bRowsSpace">
+                <b:column span="3">
+                    <h:outputText value="Email de Contato:" />
+                </b:column>
+                <b:column span="3">
+                    <p:inputText value="#{newPeerBean.peer.email}" placeholder="Email1,Email2,Email3..." />
+                </b:column>
+            </b:row>                        
+        </b:panel>  
+        <b:panel title="Configurações Avançadas" look="info" style="width: 70%" collapsed="true">
+            <b:row class="bRowsSpace">
+                <b:column span="3">
+                    <h:outputText value="Canreinvite:" />
+                </b:column>
+                <b:column span="3">
+                    <p:selectOneButton value="#{newPeerBean.peer.canreinvite}" >
+                        <f:selectItem itemLabel="Não" itemValue="0" />
+                        <f:selectItem itemLabel="Sim" itemValue="1" />
+                    </p:selectOneButton>
+                </b:column>
+            </b:row> 
+            <b:row class="bRowsSpace">
+                <b:column span="3">
+                    <h:outputText value="Perfil de Autorização:" />
+                </b:column>
+                <b:column span="3">
+                    <p:selectOneMenu value="#{newPeerBean.peer.authorization}" style="width: 150px" >
+                        <f:selectItem itemLabel="Selecione" itemValue="0" />
+                        <f:selectItems value="#{newPeerBean.selectProfile}" />
+                    </p:selectOneMenu>
+                </b:column>
+            </b:row> 
+        </b:panel>
+        <b:row class="bRowsSpace">
+            <b:column span="1" class="bButtonSpace">
+                <b:commandButton value="Salvar" iconAwesome="check" look="primary"
+                                 action="#{newPeerBean.submitNewPeerWEB()}"/>
+            </b:column>
+            <b:column span="1" class="bButtonSpace">
+                <b:button value="Voltar" outcome="peers" iconAwesome="undo" look="danger" />
+            </b:column>
+        </b:row>
+    </ui:composition>
+</html>
+

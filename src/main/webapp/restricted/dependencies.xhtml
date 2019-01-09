@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Dependências do Sistema</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="10">
+                    <h1>Dependências do Sistema</h1>
+                </b:column>                             
+            </b:row>
+            <p:separator/>
+            <b:row class="bRowsSpace">
+                <b:column span="5">
+                    <h3>Ghostscript (gs)</h3>
+                </b:column>
+                <b:column span="5">
+                    <p>Manipula PDFs para tiff (formato de fax).</p>
+                </b:column>
+            </b:row>
+            <b:row class="bRowsSpace">
+                <b:column span="5">
+                    <h3>Imagemagick (convert)</h3>
+                </b:column>
+                <b:column span="5">
+                    <p>Converte tiff para PDF.</p>
+                </b:column>
+            </b:row>
+            <b:row class="bRowsSpace">
+                <b:column span="5">
+                    <h3>MPG123</h3>
+                </b:column>
+                <b:column span="5">
+                    <p>Manipula mp3.</p>
+                </b:column>
+            </b:row>
+            <b:row class="bRowsSpace">
+                <b:column span="5">
+                    <h3>Sox</h3>
+                </b:column>
+                <b:column span="5">
+                    <p>Manipula wav.</p>
+                </b:column>
+            </b:row>
+        </ui:define>
+    </ui:composition>
+</html>
+

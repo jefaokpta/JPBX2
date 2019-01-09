@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Relatório de DETRAF</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="10">
+                    <h1>Relatório de DETRAF</h1>
+                </b:column>     
+
+            </b:row>              
+            <p:separator/>
+            <b:panel title="Ligações dos Troncos" look="info" >      
+                <h:form>
+                    <p:commandLink onclick="exportChart();">
+                        Exportar
+                        <b:iconAwesome name="file-image-o" />
+                    </p:commandLink>                 
+                    <p:chart type="bar" model="#{detrafShowBean.barModel}" id="grafico"  responsive="true" widgetVar="chart" />
+                </h:form>
+                <p:dialog widgetVar="dlg"  modal="true" header="Gráfico como Imagem" resizable="false">
+                    <p:outputPanel id="output" layout="block" style="width: 80%"/>
+                </p:dialog>
+                <script>
+                function exportChart() {
+                    //export image
+                    $('#output').empty().append(PF('chart').exportAsImage());
+
+                    //show the dialog
+                    PF('dlg').show();
+                }
+                </script>
+            </b:panel>           
+            <h:form>
+                <b:row>
+                    <b:column span="2"/>
+                    <b:column span="8" >
+                        <p:dataTable var="total"  value="#{detrafShowBean.totals}" class="textCenter"  reflow="true">
+                            <f:facet name="header">
+                                Somatórias
+                            </f:facet>
+                            <p:column headerText="Total de Chamadas">
+                                <h:outputText value="#{total.totalCall}" />
+                            </p:column>
+                            <p:column headerText="Total Custo R$" >
+                                <h:outputText value="#{detrafShowBean.acCountCall(total.cost)}" />
+                            </p:column>
+                            <p:column headerText="Total Venda R$" >
+                                <h:outputText value="#{detrafShowBean.acCountCall(total.sale)}" />
+                            </p:column>
+                            <p:column headerText="Total Lucro R$" >
+                                <h:outputText value="#{detrafShowBean.acCountCall(total.profit)}" />
+                            </p:column>
+                        </p:dataTable>
+                    </b:column>
+                    <b:column span="1">
+                        <h:commandLink id="excel" title="Extrair Excel">
+                            <p:graphicImage name="/img/xls.png" width="50"/>
+                            <p:dataExporter type="xls" target="detraf" fileName="relatorio_de_detraf"  />
+                        </h:commandLink>  
+                    </b:column>
+                    <b:column span="1">
+                        <h:commandLink id="csv" title="Extrair CSV">
+                            <p:graphicImage name="/img/csv.png" width="50"/>
+                            <p:dataExporter type="csv" target="detraf" fileName="relatorio_de_detraf"  />
+                        </h:commandLink>
+                    </b:column>
+                </b:row>         
+                <p:dataTable var="r" id="detraf" value="#{detrafShowBean.detrafs}" class="textCenter" 
+                             paginator="true" paginatorPosition="bottom" rows="15" reflow="true" emptyMessage="Não há Ligações">
+                    <f:facet name="header">
+                        Periodo de 
+                        <h:outputText value="#{detrafShowBean.filter.start}" >
+                            <f:convertDateTime dateStyle="default" />
+                        </h:outputText>
+                         a 
+                         <h:outputText value="#{detrafShowBean.filter.end}" >
+                            <f:convertDateTime dateStyle="default" />
+                        </h:outputText>
+                    </f:facet>  
+                    <p:column headerText="Data Hora" sortBy="#{r.calldate}">
+                        <h:outputText value="#{r.calldate}" >
+                            <f:convertDateTime dateStyle="default" timeZone="GMT-03:00"/>
+                        </h:outputText>    
+                        <h:outputText value="#{r.calldate}" >
+                            <f:convertDateTime timeZone="GMT-03:00"  pattern=" HH:mm:ss" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Origem"  filterBy="#{r.src}" sortBy="#{r.src}">
+                        <h:outputText value="#{r.src}" />
+                    </p:column>
+                    <p:column headerText="Destino"  filterBy="#{r.dst}" sortBy="#{r.dst}">
+                        <h:outputText value="#{r.dst}" />
+                    </p:column>
+                    <p:column headerText="Duração" >
+                        <h:outputText value="#{r.duration}" />
+                    </p:column>
+                    <p:column headerText="Conversação" >
+                        <h:outputText value="#{r.billsec}" />
+                    </p:column>
+                    <p:column headerText="Tipo"  sortBy="#{r.acc}" filterBy="#{r.acc}">
+                        <h:outputText value="#{r.acc}" />
+                    </p:column>
+                    <p:column headerText="Tronco"  sortBy="#{r.trunk}" filterBy="#{r.trunk}" >
+                        <h:outputText value="#{r.trunk}" />
+                    </p:column>
+                    <p:column headerText="Custo R$" sortBy="#{r.cost}">
+                        <h:outputText value="#{detrafShowBean.acCountCall(r.cost)}" />
+                    </p:column>
+                    <p:column headerText="Venda R$"  sortBy="#{r.sale}">
+                        <h:outputText value="#{detrafShowBean.acCountCall(r.sale)}" />
+                    </p:column>
+                    <p:column headerText="Lucro R$" sortBy="#{r.profit}">
+                        <h:outputText value="#{detrafShowBean.acCountCall(r.profit)}" />
+                    </p:column>
+                </p:dataTable>               
+            </h:form>
+            <p:ajaxStatus>
+                <f:facet name="default">
+                    <h:outputText value="" />
+                </f:facet>
+                <f:facet name="start">
+                    <p:graphicImage style="position: fixed; bottom: 5px; right: 5px" library="img" name="loading.gif" />
+                </f:facet>
+                <f:facet name="complete">
+                    <h:outputText value="" />
+                </f:facet>
+            </p:ajaxStatus> 
+        </ui:define>
+    </ui:composition>
+</html>
+

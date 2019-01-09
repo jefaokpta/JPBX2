@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Músicas do Sistema</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />    
+            <b:row>
+                <b:column span="10">
+                    <h1>Músicas do Sistema</h1>
+                </b:column> 
+            </b:row>
+            <p:separator/>
+            <h:form>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Música de Espera:" />
+                    </b:column>
+                    <b:column span="2">
+                        <p:selectOneMenu value="#{mohsBean.companyMoh}" style="width: 125px">
+                            <f:selectItem itemLabel="Padrão" itemValue="" />
+                            <f:selectItems value="#{mohsBean.companyMohs}" />
+                        </p:selectOneMenu>
+                    </b:column>
+                    <b:column span="2">
+                        <b:commandButton value="Salvar" look="primary" iconAwesome="check"
+                                actionListener="#{mohsBean.updateCompanyMoh()}" update="growl" />
+                    </b:column>
+                </b:row>
+            </h:form>
+            <b:panel title="Adicionar Música (wav ou mp3)" look="info" collapsed="true" >
+                <h:form enctype="multipart/form-data">
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Nome:" />
+                        </b:column>
+                        <b:column span="2">
+                            <p:inputText value="#{mohsBean.moh.name}" required="true" label="Nome" />
+                        </b:column>
+                    </b:row>
+                    <b:row class="bRowsSpace">   
+                        <b:column span="2">
+                            <h:outputText value="Áudio:" />
+                        </b:column>
+                        <b:column span="2">                  
+                            <p:fileUpload value="#{mohsBean.upFile}" mode="simple"
+                                fileLimit="1" fileLimitMessage="Permitido apenas 1 Audio."
+                                allowTypes="/(\.|\/)(wav|mp3)$/" 
+                                invalidFileMessage="Os formatos do audio são wav ou mp3."
+                                invalidSizeMessage="Tamanho máximo do audio é 5MB."
+                                sizeLimit="5500000" label="Procurar" required="true">
+                            </p:fileUpload>                   
+                        </b:column>           
+                    </b:row>
+                    <b:row class="bRowsSpace">
+                        <b:column span="2">
+                            <h:outputText value="Detalhes:" />
+                        </b:column>
+                        <b:column span="2">
+                            <p:inputTextarea cols="30" rows="5" value="#{mohsBean.moh.description}" />
+                        </b:column>
+                    </b:row>
+                    <b:commandButton value="Salvar" look="primary" iconAwesome="check"
+                                     action="#{mohsBean.persistNewMoh()}" ajax="false" />
+                </h:form>
+            </b:panel>
+            <h:form>
+                <p:dataTable var="moh" value="#{mohsBean.mohs}" class="textCenter" paginator="true"
+                             rows="30" paginatorPosition="bottom" reflow="true" emptyMessage="Não há Músicas."
+                             editable="true" editMode="cell">
+                    <p:ajax event="cellEdit" listener="#{mohsBean.onRowEdit}" update="growl" />
+                    <p:column headerText="Id" sortBy="#{moh.id}">
+                        <h:outputText value="#{moh.id}" />
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{moh.name}">
+                        <h:outputText value="#{moh.name}" />
+                    </p:column>
+                    <p:column headerText="Música" colspan="2">                       
+                        <audio controls="true" >
+                            <source src="/jpbx/MohServlet?moh=#{moh.moh}" />
+                            Seu navegador não suporta audio.
+                        </audio>                              
+                    </p:column>                   
+                    <p:column headerText="Empresa" sortBy="#{moh.company}">
+                        <h:outputText value="#{userSession.translateCompany(moh.company)}" />
+                    </p:column>
+                    <p:column headerText="Detalhes">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{moh.description}" /></f:facet>
+                            <f:facet name="input"><p:inputTextarea cols="20" rows="3" value="#{moh.description}" /> </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Ações">
+                        <b:commandButton value="Apagar" look="danger" iconAwesome="trash-o"
+                                         actionListener="#{mohsBean.alertDelete(moh)}"
+                                       update="alertMoh growl" />
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog id="alertMoh" widgetVar="alertMoh" modal="true" header="Apagar #{mohsBean.moh.name}?" showEffect="blind">
+                <h:form>
+                    <h:panelGrid columns="1">
+                        <h:outputText style="color: red"  value="Deseja realmente apagar este Ramal?" />
+                        <p:separator />
+                        <b:commandButton value="Apagar" look="danger"
+                                         iconAwesome="trash" action="#{mohsBean.deleteMoh()}" />
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>
+

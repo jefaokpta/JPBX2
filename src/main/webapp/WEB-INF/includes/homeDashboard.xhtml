@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+     
+    <ui:composition>
+        <p:growl id="growl" life="30000" />
+        <h1>Bem vindo #{userSession.user.fullName}</h1>
+        <p:separator />
+        <h:form>
+            <b:panel id="dropArea" title="Links Rápidos" look="info" >
+                <p:outputPanel id="dropPanel">                   
+                    <p:dataGrid id="grid" var="selected" value="#{homeBean.droopedLinks}" columns="3" emptyMessage="Arraste os links desejados pra cá!">
+                        <p:panel header="#{selected.name}" style="text-align: center">
+                            <h:link outcome="#{selected.outcome}">
+                                <b:iconAwesome name="#{selected.icon}" size="4x" />         
+                            </h:link>
+                        </p:panel>
+                    </p:dataGrid>
+                </p:outputPanel>
+                <h:panelGrid columns="2">
+                    <p:commandLink  title="Limpar Links" actionListener="#{homeBean.clearLinks()}" update="dropPanel links">
+                        <b:iconAwesome name="trash" />
+                    </p:commandLink>
+                    <p:commandLink  title="Salvar Links" style="padding-left: 5px" actionListener="#{homeBean.saveLinks()}" update="growl">
+                        <b:iconAwesome name="save" />
+                    </p:commandLink>
+                </h:panelGrid>
+            </b:panel>
+            <p:droppable for="dropArea" tolerance="touch" activeStyleClass="ui-state-highlight"
+                datasource="links" onDrop="handleDrop">
+                <p:ajax listener="#{homeBean.onLinkDrop}" update="dropPanel links" />
+            </p:droppable>
+ 
+            <b:panel title="Links Disponíveis (arraste para Links Rápidos)" look="primary" collapsed="true">
+                <p:dataGrid id="links" var="link" value="#{homeBean.webPages}"
+                            columns="3">
+                    <p:panel id="dragLink" header="#{link.name}" style="text-align: center">
+                        <b:iconAwesome name="#{link.icon}" size="4x" />
+                    </p:panel>
+                    <p:draggable for="dragLink" revert="true" handle=".ui-panel-titlebar" stack=".ui-panel" />
+                </p:dataGrid>
+            </b:panel>
+        </h:form>
+        <b:panel title="Ligações do mês de #{homeBean.month}" look="info">
+            <ui:include src="/WEB-INF/includes/callsGraf.xhtml" />
+        </b:panel>
+        <b:row rendered="false">
+            <b:column span="4">
+                <b:panel look="info" title="Cadastros"  >
+                    <h:panelGrid columns="3"  >
+                        <b:iconAwesome name="building" size="5x" />
+                        <div style="width: 30px" />
+                        <p:panelGrid columns="2" style="font-weight: bold;float: right">
+                            <h:outputText value="Ramais" /> 2
+                            <h:outputText value="Agentes" /> 2
+                            <h:outputText value="Troncos" /> 2
+                            <h:outputText value="Grupos de Chamada" /> 2
+                            <h:outputText value="Filas" /> 2
+                            <h:outputText value="Uras" /> 2
+                            <h:outputText value="Usuários" /> 2
+                        </p:panelGrid>
+                    </h:panelGrid>                   
+                </b:panel>
+            </b:column>
+            <b:column span="4">
+                <b:panel look="info" title="Rotas">
+                     <h:form>
+                        <p:dataTable var="r" value="#{homeBean.routes}" class="textCenter" paginator="true"
+                                     rows="5" paginatorPosition="bottom" reflow="true" emptyMessage="Não há Grupos de Captura">
+                            <p:column headerText="Nome" sortBy="#{r.name}">
+                                <h:outputText value="#{r.name}" />
+                            </p:column>
+                            <p:column headerText="Compromisso">
+                                <b:commandButton value="#{r.limitBol>0?'Sim':'Não'}" look="#{r.limitBol>0?'success':'warning'}"
+                                          iconAwesome="#{r.limitBol>0?'lock':'unlock'}" disabled="#{r.limitBol>0?'false':'true'}"
+                                          ajax="true" update="showRoute" actionListener="#{homeBean.showRoute(r)}" />
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </b:panel>
+            </b:column>
+            <b:column span="4">
+                <b:panel look="info" title="Não Implementado" collapsed="true">
+                    Não implementado.
+                </b:panel>
+            </b:column>
+        </b:row>
+        <p:dialog id="showRoute" widgetVar="showRoute" header="Detalhes de #{homeBean.route.name}" showEffect="blind">
+                <p:panelGrid columns="2">
+                    <strong>Valor do Compromisso </strong>
+                    <h:outputText value="#{homeBean.route.limitControl/60}" >
+                        <f:convertNumber pattern="00" />
+                    </h:outputText>
+                    <strong>Gasto até o momento </strong>
+                    <h:outputText value="#{homeBean.route.currentMin/60}" >
+                        <f:convertNumber pattern="00" />
+                    </h:outputText>
+                    <strong>Data de Corte </strong>
+                    <h:outputText value="#{homeBean.route.cutDay}" />
+                </p:panelGrid>
+            </p:dialog>
+        <script>
+            function handleDrop(event,ui){
+                var droppedLink=ui.draggable;
+                droppedLink.fadeOut('slow');
+            }
+        </script>
+    </ui:composition>
+</html>
+

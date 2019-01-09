@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Relatório de ASR</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <h1 title="Answer-seizure ratio ou Taxa de Completamento">Relatório de ASR</h1>
+            <p:separator/>
+            <h:form >
+                <h3>Período</h3>
+                <b:row class="bRowsSpace">
+                    <b:column span="1">
+                        <h:outputText value="Início:" />
+                    </b:column>
+                    <b:column span="2">
+                        <p:calendar  pattern="dd/MM/yyyy" value="#{relASRBean.filter.start}"  />
+                    </b:column>
+                    <b:column span="1">
+                        <h:outputText value="Fim:" />
+                    </b:column>
+                    <b:column span="1">
+                        <p:calendar pattern="dd/MM/yyyy" value="#{relASRBean.filter.end}" />
+                    </b:column>
+                </b:row>
+                <h3>Tronco</h3>
+                <p:pickList value="#{relASRBean.trunksSelection}" var="tru"
+                        itemValue="#{tru}" itemLabel=" #{tru}" showCheckbox="true" >
+                    <f:facet name="sourceCaption">Troncos</f:facet>
+                    <f:facet name="targetCaption">Selecionados</f:facet>         
+                    <p:ajax event="transfer" listener="#{relASRBean.onTransfer}"/>
+                </p:pickList>
+       
+                <b:row class="bRowsSpace">
+                    <b:column span="1" class="bButtonSpace">
+                        <b:commandButton value="Exibir" iconAwesome="bar-chart" look="primary"
+                                         action="#{relASRBean.showRelAsr()}"/>
+                    </b:column>
+                </b:row>
+            </h:form>
+            <h:outputScript name="locale_ptBR.js" library="js" />
+        </ui:define>
+    </ui:composition>
+</html>
+

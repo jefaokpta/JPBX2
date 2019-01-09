@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Editar Usuário</ui:define>
+        <ui:define name="content">           
+            <p:growl id="growl" life="30000" />
+            <h1>Editar Usuário #{editUserBean.user.name} </h1>
+            <p:separator/>
+            <h:form>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Usuário:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:inputText id="user" value="#{editUserBean.user.name}" disabled="true" />
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Nome Completo:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:inputText value="#{editUserBean.user.fullName}" label="Nome Completo" />
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Editar Senha:" />
+                    </b:column>
+                    <b:column span="1">
+                        <p:selectBooleanButton offLabel="Não" onLabel="Sim" value="${editUserBean.editPass}" >
+                            <p:ajax update="editPass" />
+                        </p:selectBooleanButton>
+                    </b:column>
+                    <h:panelGroup id="editPass">
+                        <b:column span="3">
+                            <p:password value="#{editUserBean.pass}" rendered="#{editUserBean.editPass}"
+                                        feedback="true" inline="true" weakLabel="Fraca"
+                                        goodLabel="Boa" strongLabel="Ai Sim!"
+                                        promptLabel="Verificando Senha" label="Senha" placeholder="Nova Senha">
+                                <p:ajax event="blur" listener="#{editUserBean.verifyPassword()}" update="growl" />
+                            </p:password>
+                        </b:column>
+                    </h:panelGroup>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Nível:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:selectOneMenu value="#{editUserBean.user.nivel}">
+                            <f:selectItems value="#{editUserBean.levels}" />
+                        </p:selectOneMenu>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Tela Inicial:" />
+                    </b:column>
+                    
+                    <b:column span="3">
+                        <p:selectOneMenu value="#{editUserBean.user.screen}">
+                            <p:ajax listener="#{editUserBean.showHideSiteText}" update="site" />
+                            <f:selectItems value="#{newUserBean.userScreen}" />
+                        </p:selectOneMenu>
+                    </b:column>
+                    <b:column span="3">
+                        <h:panelGroup id="site">
+                        <p:inputText placeholder="Site ex: http://jpbx.com.br"
+                                     value="#{editUserBean.user.site}" rendered="#{editUserBean.siteText}" />
+                        </h:panelGroup>
+                    </b:column>                       
+                </b:row>
+                
+                <b:row class="bRowsSpace">
+                    <b:column span="1" class="bButtonSpace">
+                        <b:commandButton value="Salvar" iconAwesome="check" look="primary"
+                                         action="#{editUserBean.updateUser()}"/>
+                    </b:column>
+                    <b:column span="1" class="bButtonSpace">
+                        <b:button value="Voltar" outcome="users" iconAwesome="undo" look="danger" />
+                    </b:column>
+                </b:row>
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</html>
+

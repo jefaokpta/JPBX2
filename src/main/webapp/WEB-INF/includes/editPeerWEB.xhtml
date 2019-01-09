@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition>
+        
+        
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Nome do Ramal:" />
+            </b:column>
+            <b:column span="3">
+                <p:inputText value="#{editPeerBean.peer.callerid}" />
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace" rendered="#{userSession.showHideLinks(4)}">
+            <b:column span="2">
+                <h:outputText value="Senha de Acesso WEB" />
+            </b:column>
+            <b:column span="1">
+                <p:selectBooleanButton offLabel="Não" onLabel="Sim" value="#{editPeerBean.editPass}">
+                    <p:ajax update="editPass" />
+                </p:selectBooleanButton>
+            </b:column>
+            <h:panelGroup id="editPass">
+                <b:column span="3">
+                    <p:password value="#{editPeerBean.passAux}" rendered="#{editPeerBean.editPass}"
+                                feedback="true" inline="true" weakLabel="Fraca" required="true"
+                                goodLabel="Boa" strongLabel="Ai Sim!"
+                                promptLabel="Verificando Senha" label="Senha de Registro" autocomplete="false">
+                    </p:password>
+                </b:column>
+            </h:panelGroup>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Senha de Facilidades:" />
+            </b:column>
+            <b:column span="3">
+                <p:inputText value="#{editPeerBean.peer.facilityPass}"
+                             label="Senha de Facilidades" type="number">
+                    <p:ajax event="blur" listener="#{editPeerBean.verifyFacilityPass()}" update="growl" />
+                </p:inputText>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace" rendered="#{userSession.showHideLinks(4)}">
+            <b:column span="2">
+                <h:outputText value="Chamadas Simultâneas:" />
+            </b:column>
+            <b:column span="1">
+                <p:inputText type="number" value="#{editPeerBean.peer.callLimit}" />
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Idioma dos Audios:" />
+            </b:column>
+            <b:column span="4">
+                <p:selectOneButton value="#{editPeerBean.peer.language}">
+                    <f:selectItem itemLabel="Português" itemValue="pt_BR" />
+                    <f:selectItem itemLabel="Inglês" itemValue="en" />
+                    <f:selectItem itemLabel="Francês" itemValue="fr" />
+                    <f:selectItem itemLabel="Espanhol" itemValue="es" />
+                </p:selectOneButton>
+            </b:column>
+        </b:row>
+        
+        <b:row class="bRowsSpace" rendered="#{userSession.showHideLinks(4)}">
+            <b:column span="2">
+                <h:outputText value="Ativa Qualidade:" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneButton value="#{editPeerBean.peer.qualify}">
+                    <f:selectItem itemLabel="Não" itemValue="no" />
+                    <f:selectItem itemLabel="Sim" itemValue="yes" />
+                </p:selectOneButton>
+            </b:column>
+        </b:row>
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Ativa Gravação:" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneButton value="#{editPeerBean.peer.record}">
+                    <f:selectItem itemLabel="Não" itemValue="0" />
+                    <f:selectItem itemLabel="Sim" itemValue="1" />
+                </p:selectOneButton>
+            </b:column>
+        </b:row>
+              
+        <b:row class="bRowsSpace">
+            <b:column span="2">
+                <h:outputText value="Grupo de Captura:" />
+            </b:column>
+            <b:column span="3">
+                <p:selectOneMenu value="#{editPeerBean.peer.pickupgroup}" >
+                    <f:selectItem itemLabel="---" itemValue="0" />
+                    <f:selectItems value="#{editPeerBean.selectGrp}" />
+                </p:selectOneMenu>
+            </b:column>
+        </b:row>
+
+        <b:panel title="Voicemail" look="info" collapsed="#{editPeerBean.peer.mailbox == 0}" style="width: 70%">
+            <b:row class="bRowsSpace">
+                <b:column span="3">
+                    <h:outputText value="Senha do Voicemail:" />
+                </b:column>
+                <b:column span="3">
+                    <p:inputText value="#{editPeerBean.peer.mailbox}" type="number"
+                                 label="Senha do Voicemail" >
+                        <p:ajax event="blur" listener="#{editPeerBean.verifyVoicemailPass()}" update="growl" />
+                    </p:inputText>
+                </b:column>
+            </b:row>
+            <b:row class="bRowsSpace">
+                <b:column span="3">
+                    <h:outputText value="Email de Contato:" />
+                </b:column>
+                <b:column span="3">
+                    <p:inputText value="#{editPeerBean.peer.email}" placeholder="Email1,Email2,Email3..." />
+                </b:column>
+            </b:row>    
+            <h:panelGrid columns="1" rendered="#{editPeerBean.peer.mailbox > 0}">
+                <b:row>               
+                    <b:column span="8">                  
+                        <h3>Alterar Saudação do Voicemail</h3>
+                        <p:fileUpload value="#{editPeerBean.upFile}" mode="advanced"
+                                      fileUploadListener="#{editPeerBean.fileUploadListener}"
+                                      fileLimit="1" fileLimitMessage="Permitido apenas 1 Audio."
+                                      allowTypes="/(\.|\/)(wav|mp3)$/" 
+                                      invalidFileMessage="Os formatos do audio são wav ou mp3."
+                                      invalidSizeMessage="Tamanho máximo da imagem é 5MB."
+                                      sizeLimit="5500000" label="Procurar"
+                                      cancelLabel="Cancelar" update="growl" >
+                        </p:fileUpload>                   
+                    </b:column>
+                    <b:column span="2">
+                        <b:commandButton style="margin: 15px 0" actionListener="#{editPeerBean.removeVoicemailGreeting()}"
+                                         look="info" value="Voltar a Saudação Original" />
+                    </b:column>               
+                </b:row>
+            </h:panelGrid>
+        </b:panel>  
+        <b:panel title="Configurações Avançadas" look="info" style="width: 70%" collapsed="true"
+                 rendered="#{userSession.showHideLinks(4)}">
+            <b:row class="bRowsSpace">
+                <b:column span="3">
+                    <h:outputText value="Canreinvite:" />
+                </b:column>
+                <b:column span="3">
+                    <p:selectOneButton value="#{editPeerBean.peer.canreinvite}" >
+                        <f:selectItem itemLabel="Não" itemValue="0" />
+                        <f:selectItem itemLabel="Sim" itemValue="1" />
+                    </p:selectOneButton>
+                </b:column>
+            </b:row> 
+            <b:row class="bRowsSpace">
+                <b:column span="3">
+                    <h:outputText value="Perfil de Autorização:" />
+                </b:column>
+                <b:column span="3">
+                    <p:selectOneMenu value="#{editPeerBean.peer.authorization}" style="width: 150px" >
+                        <f:selectItem itemLabel="Selecione" itemValue="0" />
+                        <f:selectItems value="#{editPeerBean.selectProfile}" />
+                    </p:selectOneMenu>
+                </b:column>
+            </b:row> 
+        </b:panel>
+        <b:row class="bRowsSpace">
+            <b:column span="1" class="bButtonSpace">
+                <b:commandButton value="Salvar" iconAwesome="check" look="primary"
+                                 action="#{editPeerBean.updatePeerWEB()}"/>
+            </b:column>
+            <b:column span="1" class="bButtonSpace">
+                <b:button value="Voltar" outcome="peers" iconAwesome="undo" look="danger" />
+            </b:column>
+        </b:row>
+    </ui:composition>
+</html>
+

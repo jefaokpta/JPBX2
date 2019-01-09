@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - #{userSession.user.fullName}</ui:define>
+        <ui:define name="content">     
+            <h:outputScript library="js" name="jcrop.min.js" />
+            <h:outputStylesheet library="css" name="jcrop.min.css" />
+            <p:growl id="growl" life="30000" />
+            <h1>Editar Perfil #{userSession.user.name} </h1>
+            <p:separator/>
+            <h:form>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Nome Completo:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:inputText value="#{userProfileBean.user.fullName}" label="Nome Completo" />
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Senha:" />
+                    </b:column>
+                    <b:column span="2">
+                        <p:selectBooleanButton offLabel="Não" onLabel="Sim" value="#{userProfileBean.editPass}">
+                            <p:ajax update="editPass" />
+                        </p:selectBooleanButton>
+                    </b:column>
+                    <h:panelGroup id="editPass">
+                        <b:column span="3">
+                            <p:password value="#{userProfileBean.pass}" rendered="#{userProfileBean.editPass}"
+                                        feedback="true" inline="true" weakLabel="Fraca"
+                                        goodLabel="Boa" strongLabel="Ai Sim!"
+                                        promptLabel="Verificando Senha" label="Senha" placeholder="Nova Senha">
+                                <p:ajax event="blur" listener="#{userProfileBean.verifyPassword()}" update="growl" />
+                            </p:password>
+                        </b:column>
+                    </h:panelGroup>
+                </b:row>
+                <b:row>
+                    <b:column span="6">
+                        <h:panelGrid columns="1">
+                            <h3>Alterar Imagem do Perfil</h3>
+                            <p:fileUpload value="#{userProfileBean.upFile}" mode="advanced"
+                                          fileUploadListener="#{userProfileBean.fileUploadListener}"
+                                          fileLimit="1" fileLimitMessage="Permitido apenas 1 Imagem."
+                                          allowTypes="/(\.|\/)(gif|jpg|png)$/" 
+                                          invalidFileMessage="Os formatos da imagem são jpg, png ou gif."
+                                          invalidSizeMessage="Tamanho máximo da imagem é 5MB."
+                                          sizeLimit="5500000" label="Procurar"
+                                          cancelLabel="Cancelar" update="crop" >
+                            </p:fileUpload>
+                        </h:panelGrid>
+                    </b:column>
+                    <b:column span="6">
+                        <p:photoCam widgetVar="cam" listener="#{userProfileBean.capture}" update="crop"/>
+                        <b:commandButton ajax="true" iconAwesome="camera" value="Tirar Foto" look="success"
+                                         onclick="PF('cam').capture();"  />
+                    </b:column>
+                </b:row>
+                <br />
+                <br />
+                <br />
+                <b:row>
+                    <b:column span="1" class="bButtonSpace">
+                        <b:commandButton value="Salvar" iconAwesome="check" look="primary"
+                                         action="#{userProfileBean.updateUser()}" />
+                    </b:column>
+                    <b:column span="1" class="bButtonSpace">
+                        <b:commandButton value="Voltar Imagem Original" iconAwesome="undo" look="info"
+                                         action="#{userProfileBean.returnDefaultImg()}" />
+                    </b:column>
+                </b:row>
+            </h:form>
+
+            <p:dialog id="crop" widgetVar="crop" modal="true" header="Recorte a Imagem" showEffect="blind" >
+                <div style="width: 500px;height: 350px">
+                    <h:form prependId="false" id="cropper">
+                        <img id="target" src="/jpbx/ImgServlet?img=#{userProfileBean.user.name}Temp.#{userProfileBean.tempTypeImg}" />
+                        <h:inputText id="cropx" value="#{userProfileBean.cropX}" style="visibility: hidden"  />
+                        <h:inputText id="cropy" value="#{userProfileBean.cropY}" style="visibility: hidden"  />
+                        <h:inputText id="cropw" value="#{userProfileBean.cropW}" style="visibility: hidden"  />
+                        <h:inputText id="croph" value="#{userProfileBean.cropH}" style="visibility: hidden"  />
+                        <b:commandButton value="Recorta" iconAwesome="crop" look="primary" actionListener="#{userProfileBean.crop()}" />
+                    </h:form>
+                </div>
+                <script>
+                $(function(){
+                    $('#target').Jcrop({
+                        setSelect: [ 35,17,134,113 ],
+                        onSelect : setCoordinates
+                    });
+                });
+                function setCoordinates(c) {
+                    $('#cropx').val(c.x);
+                    $('#cropy').val(c.y);
+                    $('#cropw').val(c.w);
+                    $('#croph').val(c.h);
+                }
+                </script>
+            </p:dialog>  
+        </ui:define>
+    </ui:composition>
+</html>
+

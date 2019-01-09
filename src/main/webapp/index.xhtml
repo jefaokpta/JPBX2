@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui">
+    <h:head>
+        <title>JPBX - Login</title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['img/favicon.ico']}" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <h:outputStylesheet library="css" name="cssJefao.css" />
+    </h:head>
+    <h:body>
+        <p:messages id="msgs" />
+        <!--<p:growl id="gro"   />-->
+        
+        <b:container class="contentDown">     
+            <b:row>
+                <b:column span="6">
+                    <b:panel look="info" title="Login JPBX" collapsible="false" class="">
+                        <h:form prependId="false" id="form1">
+                            <b:inputText placeholder="Usuário" required="true" id="user" 
+                                         requiredMessage="Informe um Usuário."
+                                         value="#{indexBean.user.name}">
+                                <f:facet name="append">
+                                    <b:iconAwesome name="user" />
+                                </f:facet>
+                            </b:inputText>
+                            <b:inputSecret placeholder="Senha" required="true" id="pass" 
+                                           requiredMessage="Informe uma Senha."
+                                           value="#{indexBean.user.password}">
+                                <f:facet name="append">
+                                    <b:iconAwesome name="key" />
+                                </f:facet>
+                            </b:inputSecret>
+                            <b:commandButton value="Entrar" iconAwesome="check" action="#{indexBean.doLogin}" look="primary" title="Entrar no sistema."/>
+                        </h:form>
+                    </b:panel>
+                </b:column>
+            </b:row>           
+        </b:container>
+        <h:outputScript library="js" name="jsJefao.js" />
+        <script>
+            var url=window.location.href;
+            if(url.includes('http:'))
+                window.location.href='https://'+window.location.host+'/jpbx/jpbx/restricted/home.xhtml';
+            $('#form1').submit(function(){
+                $('#pass').val(hashMD5($('#user').val()+":"+$('#pass').val()));
+            });
+        </script>
+        <p style="position: fixed; bottom: 5px; right: 5px">Versão JPBX 2.0.1</p>
+    </h:body>
+</html>
+

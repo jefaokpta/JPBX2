@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - DAC Sintético</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="10">
+                    <h1>DAC Sintético</h1>
+                </b:column>              
+            </b:row>
+            <p:separator/>
+            <h:form>
+                <b:row class="bRowsSpace">
+                    <b:column span="1">
+                        <h:outputText value="Início:" />
+                    </b:column>
+                    <b:column span="2">
+                        <p:calendar  pattern="dd/MM/yyyy" value="#{dacSinteticBean.start}"  />
+                    </b:column>
+                    <b:column span="1">
+                        <h:outputText value="Fim:" />
+                    </b:column>
+                    <b:column span="2">
+                        <p:calendar pattern="dd/MM/yyyy" value="#{dacSinteticBean.end}" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:selectOneMenu  value="#{dacSinteticBean.queueId}" style="width: 125px" filter="true" filterMatchMode="contains">
+                            <f:selectItems value="#{dacSinteticBean.queues}" var="q" itemLabel="#{q.webName}" itemValue="#{q.id}"  />
+                        </p:selectOneMenu>
+                    </b:column>
+                    <b:column span="1">
+                        <b:commandButton value="Exibir" look="primary" iconAwesome="search" ajax="true" actionListener="#{dacSinteticBean.showRel()}" update="@form"/>
+                    </b:column>
+                </b:row>
+                <p:separator/>    
+                <h:panelGroup id="statistcs" >
+                    <b:panel title="Gráfico Estatístico da Fila #{dacSinteticBean.queue.webName}" look="info" rendered="#{dacSinteticBean.showStatistcs}">              
+                            <ui:include src="/WEB-INF/includes/dacSinteticGraph.xhtml" />
+                    </b:panel>
+                    <b:row>
+                        <b:column span="3"/>
+                        <b:column span="7" rendered="#{dacSinteticBean.showStatistcs}">
+                            <h3>Estatística da Fila: #{dacSinteticBean.queue.webName} </h3>
+                        </b:column>
+                        <b:column span="1">
+                            <h:commandLink id="excel" title="Extrair Excel" rendered="#{dacSinteticBean.showStatistcs}">
+                                <p:graphicImage name="/img/xls.png" width="50"/>
+                                <p:dataExporter type="xls" target="statistc" fileName="dac_sintetico"  />
+                            </h:commandLink>  
+                        </b:column>
+                        <b:column span="1">
+                            <h:commandLink id="csv" title="Extrair CSV" rendered="#{dacSinteticBean.showStatistcs}">
+                                <p:graphicImage name="/img/csv.png" width="50"/>
+                                <p:dataExporter type="csv" target="statistc" fileName="dac_sintetico"  />
+                            </h:commandLink>
+                        </b:column>
+                    </b:row> 
+                    <p:dataTable var="s" id="statistcTotal" value="#{dacSinteticBean.dacTotals}" class="textCenter" reflow="true" rendered="#{dacSinteticBean.showStatistcs}"  >
+                        <f:facet name="header">Total Geral</f:facet>
+                        <p:column headerText="Total"  >
+                            <h:outputText value="#{s.total}" />
+                        </p:column>
+                        <p:column headerText="Atendidas"   >
+                            <h:outputText value="#{s.answer}" />
+                        </p:column>
+                        <p:column headerText="Não Atendidas" >
+                            <h:outputText value="#{s.noAnswer}" />
+                        </p:column>
+                        <p:column headerText="Abandonadas" >
+                            <h:outputText value="#{s.abandon}" />
+                        </p:column>
+                        <p:column headerText="TMA" >
+                            <h:outputText value="#{dacSinteticBean.hours(s.tma/s.answer)}" />
+                        </p:column>
+                        <p:column headerText="TME" >
+                            <h:outputText value="#{dacSinteticBean.hours(s.tme/(s.noAnswer+s.abandon))}" />
+                        </p:column>
+                        <p:column headerText="TMC" >
+                            <h:outputText value="#{dacSinteticBean.hours(s.tmc/s.total)}" />
+                        </p:column>
+                    </p:dataTable>
+                    <p:dataTable var="s" id="statistc" value="#{dacSinteticBean.dacs}" class="textCenter" reflow="true" emptyMessage="Não há dados desta Fila"
+                                 rendered="#{dacSinteticBean.showStatistcs}" paginator="true" rows="30" paginatorPosition="bottom"  >
+                        <f:facet name="header">Total por Dia</f:facet>
+                        <p:column headerText="Data" sortBy="#{s.day}" >
+                            <h:outputText value="#{s.day}" >
+                                <f:convertDateTime dateStyle="default" timeZone="GMT-03:00"/>
+                            </h:outputText> 
+                        </p:column>
+                        <p:column headerText="Total" sortBy="#{s.total}" >
+                            <h:outputText value="#{s.total}" />
+                        </p:column>
+                        <p:column headerText="Atendidas" sortBy="#{s.answer}"  >
+                            <h:outputText value="#{s.answer}" />
+                        </p:column>
+                        <p:column headerText="Não Atendidas" sortBy="#{s.noAnswer}"  >
+                            <h:outputText value="#{s.noAnswer}" />
+                        </p:column>
+                        <p:column headerText="Abandonadas" sortBy="#{s.abandon}"  >
+                            <h:outputText value="#{s.abandon}" />
+                        </p:column>
+                        <p:column headerText="TMA" sortBy="#{s.tma}"  >
+                            <h:outputText value="#{dacSinteticBean.hours(s.tma/s.answer)}" />
+                        </p:column>
+                        <p:column headerText="TME" sortBy="#{s.tme}"  >                           
+                            <h:outputText value="#{dacSinteticBean.hours((s.noAnswer+s.abandon)==0?0:s.tme/(s.noAnswer+s.abandon))}" />
+                        </p:column>
+                        <p:column headerText="TMC" sortBy="#{s.tmc}"  >
+                            <h:outputText value="#{dacSinteticBean.hours(s.tmc/s.total)}" />
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
+            </h:form>
+            <h:outputScript name="locale_ptBR.js" library="js" />
+            <h:outputScript library="js" name="clock.js" />
+            <p:ajaxStatus>
+                <f:facet name="default">
+                    <h:outputText value="" />
+                </f:facet>
+                <f:facet name="start">
+                    <p:graphicImage style="position: fixed; bottom: 5px; right: 5px" library="img" name="loading.gif" />
+                </f:facet>
+                <f:facet name="complete">
+                    <h:outputText value="" />
+                </f:facet>
+            </p:ajaxStatus> 
+            <h:outputScript target="head" library="js" name="clock.js" />
+        </ui:define>
+    </ui:composition>
+</html>
+

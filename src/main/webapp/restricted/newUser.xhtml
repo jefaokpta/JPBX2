@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Novo Usuário</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <h1>Novo Usuário</h1>
+            <p:separator/>
+            <h:form>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Usuário:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:inputText id="user" value="#{newUserBean.user.name}"
+                                     style="border-color: #{newUserBean.borderColor}"
+                                     required="true" label="Usuário">
+                            <p:ajax event="blur" listener="#{newUserBean.verifyUserName()}"
+                                    update="@this growl" />
+                        </p:inputText>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Nome Completo:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:inputText value="#{newUserBean.user.fullName}" label="Nome Completo" />
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Senha:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:password value="#{newUserBean.user.password}"
+                                    feedback="true" inline="true" weakLabel="Fraca"
+                                    goodLabel="Boa" strongLabel="Ai Sim!"
+                                    promptLabel="Verificando Senha" label="Senha"
+                                    required="true">
+                            <p:ajax event="blur" listener="#{newUserBean.verifyPassword()}" update="growl" />
+                        </p:password>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Nível:" />
+                    </b:column>
+                    <b:column span="3">
+                        <p:selectOneMenu value="#{newUserBean.user.nivel}">
+                            <f:selectItems value="#{newUserBean.levels}" />
+                        </p:selectOneMenu>
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="2">
+                        <h:outputText value="Tela Inicial:" />
+                    </b:column>
+                    
+                    <b:column span="3">
+                        <p:selectOneMenu value="#{newUserBean.user.screen}">
+                            <p:ajax listener="#{newUserBean.showHideSiteText}" update="site" />
+                            <f:selectItems value="#{newUserBean.userScreen}" />
+                        </p:selectOneMenu>
+                    </b:column>
+                    <b:column span="3">
+                        <h:panelGroup id="site">
+                        <p:inputText placeholder="Site ex: http://jpbx.com.br"
+                                     value="#{newUserBean.user.site}" rendered="#{newUserBean.siteText}" />
+                        </h:panelGroup>
+                    </b:column>                       
+                </b:row>
+                
+                <b:row class="bRowsSpace">
+                    <b:column span="1" class="bButtonSpace">
+                        <b:commandButton value="Salvar" iconAwesome="check" look="primary"
+                                         action="#{newUserBean.submitNewUser()}"/>
+                    </b:column>
+                    <b:column span="1" class="bButtonSpace">
+                        <b:button value="Voltar" outcome="users" iconAwesome="undo" look="danger" />
+                    </b:column>
+                </b:row>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

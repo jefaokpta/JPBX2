@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Troncos</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="10">
+                    <h1>Troncos</h1>
+                </b:column>              
+                <b:column span="2">
+                    <h:form>
+                        <b:button style="float: right;margin: 22px 0" outcome="newTrunk"
+                            value="Tronco" look="primary" iconAwesome="plus" />
+                    </h:form>
+                </b:column>
+            </b:row>
+            <p:separator/>
+            <h:form>
+                <p:dataTable var="trunk" value="#{trunksBean.trunks}" class="textCenter" paginator="true"
+                             rows="15" paginatorPosition="bottom" reflow="true" emptyMessage="Não há Troncos.">
+                    <p:column headerText="Id" sortBy="#{trunk.id}">
+                        <h:outputText value="#{trunk.id}" />
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{trunk.name}">
+                        <h:outputText value="#{trunk.name}" />
+                    </p:column>
+                    <p:column headerText="Tecnologia" sortBy="#{trunk.tecnology}">
+                        <h:outputText value="#{trunk.tecnology}" />
+                    </p:column>
+                    <p:column headerText="T.R. Rede">
+                        <div id="test#{trunk.id}" />
+                        <script>
+                            loadInternal('/jpbx/PingServlet?host=#{trunk.host}|#{trunk.tecnology}','test#{trunk.id}');
+                        </script>
+                    </p:column>
+                    <p:column headerText="Empresa" sortBy="#{trunk.company}">
+                        <h:outputText value="#{userSession.translateCompany(trunk.company)}" />
+                    </p:column>
+                    <p:column headerText="Ações">
+                        <b:commandButton value="Editar" iconAwesome="edit" look="primary"
+                                         action="#{trunksBean.editTrunk(trunk)}" />
+                        <b:commandButton class="bButtonSpace" value="Apagar" look="danger" iconAwesome="trash-o"
+                                         actionListener="#{trunksBean.alertDelete(trunk)}" update="alertTrunk growl"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+ 
+            <p:dialog id="alertTrunk" widgetVar="alertTrunk" modal="true" header="Apagar #{trunksBean.trunk.name}?" showEffect="blind">
+                <h:form>
+                    <h:panelGrid columns="1">
+                        <h:outputText style="color: red"  value="Deseja realmente apagar este tronco?" />
+                        <p:separator />
+                        <b:commandButton value="Apagar" look="danger"
+                                         iconAwesome="trash" action="#{trunksBean.deleteTrunk()}" />
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+            <h:outputScript target="head" library="js" name="webserv.js" />
+        </ui:define>
+    </ui:composition>
+</html>
+

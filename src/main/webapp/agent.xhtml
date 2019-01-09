@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui">
+    <h:head>
+        <title>JPBX - Agent Login</title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['img/favicon.ico']}" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <h:outputStylesheet library="css" name="cssJefao.css" />
+    </h:head>
+    <h:body>
+        <p:messages id="msgs" />
+        <!--<p:growl id="gro"   />-->
+        
+        <b:container class="contentDown">     
+            <b:row>
+                <b:column span="6">
+                    <b:panel look="info" title="Login de Agente JPBX" collapsible="false" class="">
+                        <h:form prependId="false" id="form1">
+                            <b:inputText type="number" placeholder="Ramal" required="true" id="peer" 
+                                         requiredMessage="Informe um Ramal."
+                                         value="#{agentLoginBean.peer}">
+                                <f:facet name="append">
+                                    <b:iconAwesome name="phone" />
+                                </f:facet>
+                            </b:inputText>
+                            <b:inputText type="number" placeholder="Agente" required="true" id="agent" 
+                                         requiredMessage="Informe um Agente."
+                                         value="#{agentLoginBean.agent}">
+                                <f:facet name="append">
+                                    <b:iconAwesome name="user-plus" />
+                                </f:facet>
+                            </b:inputText>
+                            <b:inputSecret placeholder="Senha" required="true" id="pass" 
+                                           requiredMessage="Informe uma Senha."
+                                           value="#{agentLoginBean.pass}">
+                                <f:facet name="append">
+                                    <b:iconAwesome name="key" />
+                                </f:facet>
+                            </b:inputSecret>
+                            <b:commandButton value="Login" iconAwesome="check" action="#{agentLoginBean.agentLogin()}" look="primary" title="Logar Agente."/>
+                        </h:form>
+                    </b:panel>
+                </b:column>
+            </b:row>           
+        </b:container>
+        <h:outputScript library="js" name="jsJefao.js" />
+        <script>
+            $('#form1').submit(function(){
+                $('#pass').val(hashMD5($('#agent').val()+":"+$('#pass').val()));
+            });
+        </script>
+    </h:body>
+</html>
+

@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+    
+    <ui:composition>
+        <b:row>
+            <b:column span="6">
+                <p:chart type="metergauge" model="#{cPUAndRAMBean.cpu}" />
+            </b:column>
+            <b:column span="6">
+                <p:chart type="metergauge" model="#{cPUAndRAMBean.ram}" />
+            </b:column>
+        </b:row>
+    </ui:composition>
+</html>
+

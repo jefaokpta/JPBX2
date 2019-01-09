@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Relatório de Ligações</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="10">
+                    <h1>Relatório de Ligações</h1>
+                </b:column>     
+                <b:column span="2">
+                    <h:form>
+                        <b:commandButton style="float: right;margin: 22px 0"  title="Mostrar Gráfico"
+                                         value="Gráfico" look="info" iconAwesome="bar-chart" rendered="#{!relCallsBean.showGraf}" actionListener="#{relCallsBean.showGrafic()}" />                       
+                    </h:form>
+                </b:column>
+            </b:row>              
+            <p:separator/>
+            <h:panelGroup  id="grafic">
+                <b:panel title="Gráfico das Ligações do Período" look="info" rendered="#{relCallsBean.showGraf}">              
+                        <ui:include src="/WEB-INF/includes/relcallsGrafic.xhtml" />
+                </b:panel>
+            </h:panelGroup>
+            <h:form>
+                <b:row>
+                    <b:column span="2"/>
+                    <b:column span="8">
+                        <div id="afterLoadTotals">
+                            
+                        </div>
+                    </b:column>
+                    <b:column span="1">
+                        <h:commandLink id="excel" title="Extrair Excel">
+                            <p:graphicImage name="/img/xls.png" width="50"/>
+                            <p:dataExporter type="xls" target="relCal" fileName="relatorio_de_chamadas"  />
+                        </h:commandLink>  
+                    </b:column>
+                    <b:column span="1">
+                        <h:commandLink id="csv" title="Extrair CSV">
+                            <p:graphicImage name="/img/csv.png" width="50"/>
+                            <p:dataExporter type="csv" target="relCal" fileName="relatorio_de_chamadas"  />
+                        </h:commandLink>
+                    </b:column>
+                </b:row>         
+                <p:dataTable var="r" id="relCal" value="#{relCallsBean.relcalls}" class="textCenter" reflow="true" emptyMessage="Não há Ligações"
+                             paginator="true" rows="15" paginatorPosition="bottom" lazy="true">
+                    <f:facet name="header">
+                        Periodo de 
+                        <h:outputText value="#{relCallsBean.filter.startDate}" >
+                            <f:convertDateTime dateStyle="default" />
+                        </h:outputText>
+                         a 
+                         <h:outputText value="#{relCallsBean.filter.endDate}" >
+                            <f:convertDateTime dateStyle="default" />
+                        </h:outputText>
+                    </f:facet>
+                    <p:column headerText="Data Hora" sortBy="#{r.calldate}" >                      
+                        <h:outputText value="#{r.calldate}" >
+                            <f:convertDateTime timeZone="GMT-03:00" dateStyle="default" />
+                        </h:outputText>    
+                        <h:outputText value="#{r.calldate}" >
+                            <f:convertDateTime timeZone="GMT-03:00" pattern=" HH:mm:ss" />
+                            <!-- <f:convertDateTime timeZone="GMT-03:00"  pattern=" HH:mm:ss" /> -->
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Origem"  filterBy="#{r.src}" sortBy="#{r.srcfinal}">
+                        <h:outputText value="#{r.src}" title="#{r.srcfinal}" />
+                    </p:column>
+                    <p:column headerText="Destino" filterBy="#{r.dstfinal}" sortBy="#{r.dstfinal}">
+                        <h:outputText value="#{r.dstfinal}" />
+                    </p:column>
+                    <p:column headerText="Status" sortBy="#{r.disposition}" >
+                        <h:outputText value="#{relCallsBean.translateStatusCall(r.disposition)}" />
+                    </p:column>
+                    <p:column headerText="Duração" sortBy="#{r.duration}" >
+                        <h:outputText value="#{relCallsBean.formatSecs(r.duration)}" />
+                    </p:column>
+                    <p:column headerText="Conversa" sortBy="#{r.billsec}">
+                        <h:outputText value="#{relCallsBean.formatSecs(r.billsec)}" />
+                    </p:column>
+                    <p:column headerText="C. Conta" sortBy="#{r.accode}" rendered="#{relCallsBean.filter.showAcCode}" >
+                        <h:outputText value="#{r.accode==''?'':relCallsBean.translateAcCode(r.accode)}" />
+                    </p:column>
+                    <p:column headerText="Tipo" sortBy="#{r.accountcode}" >
+                        <h:outputText value="#{relCallsBean.translateCCosts(r.accountcode)}" />
+                    </p:column>
+                    <p:column headerText="Valor (R$)"  sortBy="#{r.billsec}">
+                        <h:outputText value="#{relCallsBean.acCountCall(r.billsec, r.accountcode)}" />
+                    </p:column>
+                    <p:column colspan="2" headerText="Ações" exportable="false">
+                        <b:commandButton class="bButtonSpace" value="#{r.callHistory.size()}" title="Ver Historico" look="info" iconAwesome="search"
+                                         ajax="true" actionListener="#{relCallsBean.alert(r)}"
+                                         update="alert growl"/>
+                        <b:commandButton actionListener="#{relCallsBean.hideHistory(r)}" update="@form growl" value=""
+                                         iconAwesome="file-audio-o" look="danger" disabled="#{r.hide>0}" title="Remove Audios" ajax="true" />
+                    </p:column>
+                </p:dataTable>               
+            </h:form>
+
+            <p:dialog id="alert" widgetVar="alert" header="Histórico da Ligação" showEffect="blind" width="80%">
+                <p:dataTable var="h" value="#{relCallsBean.relcall.callHistory}" class="textCenter" reflow="true" emptyMessage="Não há Histórico">
+                    <p:column headerText="Hora">
+                        <h:outputText value="#{h.calltime}" >
+                            <f:convertDateTime timeZone="GMT-03:00"  pattern="HH:mm:ss" />
+                        </h:outputText>
+                    </p:column>                          
+                    <p:column headerText="Origem">
+                        <h:outputText value="#{h.data1}" />
+                    </p:column>
+                    <p:column headerText="Destino">
+                        <h:outputText value="#{h.data2}" />
+                    </p:column>
+                    <p:column headerText="Gravação" colspan="2">                  
+                        <h:panelGroup rendered="#{relCallsBean.relcall.hide==0}">
+                            <h:panelGroup rendered="#{h.record!=''}">
+                                <audio controls="true">
+                                    <source  src="/jpbx/AudioServlet?rec=#{h.record}" type="audio/wav" />
+                                    Seu navegador não suporta áudio.
+                                </audio>
+                            </h:panelGroup>
+                        </h:panelGroup>
+                    </p:column>
+                </p:dataTable>
+            </p:dialog>
+            <p:ajaxStatus>
+                <f:facet name="default">
+                    <h:outputText value="" />
+                </f:facet>
+                <f:facet name="start">
+                    <p:graphicImage style="position: fixed; bottom: 5px; right: 5px" library="img" name="loading.gif" />
+                </f:facet>
+                <f:facet name="complete">
+                    <h:outputText value="" />
+                </f:facet>
+            </p:ajaxStatus> 
+            <h:outputScript library="js" name="webserv.js" />
+            <script>
+                $(function(){
+                    loadInternal('/jpbx/RelCallsTotalsServlet','afterLoadTotals');
+                });
+            </script>
+        </ui:define>
+    </ui:composition>
+</html>
+

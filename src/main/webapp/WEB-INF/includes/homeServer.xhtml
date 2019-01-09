@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+     
+    <ui:composition>
+        <p:growl id="growl" life="30000" />
+        <h1>Visão Geral do Servidor</h1>
+        <p:separator/>
+        <b:panel title="Status Atual do Asterisk" look="info">
+            <h:panelGrid columns="2">
+                <b:iconAwesome name="asterisk" size="5x" />
+                <p:dataTable var="status" value="#{astInfoBean.statusServer}" reflow="true"
+                         emptyMessage="O Asterisk não parece estar funcionando. Verifique." >
+                <p:column>
+                    <b><h:outputText value="#{status.status}" /></b>
+                </p:column>
+                <p:column>
+                    <h:outputText value="#{status.value}" />
+                </p:column>
+            </p:dataTable>
+            </h:panelGrid>
+        </b:panel>
+        <b:panel title="Ligações do Mês de #{homeBean.month}" look="info">              
+            <ui:include src="/WEB-INF/includes/callsGraf.xhtml" />
+        </b:panel>
+        <b:panel title="Uso da HD" look="info">
+            <ui:include src="/WEB-INF/includes/hdUsage.xhtml" />
+        </b:panel>
+        <b:panel title="Uso do Processador e Memória" look="info">
+            <ui:include src="/WEB-INF/includes/cpuAndRamGauge.xhtml" />
+        </b:panel>
+   
+    </ui:composition>
+</html>
+

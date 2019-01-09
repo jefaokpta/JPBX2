@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Ramais</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="8">
+                    <h1>Ramais</h1>
+                </b:column>              
+                <b:column span="2">
+                    <h:form>
+                        <b:button style="float: right;margin: 22px 0" outcome="newPeer"
+                            value="Ramal" look="primary" iconAwesome="plus" rendered="#{userSession.showHideLinks(4)}" />                       
+                    </h:form>
+                </b:column>
+                <b:column span="2">
+                    <h:form>
+                        <b:button style="float: right;margin: 22px 0" outcome="newPeers" rendered="#{userSession.showHideLinks(4)}"
+                                  value="Ramais" look="primary" iconAwesome="copy" title="Ramais em Lote" />                       
+                    </h:form>
+                </b:column>
+            </b:row>
+            <p:separator/>
+            <h:form>
+                <p:dataTable var="peer" value="#{peersBean.peers}" class="textCenter" paginator="true"
+                             rows="15" paginatorPosition="bottom" reflow="true" emptyMessage="Não há Ramais."
+                             widgetVar="peersTable" filteredValue="#{peersBean.filteredPeers}">
+                    <p:column headerText="Id" sortBy="#{peer.id}">
+                        <h:outputText value="#{peer.id}" />                      
+                    </p:column>
+                    <p:column headerText="Ramal" sortBy="#{peer.name}" filterBy="#{peer.name}">
+                        <h:outputText value="#{peer.name}" />
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{peer.callerid}" filterBy="#{peer.callerid}" filterMatchMode="contains">
+                        <h:outputText value="#{peer.callerid}" />
+                    </p:column>
+                    <p:column headerText="Empresa" sortBy="#{peer.company}">
+                        <h:outputText value="#{userSession.translateCompany(peer.company)}" />
+                    </p:column>
+                    <p:column headerText="Tipo" sortBy="#{peer.peerType}">
+                        <h:outputText value="#{peer.peerType}" />
+                    </p:column>
+                    <p:column headerText="Ações" colspan="2">
+                        <b:commandButton value="" iconAwesome="search" disabled="#{peersBean.defineButtonValid(peer.name,peer.peerType)}" look="info"
+                                         actionListener="#{peersBean.showDetails(peer)}" ajax="true" update="infoPeer growl"  />
+                        <b:commandButton class="bButtonSpace" value="Editar" look="primary" iconAwesome="edit"
+                                         action="#{peersBean.editPeer(peer)}" />
+                        <b:commandButton  value="Apagar" look="danger" iconAwesome="trash-o" rendered="#{userSession.showHideLinks(4)}"
+                                         action="#{peersBean.alertDelete(peer)}" update="alertPeer growl" />
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+
+            <p:dialog id="infoPeer" widgetVar="infoPeer" header="Detalhes do Ramal #{peersBean.peer.name}" showEffect="blind">
+                <p:panelGrid columns="2">
+                    <strong>IP de Registro</strong>
+                    <h:outputText value="#{peersBean.ipReg}" />
+                    <strong>Última Ligação</strong>
+                    <h:outputText value="#{peersBean.timeR}" />
+                    <strong>Perfil</strong>
+                    <h:outputText value="#{peersBean.showProfile(peersBean.peer.authorization)}" />
+                    <strong>Não Perturbe</strong>
+                    <h:outputText value="#{peersBean.dnd}" />
+                    <strong>Cadeado</strong>
+                    <h:outputText value="#{peersBean.locked}" />
+                    <strong>Desvio</strong>
+                    <h:outputText value="#{peersBean.fwd}" />
+                </p:panelGrid>
+            </p:dialog>
+            <p:dialog id="alertPeer" widgetVar="alertPeer" modal="true" header="Apagar Ramal #{peersBean.peer.name}?" showEffect="blind">
+                <h:form>
+                    <h:panelGrid columns="1">
+                        <h:outputText style="color: red"  value="Deseja realmente apagar este Ramal?" />
+                        <p:separator />
+                        <b:commandButton value="Apagar" look="danger"
+                                         iconAwesome="trash" action="#{peersBean.deletePeer()}" />
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+            <p:ajaxStatus>
+                <f:facet name="default">
+                    <h:outputText value="" />
+                </f:facet>
+                <f:facet name="start">
+                    <p:graphicImage style="position: fixed; bottom: 5px; right: 5px" library="img" name="loading.gif" />
+                </f:facet>
+                <f:facet name="complete">
+                    <h:outputText value="" />
+                </f:facet>
+            </p:ajaxStatus> 
+        </ui:define>
+    </ui:composition>
+</html>
+

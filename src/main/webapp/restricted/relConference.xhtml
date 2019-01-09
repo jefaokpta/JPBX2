@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Relatório de Conferências</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <h1>Relatório de Conferências</h1>
+            <p:separator/>
+            <h:form >
+                <h3>Período</h3>
+                <b:row class="bRowsSpace">
+                    <b:column span="1">
+                        <h:outputText value="Início:" />
+                    </b:column>
+                    <b:column span="2">
+                        <p:calendar  pattern="dd/MM/yyyy" value="#{relConferenceBean.form.startDate}"  />
+                    </b:column>
+                    <b:column span="1">
+                        <h:outputText value="Fim:" />
+                    </b:column>
+                    <b:column span="1">
+                        <p:calendar pattern="dd/MM/yyyy" value="#{relConferenceBean.form.endDate}" />
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="1">
+                        <h:outputText value="Salas:" />
+                    </b:column>
+                    <b:column span="2">
+                        <p:inputText value="#{relConferenceBean.form.rooms}"  placeholder="901,902,903" />
+                    </b:column>
+                </b:row>
+                <b:row class="bRowsSpace">
+                    <b:column span="1" class="bButtonSpace">
+                        <b:commandButton value="Exibir" iconAwesome="users" look="primary"
+                                         action="#{relConferenceBean.showRelConferences()}"/>
+                    </b:column>
+                </b:row>
+            </h:form>
+            <h:outputScript name="locale_ptBR.js" library="js" />
+        </ui:define>
+    </ui:composition>
+</html>
+

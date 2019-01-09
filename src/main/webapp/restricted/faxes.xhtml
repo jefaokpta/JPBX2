@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Central de Faxes</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="10">
+                    <h1>Central de Faxes</h1>
+                </b:column>              
+                
+            </b:row>
+            <p:separator/>
+            <b:panel title="Adicionar Documento para Fax" look="info" collapsed="true" >
+                <h:form enctype="multipart/form-data">                   
+                    <b:row class="bRowsSpace">   
+                        <b:column span="2">
+                            <h:outputText value="Documento:" />
+                        </b:column>
+                        <b:column span="3">                  
+                            <p:fileUpload value="#{faxesBean.upFile}" mode="simple"
+                                fileLimit="1" fileLimitMessage="Permitido apenas 1 PDF."
+                                allowTypes="/(\.|\/)(pdf)$/" 
+                                invalidFileMessage="Aceito apenas documentos em PDF."
+                                invalidSizeMessage="Tamanho máximo do PDF é 5MB."
+                                sizeLimit="5500000" label="Procurar" required="true">
+                            </p:fileUpload>                   
+                        </b:column>           
+                    </b:row>
+                    <b:commandButton value="Salvar" look="primary" iconAwesome="check"
+                                     action="#{faxesBean.newFax()}" ajax="false" />
+                </h:form>
+            </b:panel>
+            <h:form>
+                <p:dataTable var="f" value="#{faxesBean.faxes}" class="textCenter" paginator="true"
+                             rows="15" paginatorPosition="bottom" reflow="true" emptyMessage="Não há Faxes para mostrar">
+                    <p:column headerText="Data Hora" sortBy="#{f.datetime}">
+                        <h:outputText value="#{f.datetime}" >
+                            <f:convertDateTime dateStyle="default" />
+                        </h:outputText>    
+                        <h:outputText value="#{f.datetime}" >
+                            <f:convertDateTime timeZone="GMT-03:00"  pattern=" HH:mm:ss" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Origem/Destino" sortBy="#{f.src}" filterBy="#{f.src}">
+                        <h:outputText value="#{f.src}" />
+                    </p:column>
+                    <p:column headerText="Tipo" sortBy="#{f.type}">
+                        <h:outputText value="#{f.type}" />
+                    </p:column>
+                    <p:column headerText="Status" sortBy="#{f.status}">
+                        <h:outputText value="#{f.status}" />
+                    </p:column>
+                    <p:column headerText="Identificação" sortBy="#{f.identify}">
+                        <h:outputText value="#{f.identify}" />
+                    </p:column>
+                    <p:column headerText="Ações">                        
+                        <b:commandButton class="bButtonSpace" value="Ver" look="info" iconAwesome="search"
+                                         actionListener="#{faxesBean.showPdf(f)}" ajax="true"
+                                         update="showPdf growl" />
+                        <b:commandButton value="Apagar" look="danger" iconAwesome="trash-o" action="#{faxesBean.deleteFax(f)}" />
+                    </p:column>
+                </p:dataTable>     
+            </h:form>
+
+            <p:dialog id="showPdf" widgetVar="showPdf" header="Visualizar Fax de #{faxesBean.fax.datetime}" showEffect="blind" width="80%">
+                <b:row class="bRowsSpace">
+                    <b:column  span="2">
+                        <h:outputText value="Enviar Fax:" />
+                    </b:column>
+                    <b:column span="2">
+                        <input type="text" id="src" required="true" placeholder="Origem" />
+                    </b:column>
+                    <b:column span="2">
+                        <input type="text" id="dst" required="true" placeholder="Destino" />
+                        <input type="text" id="fax" value="#{faxesBean.fax.fax}" hidden="true" />
+                        <input type="text" id="company" value="#{faxesBean.fax.company}" hidden="true" />
+                    </b:column>
+                    <b:column span="2">
+                        <button class="btn btn-info" onclick="sendFax();"><i class="fa fa-fax" /> Enviar</button>
+                    </b:column>
+                </b:row>
+                <div id="faxReturn" />
+                <iframe src="/jpbx/FaxServlet?fax=#{faxesBean.fax.fax}" scrolling="auto" frameborder="0" width="100%" height="100%" />
+            </p:dialog>
+            <h:outputScript library="js" name="webservNoLoadBar.js" />
+        <script>
+            function sendFax(){
+                if($('#src').val()==''){
+                    alert('Preencha campo Origem.');
+                    return ;
+                }
+                if($('#dst').val()==''){
+                    alert('Preencha campo Destino.');
+                    return ;
+                }
+                $('#faxReturn').html('<img src="/jpbx/resources/img/progress_bar_min.gif" />');
+                loadInternal('/jpbx/SendFaxServlet?data='+$('#src').val()+'|'+$('#dst').val()+'|'+$('#fax').val()+'|'+$('#company').val(),'faxReturn');
+            }
+        </script>
+        </ui:define>      
+    </ui:composition>
+</html>
+

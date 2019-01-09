@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Regras de Discagem</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="10">
+                    <h1>Regras de Discagem</h1>
+                </b:column>              
+                <b:column span="2">
+                    <h:form>
+                        <b:button style="float: right;margin: 22px 0" outcome="newDialplan"
+                            value="Regra" look="primary" iconAwesome="plus" />
+                    </h:form>
+                </b:column>
+            </b:row>
+            <p:separator/>
+            <h:form>
+                <p:dataTable var="d" value="#{dialPlansBean.dialplans}" class="textCenter" reflow="true" emptyMessage="Não há Regras de Discagem.">
+                    <p:column headerText="Id" filterBy="#{d.id}" >
+                        <h:outputText value="#{d.id}" />
+                    </p:column>
+                    <p:column headerText="Prioridade" >
+                        <b:commandButton value="#{d.priority}" look="warning" disabled="#{d.priority>1?'false':'true'}"
+                                         iconAwesome="level-up" action="#{dialPlansBean.changePriority(d)}"/>
+                    </p:column>
+                    <p:column headerText="Nome" filterBy="#{d.name}" filterMatchMode="contains" >
+                        <h:outputText value="#{d.name}" />
+                    </p:column>
+                    <p:column headerText="Origem">
+                        <div id="src#{d.id}" />
+                        <script>
+                            loadInternal('/jpbx/TranslateDialplanSrc?act=#{d.src}|#{d.srcAction}','src#{d.id}');
+                        </script>
+                    </p:column>
+                    <p:column headerText="Destino">
+                        #{d.dstAlias>0? dialPlansBean.translateDst(d.dstAlias):d.dst}                       
+                    </p:column>
+                    <p:column colspan="2" headerText="Ações">  
+                        <b:commandButton title="Regra Ativa?" value="#{d.active>0?'On':'Off'}" look="#{d.active>0?'success':'danger'}"
+                                         iconAwesome="#{d.active>0?'thumbs-o-up':'thumbs-o-down'}" action="#{dialPlansBean.onOffDialplan(d)}" />
+                        <b:commandButton value="Editar" look="primary" iconAwesome="edit" 
+                                         action="#{dialPlansBean.editGrp(d)}"  />
+                        <b:commandButton value="Copiar" look="primary" iconAwesome="files-o" 
+                                         action="#{dialPlansBean.copyDialplan(d)}"  />
+                        <b:commandButton value="Apagar" look="danger" iconAwesome="trash-o"
+                                         actionListener="#{dialPlansBean.alertDelete(d)}" update="alertDialplan growl" />
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+            <p:dialog id="alertDialplan" modal="true" widgetVar="alertDialplan" header="Deseja apagar #{dialPlansBean.dialplan.name}?" showEffect="blind">
+                <h:form>
+                    <h:panelGrid columns="1">
+                        <h:outputText style="color: red"  value="Deseja realmente apagar esta Regra de Discagem?" />
+                        <p:separator />
+                        <b:commandButton value="Apagar" look="danger"
+                                         iconAwesome="trash" action="#{dialPlansBean.deleteDialplan()}" />
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>  
+            <h:outputScript target="head" library="js" name="webserv.js" />
+        </ui:define>
+    </ui:composition>
+</html>
+

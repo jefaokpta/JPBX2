@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Facilidades</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="10">
+                    <h1>Facilidades</h1>
+                </b:column>              
+            </b:row>
+            <p:separator/>
+            <b:row>
+                <b:column span="6">
+                    <b:panel title="Transferência (*2) - Pêndulo (*3)" look="info" collapsed="true">
+                        <h3>Transferência (*2)</h3>
+                        <p>Permite entregar a ligação recebida ou efetuada à outro ramal.</p>
+                        <h3>Pêndulo (*3)</h3>
+                        <p>Durante uma transferência é possível alternar a conversa entre a ligação original e o ramal que receberá (ou não) a transferência.</p>
+                    </b:panel>
+                </b:column>
+                <b:column span="6">
+                    <b:panel title="Captura em Grupo (*8) - Captura Direta (*8+ramal)" look="info" collapsed="true">
+                        <h3>Captura em Grupo (*8)</h3>
+                        <p>Permite atender uma ligação que está tocando em outro ramal que participa do mesmo grupo que o seu.</p>
+                        <h3>Captura Direta (*8+ramal)</h3>
+                        <p>Permite atender uma ligação que está tocando em qualquer ramal.</p>
+                    </b:panel>
+                </b:column>               
+            </b:row>        
+            <b:row>
+                <b:column span="6">
+                    <b:panel title="Estacionamento (*70) e Recuperação (*+posição)" look="info" collapsed="true">
+                        <h3>Estacionamento (*70)</h3>
+                        <p>Durante uma ligação é possivel por a mesma em espera, liberando o ramal. O JPBX informará a posição em que a ligação foi estacionada.</p>
+                        <h3>Recuperação (*+posição)</h3>
+                        <p>A ligação pode ser recuperada a partir de qualquer ramal, basta discar a posição em que foi estacionada.</p>
+                        Obs. O tempo limite que a ligação ficará no estacionamento é 60s, após este tempo ela será devolvida a quem estacionou.
+                    </b:panel>
+                </b:column>
+                <b:column span="6">
+                    <b:panel title="Não Perturbe (*21, *22)" look="info" collapsed="true">
+                        <h3>Não Perturbe (*21, *22)</h3>
+                        <p>Bloqueia seu ramal para receber ligações.</p>
+                    </b:panel>
+                </b:column>  
+            </b:row> 
+            <b:row>
+                <b:column span="6">
+                    <b:panel title="Cadeado (*23, *24)" look="info" collapsed="true">
+                        <h3>Cadeado (*23, *24)</h3>
+                        <p>Bloqueia seu ramal para fazer ligações externas, ele recebe e faz ligações apenas para ramais.</p>
+                    </b:panel>
+                </b:column>
+                <b:column span="6">
+                    <b:panel title="Desvio (*25, *26)" look="info" collapsed="true">
+                        <h3>Desvio (*25, *26)</h3>
+                        <p>Desvia ligações direcionadas do seu ramal para outro ramal, ou para um telefone externo.</p>
+                    </b:panel>
+                </b:column>
+            </b:row>
+            <b:row>
+                <b:column span="6">
+                    <b:panel title="Rechamada (5)" look="info" collapsed="true">
+                        <h3>Rechamada (5)</h3>
+                        <p>Ao ligar para um ramal que está ocupado ou indisponível, é possivel discar 5 durante o tom de ocupado, o JPBX retornará a ligação assim que o ramal chamado estiver disponível.</p>
+                    </b:panel>
+                </b:column>
+                <b:column span="6">
+                    <b:panel title="Salas de Conferência" look="info" collapsed="true">
+                        <h3>Salas de Conferência Abertas (*900 a *909)</h3>
+                        <p>São conferências onde todos podem entrar e participar das conversas.</p>
+                        <h3>Salas de Conferência Seguras (*910 a *919)</h3>
+                        <p>São conferências onde é entregue uma senha (aleatória) para quem abriu a sala e outros poderão entrar somente se digitarem a senha.</p>
+                        Obs. Salas seguras impedem que outros entrem em uma sala ocupada. Quando não houver mais ninguem na sala ela é fechada automaticamente.
+                        <h3>Conferência do Ramal (*92)</h3>
+                        <p>Uma conferência rápida onde apenas o próprio ramal adiciona até 2 participantes.</p>
+                    </b:panel>
+                </b:column>
+            </b:row>
+            <b:row>
+                <b:column span="6">
+                    <b:panel title="Voicemail" look="info" collapsed="true">
+                        <h3>Voicemail do próprio ramal (*30)</h3>
+                        <p>Permite por meio de menu interativo acessar mensagens da sua caixa. Também é possivel alterar a senha da sua caixa de mensagem.</p>
+                        <h3>Voicemail de outro ramal (*31)</h3>
+                        <p>Permite por meio de menu interativo acessar mensagens da caixa de outro ramal. Também é possivel alterar a senha da caixa de mensagem.</p>
+                    </b:panel>
+                </b:column>
+                <b:column span="6">
+                    <b:panel title="Espionar Ramal" look="info" collapsed="true">
+                        <h3>Espionar Ramal (*27+ramal)</h3>
+                        <p>Permite entrar em uma ligação em andamento.</p>
+                        <h3>Comandos durante a espionagem</h3>
+                        <p>4 - Mudo (modo que inicia a espionagem)</p>
+                        <p>5 - Conversa apenas com o ramal espionado (a outra pessoa não ouve o que você "sussurra" para o ramal)</p>
+                        <p>6 - Conversa com ambos</p>
+                    </b:panel>
+                </b:column>
+            </b:row>
+        </ui:define>
+    </ui:composition>
+</html>
+

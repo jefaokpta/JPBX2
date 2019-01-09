@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Fila #{queueMonitorController.qsc.queueName} </ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <b:row>
+                <b:column span="8">
+                    <h1>Fila #{queueMonitorController.qsc.queueName}</h1>
+                </b:column>         
+                <b:column span="4">
+                    <h:form>
+                        <h:panelGrid columns="4" class="text-center">
+                            <b:inputText placeholder="Seu Ramal" value="#{queueMonitorController.peerSupervisor}"  type="number" title="Insira o ramal do supervisor">
+                            <f:facet name="append">
+                                <b:iconAwesome name="phone-square" />
+                            </f:facet>
+                        </b:inputText>
+                            <h:outputText value="&#160;" />
+                            <h:outputText value="&#160;" />
+                            <p:commandButton value="Salvar" ajax="true" actionListener="#{queueMonitorController.savePeerSupervisor()}" update="growl"  />
+                        </h:panelGrid>
+                    </h:form>
+                </b:column>
+            </b:row>
+            <p:separator/>
+            <h:form id="statistcs">
+                <p:dataTable id="statistcsTotal" var="status" class="text-center"  value="#{queueMonitorController.status}">
+                    <f:facet name="header"><h3>Estatistica das Chamadas Recebidas</h3></f:facet>
+                    <p:column headerText="Recebidas" >
+                        <h:outputLabel value="#{status.completed}" />
+                    </p:column>
+                    <p:column headerText="Abandonadas" >
+                        <h:outputLabel value="#{status.abandoned}" />
+                    </p:column>
+                    <p:column headerText="Total" >
+                        <h:outputLabel value="#{status.completed+status.abandoned}" />
+                    </p:column>             
+                    <p:column headerText="Média Conversada" >
+                        <h:outputLabel value="#{queueMonitorController.formatSeconds(status.talkTime)}" />
+                    </p:column>
+                    <p:column headerText="Média Espera">
+                        <h:outputLabel value="#{queueMonitorController.formatSeconds(status.holdTime)}" />
+                    </p:column>
+                    <p:column headerText="Nível de Serviço" >
+                        <h:outputLabel value="#{status.serviceLevelPerf}% meta: #{status.serviceLevel}s" />
+                    </p:column>
+                </p:dataTable>
+                <p:contextMenu for="statistcs">
+                    <p:menuitem value="Zerar Estatística" icon="icon-refresh" oncomplete="PF('alertReset').show()"/>
+                </p:contextMenu>
+            </h:form>
+            <b:row>
+                <b:column span="9">
+                    <h:form>
+                        <p:dataTable id="agents" var="agent" class="text-center"  value="#{queueMonitorController.qstc.agents}" emptyMessage="Não há agentes logados">
+                            <f:facet name="header">
+                                <h4>Agentes <h:outputLabel value=" #{queueMonitorController.qstc.agents.size()}" /></h4>
+                            </f:facet>
+                            <p:column headerText="Agente"> 
+                                <h:commandLink actionListener="#{queueMonitorController.alertPenalty(agent)}" title="Agressividade">
+                                    <b:badge value="#{queueMonitorController.showPenalty(agent.penalty)}" />
+                                </h:commandLink>
+                                <h:outputText value="&#160;" />   
+                                <h:outputText value="#{agent.agent}" /><br />
+                                <h:outputText value="#{agent.agentName}" />                            
+                            </p:column>
+                            <p:column headerText="Ramal">
+                                <h:outputText value="#{queueMonitorController.showRamalError(agent.peer)}" />                             
+                            </p:column>
+                            <p:column headerText="Status" style="background-color: #{queueMonitorController.statusBackColor(agent.peer.state)}">
+                                <h:panelGroup rendered="#{agent.peer.state==0}">
+                                    <h:outputLabel value="Livre" />
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{agent.peer.state==5}">
+                                    <b:iconAwesome name="#{agent.peer.direction>0?'arrow-left':'arrow-right'}" /> <h:outputText value="&#160;" />
+                                    <h:outputLabel value="#{agent.peer.exten}" />  
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{queueMonitorController.showHideCallTime(agent.peer.state)}" 
+                                              style="color: #{queueMonitorController.textColor(agent.peer.state)}">
+                                    <b:iconAwesome name="#{agent.peer.direction>0?'arrow-left':'arrow-right'}" /> <h:outputText value="&#160;" />
+                                    <h:outputLabel value="#{agent.peer.exten}" />    
+                                    <div id="clock#{agent.agent}" />
+                                    <script>
+                                        function count#{agent.agent}(){
+                                            $('#clock#{agent.agent}').html(countTime(Math.floor((new Date().getTime()/1000-#{agent.peer.uniqueid}))));
+                                            setTimeout('count#{agent.agent}();', 1000);
+                                        }
+                                        count#{agent.agent}();
+                                    </script>
+                                </h:panelGroup>
+                            </p:column>
+                            <p:column headerText="Pausa" style="background-color: #{agent.pause?'yellow':'white'}">
+                                <h:outputLabel value="#{agent.reason}" />
+                                <h:panelGroup rendered="#{agent.pause}">
+                                    <div id="pause#{agent.agent}" />
+                                    <script>
+                                        function countPause#{agent.agent}(){
+                                            $('#pause#{agent.agent}').html(countTime(Math.floor((new Date().getTime()/1000-#{agent.pauseTime}))));
+                                            setTimeout('countPause#{agent.agent}();', 1000);
+                                        }
+                                        countPause#{agent.agent}();
+                                    </script>
+                                </h:panelGroup>
+                            </p:column>
+                            <p:column headerText="Atendidas">
+                                <h:outputLabel value="#{agent.callsTaken}" />
+                            </p:column>
+                            <p:column headerText="Última Ligação">
+                                <h:outputText value="#{agent.peer.lastCall}" >
+                            <f:convertDateTime dateStyle="default" timeZone="GMT-03:00"/>
+                        </h:outputText>    
+                        <h:outputText value="#{agent.peer.lastCall}" >
+                            <f:convertDateTime timeZone="GMT-03:00"  pattern=" HH:mm:ss" />
+                        </h:outputText>
+                            </p:column>
+                            <p:column headerText="Ações">
+                                
+                                    <h:panelGroup rendered="#{agent.pause}">
+                                        <p:commandLink ajax="true" actionListener="#{queueMonitorController.doUnpause(agent)}" update="growl agents" >
+                                            <b:icon name="play" tooltip="Retira Pausa" size="2x" />
+                                        </p:commandLink>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{!agent.pause}" >
+                                        <p:commandLink ajax="true" actionListener="#{queueMonitorController.doPause(agent)}" update="growl agents">
+                                            <b:icon name="pause" tooltip="Pausa Agente" size="2x" />
+                                        </p:commandLink>
+                                    </h:panelGroup>
+                                    <p:commandLink ajax="true" actionListener="#{queueMonitorController.removeAgent(agent)}" update="growl agents" >
+                                        <b:icon name="remove" tooltip="Remove Agente" size="2x" />
+                                    </p:commandLink>
+                                    <h:panelGroup rendered="#{agent.peer.state==6}">
+                                        <p:commandLink ajax="true" actionListener="#{queueMonitorController.spyCall(agent.peer)}" update="growl">
+                                            <b:icon name="headphones" tooltip="Ouvir Conversa" size="2x" />
+                                        </p:commandLink>
+                                    </h:panelGroup>
+                        
+                            </p:column>
+                        </p:dataTable>
+                        <p:poll interval="3" update="statistcs agents calls" />
+                    </h:form>
+                </b:column>
+                <b:column span="3">
+                    <p:dataTable id="calls" var="call" class="text-center"  value="#{queueMonitorController.qstc.callers}" emptyMessage="Sem Ligações">
+                        <f:facet name="header"><h4>Espera <h:outputLabel value="#{queueMonitorController.qstc.callers.size()}" /></h4></f:facet>
+                        <p:column headerText="Número" colspan="2">
+                            <h:outputLabel value="#{call.callerIdNum}" />                          
+                        </p:column>
+                        <p:column headerText="Tempo">
+                            <div id="clock#{call.position}" />
+                            <script>
+                                function count#{call.position}(){
+                                    $('#clock#{call.position}').html(countTime(Math.floor((new Date().getTime()/1000-#{call.uniqueId}))));
+                                    setTimeout('count#{call.position}();', 1000);
+                                }
+                                count#{call.position}();
+                            </script>
+                        </p:column>
+                    </p:dataTable>
+                </b:column>
+            </b:row>
+            <h:outputScript target="head" library="js" name="clock.js" />
+            <p:dialog id="alertPenalty" widgetVar="alertPenalty" header="Mudar a Agressividade do Agente #{queueMonitorController.qa.agent}?" showEffect="blind">
+                <h:form>
+                    <h:panelGrid columns="1">
+                        <p:selectOneMenu value="#{queueMonitorController.qa.penalty}">
+                            <f:selectItem itemLabel="3"  itemValue="0" />
+                            <f:selectItem itemLabel="2"  itemValue="1" />
+                            <f:selectItem itemLabel="1"  itemValue="2" />
+                        </p:selectOneMenu>
+                        <p>Agressividade controla a frequência de atendimento do agente em comparação aos outros nesta fila.</p>
+                        <p:separator />
+                        <b:commandButton value="Mudar" look="danger"
+                                         iconAwesome="arrows-v" action="#{queueMonitorController.changePenalty()}"  />
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+            <p:dialog id="alertReset" widgetVar="alertReset" header="Deseja Realmente Zerar as Estatísticas?" showEffect="blind">
+                <h:form>
+                    <h:panelGrid columns="1">                       
+                        <b:commandButton value="Zerar Estatística" look="danger"
+                                         iconAwesome="refresh" action="#{queueMonitorController.resetQueue()}"  />
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>
+

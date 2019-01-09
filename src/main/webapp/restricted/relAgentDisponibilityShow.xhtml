@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:composition template="/WEB-INF/templates/templateAdministrador.xhtml">
+        <ui:define name="title">JPBX - Disponibilidade do Agente</ui:define>
+        <ui:define name="content">
+            <p:growl id="growl" life="30000" />
+            <h1>Disponibilidade dos Agentes</h1>
+            <p:separator/>
+            <h:form >                
+                <p:dataGrid var="agent" value="#{relAgentDisponibilityBean.agents}" class="text-center" columns="1" layout="grid" emptyMessage="Não há informações dos agentes">
+                    <f:facet name="header"><h3>Estatísticas dos Agentes de 
+                        <h:outputText value="#{relAgentDisponibilityBean.filter.startDate}" >
+                            <f:convertDateTime dateStyle="default" />
+                        </h:outputText>
+                         a 
+                         <h:outputText value="#{relAgentDisponibilityBean.filter.endDate}" >
+                            <f:convertDateTime dateStyle="default" />
+                        </h:outputText></h3>
+                    </f:facet>
+                    <p:panel header="Agente #{relAgentDisponibilityBean.agentName(agent.get(0).agent)}"  collapsed="true" toggleable="true">                       
+                        <p:dataTable var="ql"  value="#{agent}" id="exportAgent#{ql.agent}" class="textCenter" emptyMessage="Não há Informações " paginator="true" paginatorPosition="top" rows="30"
+                                     paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}">
+                            <f:facet name="{Exporters}">
+                                 <h:outputText value="&#160;" /> 
+                                <h:commandLink id="csv" title="Extrair CSV">
+                                    <p:graphicImage name="/img/csv.png" width="30"/>
+                                    <p:dataExporter type="csv" target="exportAgent#{ql.agent}" fileName="Disponibilidade_do_Agente"  />
+                                </h:commandLink> 
+                                  <h:outputText value="&#160;" /> 
+                                <h:commandLink id="excel" title="Extrair Excel">
+                                    <p:graphicImage name="/img/xls.png" width="30"/>
+                                    <p:dataExporter type="xls" target="exportAgent#{ql.agent}" fileName="Disponibilidade_do_Agente"  />
+                                </h:commandLink>  
+                            </f:facet>
+                            <p:column headerText="Data Hora"  >                      
+                                    <h:outputText value="#{ql.dateLog}" >
+                                    <f:convertDateTime dateStyle="default" />
+                                </h:outputText>    
+                                <h:outputText value="#{ql.dateLog}" >
+                                    <f:convertDateTime timeZone="GMT-03:00"  pattern=" HH:mm:ss" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Agente">
+                                <h:outputText value="#{ql.agent}" />
+                            </p:column>
+                            <p:column headerText="Fila" sortBy="#{ql.queuename}" filterBy="#{ql.queuename}" filterMatchMode="contains">
+                                <h:outputText value="#{ql.queuename}" />
+                            </p:column>
+                            <p:column headerText="Ação" sortBy="#{ql.event}" filterBy="#{ql.event}" filterMatchMode="contains">
+                                <h:outputText value="#{ql.event}"  />
+                            </p:column>
+                            <p:column headerText="Parâmetro" sortBy="#{ql.data1}" filterBy="#{ql.data1}" filterMatchMode="contains">
+                                <h:outputText value="#{ql.data1}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </p:dataGrid>              
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+
