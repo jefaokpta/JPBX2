@@ -37,21 +37,37 @@ public class LinuxInfo {
     }
     public String hwKey(){
         Process ls_proc;
-        String partition=getPartition();
         try {
-            ls_proc = Runtime.getRuntime().exec(commandPath("blkid"));
+            ls_proc = Runtime.getRuntime().exec(commandPath("dmidecode"));
             BufferedReader bf=new BufferedReader(
                     new InputStreamReader(ls_proc.getInputStream()));
             String ls_str; 
             while ((ls_str = bf.readLine()) != null) {
-                if(ls_str.contains(partition))
-                    return ls_str.substring(ls_str.indexOf("UUID")).split("\"")[1];
+                if(ls_str.contains("UUID"))
+                    return ls_str.split(":")[1].trim();
             }
         } catch (IOException ex) {
             System.out.println("DEU RUIM AO PEGAR UUID DA PARTICAO: "+ex.getMessage());
         }
         return "SEM_UUID";
     }
+//    public String hwKey(){
+//        Process ls_proc;
+//        String partition=getPartition();
+//        try {
+//            ls_proc = Runtime.getRuntime().exec(commandPath("blkid"));
+//            BufferedReader bf=new BufferedReader(
+//                    new InputStreamReader(ls_proc.getInputStream()));
+//            String ls_str; 
+//            while ((ls_str = bf.readLine()) != null) {
+//                if(ls_str.contains(partition))
+//                    return ls_str.substring(ls_str.indexOf("UUID")).split("\"")[1];
+//            }
+//        } catch (IOException ex) {
+//            System.out.println("DEU RUIM AO PEGAR UUID DA PARTICAO: "+ex.getMessage());
+//        }
+//        return "SEM_UUID";
+//    }
     String getPartition(){ // TRAZ A PARTICAO DO /  EX: /DEV/SDA
         Process ls_proc;
         try {
