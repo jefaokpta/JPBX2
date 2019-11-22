@@ -30,7 +30,7 @@ public class Email {
         // o servidor SMTP para envio do e-mail 
         email.setHostName(emailConfig.getSmtp());
             
-        email.setAuthentication(emailConfig.getEmail(), emailConfig.getPassword());
+        email.setAuthentication(emailConfig.getUser(), emailConfig.getPassword());
         email.setSmtpPort(emailConfig.getPort());
         email.setStartTLSEnabled(emailConfig.getTls()>0);
         email.setSSLOnConnect(emailConfig.getSsl()>0);
