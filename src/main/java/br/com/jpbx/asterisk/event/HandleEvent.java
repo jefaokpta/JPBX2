@@ -44,6 +44,7 @@ public class HandleEvent {
         if(nce.getContext().equals("Jpbx-Peers")){           
             if(pscc.containsKey(nce.getChannel().split("-")[0])){
                 PeerStatusControl psc=pscc.get(nce.getChannel().split("-")[0]);
+                //System.out.println("::::: Ramal ANTES IF "+psc.getChannel()+" - "+psc.getStateDesc()+" - "+psc.getState()+" - "+psc.getExten()+" - "+psc.getUniqueid());
                 if(!nce.getExten().equals("s")){
                     psc.setExten(nce.getExten());
                     psc.setDirection(0);
@@ -103,7 +104,7 @@ public class HandleEvent {
                     psc.setExten(nse.getExten());
                     return;
                 case 6:
-                    psc.setLastCall(nse.getDateReceived());
+                    psc.setLastCall(nse.getDateReceived());                    
                     return;
                 default:
                     psc.setDirection(0);
@@ -114,8 +115,11 @@ public class HandleEvent {
     public void handle(HangupEvent he) {
         if(pscc.containsKey(he.getChannel().split("-")[0])){
             PeerStatusControl psc=pscc.get(he.getChannel().split("-")[0]);
-            psc.setState(0);
-            psc.setStateDesc("Down");
+            //System.out.println("::::: Ramal "+psc.getChannel()+" - "+psc.getStateDesc()+" - "+psc.getState()+" - "+psc.getExten()+" - "+psc.getUniqueid());
+            if(psc.getState()==he.getChannelState()){
+                psc.setState(0);
+                psc.setStateDesc("Down");
+            }
             if(he.getChannel().split("/")[0].equals("Khomp"))
                 psc.setPeer("");
         }

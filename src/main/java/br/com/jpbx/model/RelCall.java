@@ -16,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -55,6 +56,7 @@ public class RelCall implements Serializable{
     
     @OneToMany(cascade = javax.persistence.CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER)
     @JoinColumn(name = "uniqueid",referencedColumnName = "uniqueid")
+    @OrderBy("id ASC")
     private List<RelCallHistory> callHistory;
 
     public List<RelCallHistory> getCallHistory() {

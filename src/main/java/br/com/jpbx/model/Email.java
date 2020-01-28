@@ -31,6 +31,16 @@ public class Email implements Serializable{
     private int tls;
     @Column(name = "sec_ssl")
     private int ssl;
+    @Column(name = "email_user")
+    private String user;
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
 
     public int getId() {
         return id;
