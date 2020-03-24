@@ -25,6 +25,18 @@ public class HandleIptable {
             System.out.println("::::: DEU RUIM BLOQUEIO IPTABLES: "+ex.getMessage());
         }
     }
+    
+    public void releaseIp(String ip){
+        Process proc;
+        try {
+            proc=Runtime.getRuntime().exec(new LinuxInfo().commandPath("iptables")+ " -D INPUT -s "+ip+" -j DROP");
+            InputStream stdout=proc.getInputStream();
+            while (stdout.read()>=0){}
+        } catch (IOException ex) {
+            System.out.println("::::: DEU RUIM LIBERAR IP: "+ex.getMessage());
+        }
+    }
+    
     public void clearIpTable(){
         Process proc;
         try {

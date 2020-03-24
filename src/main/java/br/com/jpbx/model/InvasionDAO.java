@@ -38,7 +38,7 @@ public class InvasionDAO {
             tx.begin();
             em.persist(i);
             tx.commit();
-            HandleIpTable();
+            new HandleIptable().blockIpTable(i.getIp(), i.getMask());
         }catch(Exception ex){
             if(tx.isActive())
                 tx.rollback();
@@ -56,7 +56,10 @@ public class InvasionDAO {
                 em.persist(new Invasion(ip, "255.255.255.255", today));
             }
             tx.commit();
-            HandleIpTable();
+            HandleIptable handler = new HandleIptable();
+            for (String ip : ips) {
+                handler.blockIpTable(ip, "255.255.255.255");
+            }
         }catch(Exception ex){
             if(tx.isActive())
                 tx.rollback();
@@ -72,7 +75,7 @@ public class InvasionDAO {
             Invasion end=em.find(Invasion.class, i.getId());
             em.remove(end);
             tx.commit();
-            HandleIpTable();
+            new HandleIptable().clearIpTable();
         }catch(Exception ex){
             if(tx.isActive())
                 tx.rollback();
@@ -82,13 +85,23 @@ public class InvasionDAO {
         }       
         return "ok";
     }
-    private void HandleIpTable(){
+    public void writeAllIpTable(){
         HandleIptable iptable=new HandleIptable();
         String sql="select i from Invasion as i";
         TypedQuery <Invasion> query=em.createQuery(sql,Invasion.class);
-        iptable.clearIpTable();
+        //iptable.clearIpTable();
         for (Invasion i : query.getResultList()) {
             iptable.blockIpTable(i.getIp(), i.getMask());
+        }
+    }
+    
+    public void clearAllIpTable(){
+        HandleIptable iptable=new HandleIptable();
+        String sql="select i from Invasion as i";
+        TypedQuery <Invasion> query=em.createQuery(sql,Invasion.class);
+        //iptable.clearIpTable();
+        for (Invasion i : query.getResultList()) {
+            iptable.releaseIp(i.getIp());
         }
     }
 }
