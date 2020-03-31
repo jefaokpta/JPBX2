@@ -367,6 +367,7 @@ public class PeerDAO {
         }finally{
            em.close();
         }
+        peerData(p);
         if(ret.equals("ok"))
             ret=new Writer().writePeersSIP(peers);
         if(ret.equals("ok"))
@@ -399,6 +400,7 @@ public class PeerDAO {
             em.close();
   
         }
+        peerData(p);
         if(ret.equals("ok"))
             ret=new Writer().writePeersWEB(peers);
         if(ret.equals("ok"))
@@ -426,6 +428,7 @@ public class PeerDAO {
             em.close();
   
         }
+        peerData(p);
         if(ret.equals("ok"))
             ret=new Writer().writePeersWEB(peers);
         if(ret.equals("ok"))
@@ -456,6 +459,7 @@ public class PeerDAO {
             em.close();
   
         }
+        peerData(p);
         if(ret.equals("ok"))
             ret=new Writer().writeVoicemail(peers);
         if(ret.equals("ok"))
@@ -478,6 +482,11 @@ public class PeerDAO {
         }
     }
 
+    private void peerData(Peer p){
+        new Asterisk().astDBAdd("PeerData", String.valueOf(p.getId()), 
+                p.getCompany()+","+p.getContext()+","+p.getLock()+","+p.getAuthorization()+","
+                    +(p.getAuthorization()>0?new ProfileDAO().getSingleProfile(p.getAuthorization()).getLimited():"0"));
+    }
     
 
     

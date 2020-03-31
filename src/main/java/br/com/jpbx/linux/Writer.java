@@ -343,6 +343,7 @@ public class Writer {
                     fwrite.write("dtmfmode="+p.getDtmfmode()+"\n");
                     fwrite.write("nat="+p.getNat()+"\n");
                     fwrite.write("qualify="+p.getQualify()+"\n");
+                    fwrite.write("callerid="+p.getCallerid()+" <"+p.getName()+">"+"\n");
                     fwrite.write("disallow=all\n");
                     fwrite.write("allow="+p.getAllow()+"\n");
                     if(!p.getAllowVideo().equals(""))
@@ -389,6 +390,7 @@ public class Writer {
                     fwrite.write("dtmfmode="+p.getDtmfmode()+"\n");
                     fwrite.write("nat="+p.getNat()+"\n");
                     fwrite.write("qualify="+p.getQualify()+"\n");
+                    fwrite.write("callerid="+p.getCallerid()+" <"+p.getName()+">"+"\n");
                     fwrite.write("disallow=all\n");
                     fwrite.write("allow="+p.getAllow()+"\n");
                     if(!p.getAllowVideo().equals(""))
