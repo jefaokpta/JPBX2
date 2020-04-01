@@ -22,10 +22,12 @@ import javax.persistence.TypedQuery;
  */
 public class PeerDAO {
 
-    EntityManager em;
+    private EntityManager em;
+    private Asterisk ast;
 
     public PeerDAO() {
         em=new ConnectionFactory().getEm();
+        ast = new Asterisk();
     }
     public String verifyTrunkRec(int peer){
         try{
@@ -143,15 +145,12 @@ public class PeerDAO {
             ret=new Writer().writeVoicemail(peers);
         if(ret.equals("ok"))
             new AsteriskActions().reloadSipVoicemailDialplan();
-      //  try {
-            Asterisk ast=new Asterisk();
-            for (Peer peer : peers) {
-                ast.astDBAdd("PeerId", String.valueOf(peer.getName()), String.valueOf(peer.getId()));
-                peerData(peer);
-            }
-//        } catch (IOException ex) {
-//            ret="FALHA AST: "+ex.getMessage();
-//        }
+
+        for (Peer peer : peers) {
+            ast.astDBAdd("PeerId", String.valueOf(peer.getName()), String.valueOf(peer.getId()));
+            peerData(peer);
+            peerInterface(peer);
+        }
         return ret;
     }
     public String persistNewPeersLot(List<Peer> peersLot) {
@@ -182,15 +181,12 @@ public class PeerDAO {
             ret=new Writer().writeVoicemail(peers);
         if(ret.equals("ok"))
             ret=new AsteriskActions().reloadSipVoicemailDialplan();
-       // try {
-            Asterisk ast=new Asterisk();
-            for (Peer peer : peers) {
-                ast.astDBAdd("PeerId", String.valueOf(peer.getName()), String.valueOf(peer.getId()));
-                peerData(peer);
-            }
-//        } catch (IOException ex) {
-//            ret="FALHA AST: "+ex.getMessage();
-//        }
+
+        for (Peer peer : peers) {
+            ast.astDBAdd("PeerId", String.valueOf(peer.getName()), String.valueOf(peer.getId()));
+            peerData(peer);
+            peerInterface(peer);
+        }
         return ret;
     }
     public String persistNewPeerWEB(Peer p) {
@@ -220,15 +216,12 @@ public class PeerDAO {
             ret=new Writer().writeVoicemail(peers);
         if(ret.equals("ok"))
             ret=new AsteriskActions().reloadSipVoicemailDialplan();
-     //   try {
-            Asterisk ast=new Asterisk();
-            for (Peer peer : peers) {
-                ast.astDBAdd("PeerId", String.valueOf(peer.getName()), String.valueOf(peer.getId()));
-                peerData(peer);
-            }
-//        } catch (IOException ex) {
-//            ret="FALHA AST: "+ex.getMessage();
-//        }
+
+        for (Peer peer : peers) {
+            ast.astDBAdd("PeerId", String.valueOf(peer.getName()), String.valueOf(peer.getId()));
+            peerData(peer);
+            peerInterface(peer);
+        }
         return ret;
     }
     public String persistNewPeersWEBLot(List<Peer> peersLot) {
@@ -260,15 +253,12 @@ public class PeerDAO {
             ret=new Writer().writeVoicemail(peers);
         if(ret.equals("ok"))
             ret=new AsteriskActions().reloadSipVoicemailDialplan();
-     //   try {
-            Asterisk ast=new Asterisk();
-            for (Peer peer : peers) {
-                ast.astDBAdd("PeerId", String.valueOf(peer.getName()), String.valueOf(peer.getId()));
-                peerData(peer);
-            }
-//        } catch (IOException ex) {
-//            ret="FALHA AST: "+ex.getMessage();
-//        }
+
+        for (Peer peer : peers) {
+            ast.astDBAdd("PeerId", String.valueOf(peer.getName()), String.valueOf(peer.getId()));
+            peerData(peer);
+            peerInterface(peer);
+        }
         return ret;
     }
     public String persistNewPeerVIRTUAL(Peer p) {
@@ -290,15 +280,11 @@ public class PeerDAO {
             em.close();
  
         }
-     //   try {
-            Asterisk ast=new Asterisk();
-            for (Peer peer : peers) {
-                ast.astDBAdd("PeerId", String.valueOf(peer.getName()), String.valueOf(peer.getId()));
-                peerData(peer);
-            }
-//        } catch (IOException ex) {
-//            ret="FALHA AST: "+ex.getMessage();
-//        }
+        for (Peer peer : peers) {
+            ast.astDBAdd("PeerId", String.valueOf(peer.getName()), String.valueOf(peer.getId()));
+            peerData(peer);
+            peerInterface(peer);
+        }
         if(ret.equals("ok"))
             ret=new Writer().writeVoicemail(peers);
         if(ret.equals("ok"))
@@ -345,12 +331,9 @@ public class PeerDAO {
                         ret=new AsteriskActions().reloadSipVoicemailDialplan();  
                     break;
             }
-      //  try {
-            new Asterisk().astDBDEL("PeerId", String.valueOf(p.getName()));
-            new Asterisk().astDBDEL("PeerData", String.valueOf(p.getId()));
-//        } catch (IOException ex) {
-//            ret="FALHA AST: "+ex.getMessage();
-//        }
+            ast.astDBDEL("PeerId", String.valueOf(p.getName()));
+            ast.astDBDEL("PeerData", String.valueOf(p.getId()));
+            ast.astDBDEL("PeerInterface", String.valueOf(p.getId()));
         return ret;
     }
     public String updatePeer(Peer p,boolean edit){
@@ -374,6 +357,7 @@ public class PeerDAO {
            em.close();
         }
         peerData(p);
+        peerInterface(p);
         if(ret.equals("ok"))
             ret=new Writer().writePeersSIP(peers);
         if(ret.equals("ok"))
@@ -404,9 +388,9 @@ public class PeerDAO {
             ret="DAO: "+ex.getMessage();
         }finally{
             em.close();
-  
         }
         peerData(p);
+        peerInterface(p);
         if(ret.equals("ok"))
             ret=new Writer().writePeersWEB(peers);
         if(ret.equals("ok"))
@@ -435,6 +419,7 @@ public class PeerDAO {
   
         }
         peerData(p);
+        peerInterface(p);
         if(ret.equals("ok"))
             ret=new Writer().writePeersWEB(peers);
         if(ret.equals("ok"))
@@ -466,6 +451,7 @@ public class PeerDAO {
   
         }
         peerData(p);
+        peerInterface(p);
         if(ret.equals("ok"))
             ret=new Writer().writeVoicemail(peers);
         if(ret.equals("ok"))
@@ -489,15 +475,14 @@ public class PeerDAO {
     }
 
     private void peerData(Peer p){
-        new Asterisk().astDBAdd("PeerData", String.valueOf(p.getId()), 
+        ast.astDBAdd("PeerData", String.valueOf(p.getId()), 
                 p.getCompany()+","+p.getContext()+","+p.getLock()+","+p.getAuthorization()+","
                     +(p.getAuthorization()>0?new ProfileDAO().getSingleProfile(p.getAuthorization()).getLimited():"0"));
     }
     
-
-    
-
-    
-
-    
+    private void peerInterface(Peer p){
+        ast.astDBAdd("PeerInterface", String.valueOf(p.getId()), 
+                p.getPickupgroup()+","+p.getDnd()+","+p.getFwd()+","+p.getCanal()+","+p.getCompany()+","+
+                    new CompanyDAO().getSingleCompany(p.getCompany()).getMoh()+","+p.getMailbox());
+    }
 }
