@@ -147,6 +147,7 @@ public class PeerDAO {
             Asterisk ast=new Asterisk();
             for (Peer peer : peers) {
                 ast.astDBAdd("PeerId", String.valueOf(peer.getName()), String.valueOf(peer.getId()));
+                peerData(peer);
             }
 //        } catch (IOException ex) {
 //            ret="FALHA AST: "+ex.getMessage();
@@ -185,6 +186,7 @@ public class PeerDAO {
             Asterisk ast=new Asterisk();
             for (Peer peer : peers) {
                 ast.astDBAdd("PeerId", String.valueOf(peer.getName()), String.valueOf(peer.getId()));
+                peerData(peer);
             }
 //        } catch (IOException ex) {
 //            ret="FALHA AST: "+ex.getMessage();
@@ -222,6 +224,7 @@ public class PeerDAO {
             Asterisk ast=new Asterisk();
             for (Peer peer : peers) {
                 ast.astDBAdd("PeerId", String.valueOf(peer.getName()), String.valueOf(peer.getId()));
+                peerData(peer);
             }
 //        } catch (IOException ex) {
 //            ret="FALHA AST: "+ex.getMessage();
@@ -261,6 +264,7 @@ public class PeerDAO {
             Asterisk ast=new Asterisk();
             for (Peer peer : peers) {
                 ast.astDBAdd("PeerId", String.valueOf(peer.getName()), String.valueOf(peer.getId()));
+                peerData(peer);
             }
 //        } catch (IOException ex) {
 //            ret="FALHA AST: "+ex.getMessage();
@@ -290,6 +294,7 @@ public class PeerDAO {
             Asterisk ast=new Asterisk();
             for (Peer peer : peers) {
                 ast.astDBAdd("PeerId", String.valueOf(peer.getName()), String.valueOf(peer.getId()));
+                peerData(peer);
             }
 //        } catch (IOException ex) {
 //            ret="FALHA AST: "+ex.getMessage();
@@ -342,6 +347,7 @@ public class PeerDAO {
             }
       //  try {
             new Asterisk().astDBDEL("PeerId", String.valueOf(p.getName()));
+            new Asterisk().astDBDEL("PeerData", String.valueOf(p.getId()));
 //        } catch (IOException ex) {
 //            ret="FALHA AST: "+ex.getMessage();
 //        }
