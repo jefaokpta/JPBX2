@@ -477,7 +477,7 @@ public class PeerDAO {
     private void peerData(Peer p){
         ast.astDBAdd("PeerData", String.valueOf(p.getId()), 
                 p.getCompany()+","+p.getContext()+","+p.getLock()+","+p.getAuthorization()+","
-                    +(p.getAuthorization()>0?new ProfileDAO().getSingleProfile(p.getAuthorization()).getLimited():"0"));
+                    +(p.getAuthorization()>0?new ProfileDAO().getSingleProfile(p.getAuthorization()).getLimited():"0")+","+p.getFacilityPass());
     }
     
     private void peerInterface(Peer p){
