@@ -5,6 +5,7 @@
  */
 package br.com.jpbx.model;
 
+import br.com.jpbx.asterisk.Asterisk;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -17,9 +18,11 @@ import javax.persistence.TypedQuery;
 public class RouteDAO {
     
     private EntityManager em;
+    private Asterisk ast;
 
     public RouteDAO() {
         em=new ConnectionFactory().getEm();
+        ast = new Asterisk();
     }
     public List<Route> getAllRoutes(){  
         try{          
@@ -92,6 +95,7 @@ public class RouteDAO {
         }finally{
            em.close();
         }       
+        addRouteAstDB(r);
         return ret;
     }
     public String updateRoute(Route r){
@@ -108,6 +112,7 @@ public class RouteDAO {
         }finally{
            em.close();
         }
+        addRouteAstDB(r);
         return ret;
     }
     public String deleteRoute(Route r){
@@ -124,7 +129,40 @@ public class RouteDAO {
             ret="DAO: "+ex.getMessage();
         }finally{
            em.close();
-        }       
+        }    
+        deleteRouteAstDB(r);
         return ret;
+    }
+    
+    private void addRouteAstDB(Route route){
+        Trunk tr1, tr2, tr3;
+        String moh = new CompanyDAO().getSingleCompany(route.getCompany()).getMoh();
+        for (RouteTrunk r : route.getRoutes()) {
+            tr1 = new Trunk();
+            if(r.getTrunkId1()>0)
+                tr1=new TrunkDAO().getSingleTrunk(r.getTrunkId1());
+            tr2 = new Trunk();
+            if(r.getTrunkId2()>0)
+                tr2=new TrunkDAO().getSingleTrunk(r.getTrunkId2());
+            tr3 = new Trunk();
+            if(r.getTrunkId3()>0)
+                tr3=new TrunkDAO().getSingleTrunk(r.getTrunkId3());
+                        
+            ast.astDBAdd("Route", 
+                    String.valueOf(route.getId())+String.valueOf(r.getId()), 
+                            tr1.getCanal()+","+tr1.getId()+","+tr1.getTechPrefix()+","+
+                            tr2.getCanal()+","+tr2.getId()+","+tr2.getTechPrefix()+","+
+                            tr3.getCanal()+","+tr3.getId()+","+tr3.getTechPrefix()+","+
+                                    route.getLimitBol()+","+(route.getLimitControl()-route.getCurrentMin())+","+
+                                    route.getChanLimit()+","+route.getFlags()+","+route.getTimeout()+","+
+                                    moh
+                        );
+        }     
+    }
+    
+    private void deleteRouteAstDB(Route route){
+        for (RouteTrunk r : route.getRoutes()) {
+            ast.astDBDEL("Route", String.valueOf(route.getId())+String.valueOf(r.getId()));
+        }
     }
 }
