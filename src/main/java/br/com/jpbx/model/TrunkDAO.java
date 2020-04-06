@@ -103,6 +103,14 @@ public class TrunkDAO {
     public String deleteTrunk(int id){
         EntityTransaction tx=em.getTransaction();
         String ret="ok";
+        
+        for (Route route : new RouteDAO().getAllRoutes()) { // VERIFICAR SE O TRONCO EH USADO EM ALGUMA ROTA
+            for (RouteTrunk r : route.getRoutes()) {
+                if(r.getTrunkId1() == id || r.getTrunkId2() == id || r.getTrunkId3() == id)
+                    return "Tronco usado na Rota "+ route.getId() + " " + route.getName();
+            }
+        }
+        
         List<Trunk> trunks=null;
         Trunk end = null;
         try{
