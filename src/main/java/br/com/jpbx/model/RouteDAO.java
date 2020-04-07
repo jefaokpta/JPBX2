@@ -134,7 +134,7 @@ public class RouteDAO {
         return ret;
     }
     
-    private void addRouteAstDB(Route route){
+    public void addRouteAstDB(Route route){
         Trunk tr1, tr2, tr3;
         String moh = new CompanyDAO().getSingleCompany(route.getCompany()).getMoh();
         for (RouteTrunk r : route.getRoutes()) {

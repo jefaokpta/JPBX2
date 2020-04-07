@@ -162,6 +162,12 @@ public class TrunkDAO {
         }finally{
            em.close();
         }
+        for (Route route : new RouteDAO().getAllRoutes()) { // VERIFICAR SE O TRONCO EH USADO EM ALGUMA ROTA
+            for (RouteTrunk r : route.getRoutes()) {
+                if(r.getTrunkId1() == t.getId() || r.getTrunkId2() == t.getId() || r.getTrunkId3() == t.getId())
+                    new RouteDAO().addRouteAstDB(route);
+            }
+        }
         switch(t.getTecnology()){
             case "SIP":
                 ret=new Writer().writeTrunkSIP(trunks);
