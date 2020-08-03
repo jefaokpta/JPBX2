@@ -32,7 +32,7 @@ public class AudioServlet extends HttpServlet {
             return;
         try {
             stream = response.getOutputStream();
-            File mp3 = new File("/etc/asterisk/jpbx/records/"+request.getParameter("rec")+".wav");
+            File mp3 = new File("/opt/asterisk13/records/"+request.getParameter("rec")+".wav");
 
             //set response headers
             response.setContentType("audio/wav"); 
