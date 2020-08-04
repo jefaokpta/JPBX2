@@ -34,10 +34,10 @@ public class MohServlet extends HttpServlet {
         String ext="mp3";
         try {
             stream = response.getOutputStream();
-            File mp3 = new File("/etc/asterisk/jpbx/moh/"+request.getParameter("moh")+"/"+request.getParameter("moh")+".mp3");
+            File mp3 = new File("/opt/asterisk13/varLibAsterisk/moh/"+request.getParameter("moh")+"/"+request.getParameter("moh")+".mp3");
             
             if(!mp3.exists()){
-                mp3 = new File("/etc/asterisk/jpbx/moh/"+request.getParameter("moh")+"/"+request.getParameter("moh")+".wav");
+                mp3 = new File("/opt/asterisk13/varLibAsterisk/moh/"+request.getParameter("moh")+"/"+request.getParameter("moh")+".wav");
                 type="audio/wav";
                 ext="wav";
             }

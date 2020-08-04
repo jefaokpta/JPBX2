@@ -40,7 +40,7 @@ public class HandleIptable {
     public void clearIpTable(){
         Process proc;
         try {
-            proc=Runtime.getRuntime().exec(new LinuxInfo().commandPath("iptables")+ " -F");
+            proc=Runtime.getRuntime().exec(new LinuxInfo().commandPath("iptables")+ " -F INPUT");
             InputStream stdout=proc.getInputStream();
             while (stdout.read()>=0){}
         } catch (IOException ex) {

@@ -33,7 +33,7 @@ public class VerifyInvasions {
         String line,cut;
         List<String> ips=new ArrayList<>();
         try {
-            BufferedReader  br = new BufferedReader(new FileReader("/var/log/asterisk/block"));
+            BufferedReader  br = new BufferedReader(new FileReader("/opt/asterisk13/varLogAsterisk/block"));
             while(br.ready()){  // POE SOMENTE IPS
                 line = br.readLine();  
                 if(line.contains("Wrong password")||line.contains("matching peer")){
@@ -52,7 +52,7 @@ public class VerifyInvasions {
                 }
             }
             br.close();
-            FileWriter clearLog=new FileWriter(new File("/var/log/asterisk/block")); // LIMPA LOG
+            FileWriter clearLog=new FileWriter(new File("/opt/asterisk13/varLogAsterisk/block")); // LIMPA LOG
             clearLog.write("zerado");
             clearLog.close();
             // VERIFICA SE ESTA ATIVO

@@ -75,7 +75,7 @@ public class InvasionDAO {
             Invasion end=em.find(Invasion.class, i.getId());
             em.remove(end);
             tx.commit();
-            new HandleIptable().clearIpTable();
+            writeAllIpTable();
         }catch(Exception ex){
             if(tx.isActive())
                 tx.rollback();
@@ -89,7 +89,7 @@ public class InvasionDAO {
         HandleIptable iptable=new HandleIptable();
         String sql="select i from Invasion as i";
         TypedQuery <Invasion> query=em.createQuery(sql,Invasion.class);
-        //iptable.clearIpTable();
+        iptable.clearIpTable();
         for (Invasion i : query.getResultList()) {
             iptable.blockIpTable(i.getIp(), i.getMask());
         }
