@@ -51,13 +51,14 @@ public class MohsBean implements Serializable{
         }
         else
             mohs=new MohDAO().getAllMohs();
-        
-        moh.setCompany((int) FacesContext.getCurrentInstance().getExternalContext().
-                getSessionMap().get("currentCompany"));
+
+        int currentCompanyId = (int) FacesContext.getCurrentInstance().getExternalContext().
+                getSessionMap().get("currentCompany");
+        moh.setCompany(currentCompanyId);
         
         companyMohs=new HashMap<>();
         for (Moh m : mohs) {
-            if(m.getCompany()==userSession.getCompany())
+            if(m.getCompany()==currentCompanyId)
                 companyMohs.put(m.getName(), m.getMoh());
         }
         companyMoh=new CompanyDAO().getSingleCompany(userSession.getCompany()).getMoh();
