@@ -109,14 +109,14 @@ public class LinuxInfo {
         }
     }
     public void createMohTree(String mohName,String ext){
-        File dst=new File("/etc/asterisk/jpbx/moh/"+mohName);
+        File dst=new File("/opt/asterisk13/varLibAsterisk/moh/"+mohName);
         if(!dst.exists())
             dst.mkdir();
-        dst=new File("/etc/asterisk/jpbx/moh/"+mohName+"/"+mohName+"."+ext);
+        dst=new File("/opt/asterisk13/varLibAsterisk/moh/"+mohName+"/"+mohName+"."+ext);
         File src=new File("/tmp/"+mohName+"."+ext);
         src.renameTo(dst);
         src=new File("/tmp/"+mohName+".sln");
-        dst=new File("/etc/asterisk/jpbx/moh/"+mohName+"/"+mohName+".sln");
+        dst=new File("/opt/asterisk13/varLibAsterisk/moh/"+mohName+"/"+mohName+".sln");
         src.renameTo(dst);
     }
     public List<Long> getHDUsage(){

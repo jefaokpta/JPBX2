@@ -70,12 +70,12 @@ public class HandleAudio {
         return "ok";
     }
     public void removeConference(String rec){
-        File file=new File("/etc/asterisk/jpbx/records/"+rec+".wav");
+        File file=new File("/opt/asterisk13/records/"+rec+".wav");
         if(!file.exists())
             file.delete();
     }
     public String removeMoh(String moh){
-        File file=new File("/etc/asterisk/jpbx/moh/"+moh);
+        File file=new File("/opt/asterisk13/varLibAsterisk/moh/"+moh);
         if(file.exists()){
             for(String arq:file.list()){
                 if(!new File(file, arq).delete())
