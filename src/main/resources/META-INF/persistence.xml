@@ -4,7 +4,7 @@
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <non-jta-data-source>jpbx</non-jta-data-source>
     <properties>
-        <property name="hibernate.show_sql" value="true" />
+        <property name="hibernate.show_sql" value="false" />
     </properties>
 
   </persistence-unit>

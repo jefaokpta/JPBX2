@@ -43,11 +43,11 @@
         <h:outputScript library="js" name="jsJefao.js" />
         <script>
             var url=window.location.href;
-            if(url.includes('http:'))
-                window.location.href='https://'+window.location.host+'/jpbx/jpbx/restricted/home.xhtml';
-            $('#form1').submit(function(){
-                $('#pass').val(hashMD5($('#user').val()+":"+$('#pass').val()));
-            });
+//            if(url.includes('http:'))
+//                window.location.href='https://'+window.location.host+'/jpbx/jpbx/restricted/home.xhtml';
+//            $('#form1').submit(function(){
+//                $('#pass').val(hashMD5($('#user').val()+":"+$('#pass').val()));
+//            });
         </script>
         <p style="position: fixed; bottom: 5px; right: 5px">Versão JPBX DOCKER 2.0.5</p>
     </h:body>
